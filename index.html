@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#102d25">
-<title>MISI PAHLAWAN ALPHA - 3D CINEMATIX EDITION</title>
+<title>MISI PAHLAWAN ALPHA - MLBB 3D EDITION</title>
 
 <!-- SUPABASE & THREE.JS LIBRARIES -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -18,95 +18,54 @@ button,input,textarea,select{font:inherit}
 button{border:0;border-radius:12px;padding:12px 17px;font-weight:bold;cursor:pointer;transition:all 0.2s}
 button:hover{transform:translateY(-2px);filter:brightness(1.1)}
 button:disabled{opacity:.5;cursor:not-allowed;transform:none}
-.primary{background:var(--gold);color:#392b08;box-shadow:0 4px 15px rgba(255,214,90,0.3)}
+.primary{background:linear-gradient(135deg,#ffdb63,#f5ad18);color:#392b08;box-shadow:0 4px 15px rgba(255,214,90,0.4);border:1px solid #fff}
 .secondary{background:#286c50;color:white}
-.danger{background:#b83232;color:white}
 .small{padding:8px 12px;font-size:12px}
 .hidden{display:none!important}
 .screen{min-height:100vh;padding:18px;position:relative;z-index:10;overflow-y:auto}
-.panel{width:min(700px,100%);margin:20px auto;background:rgba(255,247,223,0.95);backdrop-filter:blur(10px);color:#24382b;padding:22px;border-radius:22px;box-shadow:0 12px 35px #0008}
+.panel{width:min(700px,100%);margin:20px auto;background:rgba(255,247,223,0.95);backdrop-filter:blur(10px);color:#24382b;padding:22px;border-radius:22px;box-shadow:0 12px 35px #000c}
 .panel h1,.panel h2{margin-top:0;color:#102d25}
 .brand{text-align:center;color:var(--gold);font-weight:1000;font-size:clamp(27px,7vw,48px);letter-spacing:1px;text-shadow:3px 4px #713d16}
-.subtitle{text-align:center;color:#e8e4c9}
 .field{margin:12px 0}
 .field label{display:block;font-weight:bold;margin-bottom:6px}
-.field input,.field textarea,.field select{width:100%;border:2px solid #d6d0b8;border-radius:10px;padding:12px;background:white;color:#172d22}
-.field textarea{min-height:75px;resize:vertical}
+.field input{width:100%;border:2px solid #d6d0b8;border-radius:10px;padding:12px;background:white;color:#172d22}
 .row{display:flex;gap:9px;flex-wrap:wrap}
 .row>*{flex:1}
 .notice{padding:12px;background:#fff0bd;color:#5c4612;border-radius:10px;margin:12px 0;font-size:14px}
-.status{font-size:13px;min-height:20px;color:#8a301e}
-.topbar{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 14px;background:rgba(16,45,37,0.85);backdrop-filter:blur(8px);border-bottom:2px solid #e7b94b;position:absolute;top:0;left:0;right:0;z-index:20}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 14px;background:rgba(16,45,37,0.85);backdrop-filter:blur(8px);border-bottom:2px solid #e7b94b;position:absolute;top:0;left:0;right:0;z-index:20}
 .stat{background:#235b40;padding:8px 12px;border-radius:12px;font-weight:bold;font-size:13px}
-.list-item{background:white;border:1px solid #ddd5bd;border-radius:12px;padding:12px;margin:8px 0;color:#25382a}
-.list-item small{color:#657566}
-.tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:15px}
-.tabs button{background:#dfe8d7;color:#28432d}
-.tabs button.active{background:#235b40;color:white}
-#toast{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);background:rgba(16,45,37,0.95);color:white;padding:14px 24px;border-radius:30px;z-index:100;display:none;max-width:90%;text-align:center;border:1px solid var(--gold);box-shadow:0 8px 25px rgba(0,0,0,0.5)}
+#toast{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);background:rgba(16,45,37,0.95);color:white;padding:14px 24px;border-radius:30px;z-index:100;display:none;border:1px solid var(--gold);box-shadow:0 8px 25px rgba(0,0,0,0.5)}
 
-/* PEMBUKAAN */
+/* SKRIN PEMBUKAAN */
 #openingScreen{padding:0;overflow:hidden;position:relative;min-height:100vh;background:#071b17}
-.opening-scene{position:absolute;inset:0;overflow:hidden;background:linear-gradient(#092b3c,#176b70 43%,#75a94d 72%,#173d2a)}
-.opening-stars{position:absolute;inset:0;background-image:radial-gradient(#fff 1px,transparent 1.5px);background-size:65px 65px;opacity:.35;animation:stars 12s linear infinite}
-@keyframes stars{to{transform:translateY(65px)}}
-.opening-moon{position:absolute;top:8%;right:13%;width:90px;height:90px;border-radius:50%;background:#fff1ac;box-shadow:0 0 50px #fff0a6}
-.opening-hill{position:absolute;bottom:0;width:120%;height:43%;left:-10%;background:#164c35;border-radius:50% 50% 0 0}
-.opening-fire{position:absolute;bottom:19%;left:50%;transform:translateX(-50%);font-size:clamp(45px,9vw,85px);filter:drop-shadow(0 0 22px #ff9d28);animation:fire 1s infinite alternate}
-@keyframes fire{to{transform:translateX(-50%) scale(1.12);filter:drop-shadow(0 0 38px #ffdb58)}}
-.opening-content{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px 18px 45px}
-.opening-kicker{font-weight:bold;letter-spacing:5px;color:#ffe9a0;font-size:12px;text-shadow:0 2px 8px #000}
-.opening-title{font-size:clamp(35px,9vw,76px);line-height:1.04;font-weight:1000;color:#ffe06a;text-shadow:0 4px #9b501a,0 8px 25px #000;max-width:900px;margin:18px auto}
-.opening-sub{font-size:clamp(14px,3vw,21px);color:white;text-shadow:0 2px 7px #000;letter-spacing:2px}
-.opening-tagline{max-width:650px;color:#fff8dc;font-size:clamp(14px,3.5vw,19px);line-height:1.6;text-shadow:0 2px 7px #000;margin:16px auto 25px}
-.opening-button{font-size:18px;padding:17px 30px;border:2px solid #fff1a5;box-shadow:0 0 25px #ffd65a88;animation:pulse 1.5s infinite}
-@keyframes pulse{50%{transform:scale(1.04);box-shadow:0 0 38px #ffd65acc}}
-.opening-audio{position:absolute;z-index:5;right:12px;top:12px;display:flex;gap:7px;align-items:center;background:#09251edb;padding:8px;border-radius:14px}
-.opening-audio button{padding:8px 10px;font-size:12px}
-.opening-audio input{width:85px}
-.voice-caption{min-height:44px;color:#ffe9a0;font-weight:bold;font-size:15px;text-shadow:0 2px 5px #000;margin:12px auto}
+.opening-content{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px}
+.opening-title{font-size:clamp(35px,9vw,76px);font-weight:1000;color:#ffe06a;text-shadow:0 4px #9b501a,0 8px 25px #000;margin:18px auto}
 
-/* PEMILIHAN WATAK 3D */
+/* PEMILIHAN HERO MLBB 3D */
 #characterScreen{background:radial-gradient(circle at top,#4a9b76,#102d25 75%)}
-.character-heading{text-align:center;color:#ffe17a;text-shadow:0 3px 8px #000}
-.character-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:15px 0}
-.character-card{background:linear-gradient(145deg,#fff9e5,#dbe9ce);color:#203d2c;border:3px solid transparent;border-radius:16px;padding:8px 5px;text-align:center;box-shadow:0 8px 18px #0004;cursor:pointer}
-.character-card.selected{border-color:#ffbd31;transform:translateY(-4px);box-shadow:0 0 0 3px #fff4a0,0 12px 25px #0005}
-.character-card b{font-size:14px;display:block}
-.character-preview-3d{width:100%;height:220px;border-radius:16px;overflow:hidden;background:radial-gradient(circle,#1a4d3b,#0a2118);box-shadow:inset 0 0 20px #0008;margin-bottom:15px;position:relative}
+.character-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:15px 0}
+.character-card{background:linear-gradient(145deg,#fff9e5,#dbe9ce);color:#203d2c;border:3px solid transparent;border-radius:14px;padding:8px 4px;text-align:center;cursor:pointer}
+.character-card.selected{border-color:#ffbd31;transform:translateY(-4px);box-shadow:0 0 0 3px #fff4a0}
+.character-preview-3d{width:100%;height:230px;border-radius:18px;overflow:hidden;background:radial-gradient(circle,#1a4d3b,#0a2118);margin-bottom:15px;box-shadow:inset 0 0 25px #0008}
 
-/* DUNIA PERMAINAN 3D */
+/* DUNIA PERMAINAN MOBA 3D */
 #gameScreen{padding:0;overflow:hidden;position:relative;width:100vw;height:100vh}
 #webgl-container{width:100%;height:100%;position:absolute;inset:0;z-index:1}
-.world-title-3d{position:absolute;top:65px;left:50%;transform:translateX(-50%);color:#fff;text-shadow:2px 2px 8px #000;font-weight:bold;text-align:center;z-index:10;font-size:clamp(16px,4vw,24px);background:rgba(0,0,0,0.4);padding:6px 20px;border-radius:20px;border:1px solid rgba(255,255,255,0.2);backdrop-filter:blur(4px)}
+.world-title-3d{position:absolute;top:65px;left:50%;transform:translateX(-50%);color:#fff;text-shadow:2px 2px 8px #000;font-weight:bold;z-index:10;font-size:16px;background:rgba(0,0,0,0.5);padding:6px 20px;border-radius:20px;border:1px solid rgba(255,255,255,0.2)}
 
-/* KAWALAN D-PAD & BUTANG */
 .controls{position:absolute;bottom:25px;left:25px;z-index:15;display:grid;grid-template-columns:52px 52px 52px;grid-template-rows:52px 52px;gap:6px}
-.controls button{padding:0;background:rgba(21,62,49,0.85);color:white;border:2px solid #ffe18a;font-size:22px;border-radius:14px;backdrop-filter:blur(5px);box-shadow:0 6px 15px #0006}
-.controls button:active{background:#ffdb63;color:#102d25}
-.controls .up{grid-column:2}.controls .left{grid-column:1;grid-row:2}.controls .down{grid-column:2;grid-row:2}.controls .right{grid-column:3;grid-row:2}
-.interact{position:absolute;right:25px;bottom:25px;z-index:15;background:linear-gradient(135deg,#ffdb63,#f5ad18);color:#392a0b;padding:18px 26px;font-size:16px;border-radius:18px;box-shadow:0 8px 25px rgba(245,173,24,0.5);border:2px solid #fff}
-.world-actions{position:absolute;right:20px;top:80px;z-index:15;display:flex;flex-direction:column;gap:8px}
-.world-actions button{padding:10px 14px;background:rgba(20,61,45,0.85);color:white;border:1px solid #ffe18a;font-size:13px;backdrop-filter:blur(5px);border-radius:12px;box-shadow:0 4px 12px #0004}
+.controls button{padding:0;background:rgba(21,62,49,0.85);color:white;border:2px solid #ffe18a;font-size:22px;border-radius:14px}
+.interact{position:absolute;right:25px;bottom:25px;z-index:15;background:linear-gradient(135deg,#ffdb63,#f5ad18);color:#392a0b;padding:16px 26px;font-size:15px;border-radius:18px;font-weight:bold;box-shadow:0 6px 20px rgba(245,173,24,0.5)}
 
-/* MODAL & DIALOG */
 .mission-modal,.map-modal{position:absolute;inset:0;z-index:30;background:rgba(4,15,11,0.85);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:15px}
-.mission-card,.map-card{background:#fff7df;color:#23382b;border-radius:24px;width:min(580px,100%);max-height:90vh;overflow-y:auto;padding:24px;box-shadow:0 20px 60px #000c;border:2px solid #ffe18a}
+.mission-card,.map-card{background:#fff7df;color:#23382b;border-radius:24px;width:min(580px,100%);max-height:90vh;overflow-y:auto;padding:24px;border:2px solid #ffe18a}
 .option{display:block;width:100%;text-align:left;margin:10px 0;background:#e7eddb;color:#203b2c;border:2px solid #c6d5b9;padding:14px;border-radius:14px;font-weight:bold}
-.option:hover{background:#d5edd4;border-color:#4a9b76}
-.feedback{padding:14px;border-radius:14px;margin-top:12px;font-size:14px;line-height:1.5}
-.good{background:#d5f0d4;color:#17532c;border:1px solid #7bc679}.bad{background:#ffe0d9;color:#7d241b;border:1px solid #e58b82}
+.feedback{padding:14px;border-radius:14px;margin-top:12px;font-size:14px}
+.good{background:#d5f0d4;color:#17532c}.bad{background:#ffe0d9;color:#7d241b}
 .map-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px}
 .destination{width:100%;min-height:95px;text-align:left;padding:12px;background:#e5eedc;color:#23432e;border:3px solid #c5d5b9;border-radius:16px}
 .destination.locked{opacity:.5;background:#ddd}
 .destination.current{border-color:#e5a600;background:#fff0bc}
-
-@media(max-width:768px){
- .character-grid{grid-template-columns:repeat(3,1fr)}
- .map-grid{grid-template-columns:1fr}
- .controls{bottom:15px;left:15px}
- .interact{bottom:15px;right:15px;padding:15px 20px}
-}
 </style>
 </head>
 <body>
@@ -114,22 +73,10 @@ button:disabled{opacity:.5;cursor:not-allowed;transform:none}
 
 <!-- PEMBUKAAN -->
 <section id="openingScreen">
- <div class="opening-scene">
-  <div class="opening-stars"></div><div class="opening-moon"></div>
-  <div class="opening-hill"></div><div class="opening-fire">🔥</div>
- </div>
- <div class="opening-audio">
-  <button class="secondary" id="musicToggle" onclick="toggleMusic()">♫ Muzik ON</button>
-  <input id="musicVolume" type="range" min="0" max="100" value="45" aria-label="Volume muzik" oninput="setMusicVolume(this.value)">
- </div>
  <div class="opening-content">
-  <div class="opening-kicker">PENGEMBARAAN AGUNG BERMULA</div>
-  <div class="opening-title">MISI<br>PAHLAWAN ALPHA</div>
-  <div class="opening-sub">3D CINEMATIX BORNEO ADVENTURE</div>
-  <div class="opening-tagline">Di bumi Borneo, keberanian diuji, persahabatan dibina dan jati diri seorang pahlawan dibentuk dalam dunia 3D Sinematik.</div>
-  <div class="voice-caption" id="voiceCaption">Sediakan dirimu untuk satu pengembaraan hebat...</div>
-  <button class="primary opening-button" id="openingStart" onclick="beginOpening()">⚔️ MULAKAN PENGEMBARAAN 3D</button>
-  <div class="intro-progress" id="openingHint">Tekan untuk memulakan muzik dan pengenalan suara.</div>
+  <div class="opening-title">MISI PAHLAWAN ALPHA</div>
+  <p style="font-size:18px;color:#ffe9a0">MLBB 3D GRAPHIC EDITION</p>
+  <button class="primary" style="font-size:18px;padding:16px 32px;margin-top:20px" onclick="beginOpening()">⚔️ MASUK ARENA 3D</button>
  </div>
 </section>
 
@@ -137,26 +84,23 @@ button:disabled{opacity:.5;cursor:not-allowed;transform:none}
 <section id="authScreen" class="screen hidden">
  <div class="panel">
   <div class="brand">MISI PAHLAWAN ALPHA</div>
-  <p class="subtitle">Pengembaraan 3D membina jati diri di Borneo</p>
-  <h2 id="authHeading">Log Masuk</h2>
+  <h2 id="authHeading">Log Masuk Pahlawan</h2>
   <div id="signupName" class="field hidden"><label>Nama murid</label><input id="displayName" placeholder="Nama penuh"></div>
-  <div class="field"><label>E-mel</label><input id="email" type="email" autocomplete="username" placeholder="nama@email.com"></div>
-  <div class="field"><label>Kata laluan</label><input id="password" type="password" autocomplete="current-password" placeholder="Kata laluan"></div>
+  <div class="field"><label>E-mel</label><input id="email" type="email" placeholder="nama@email.com"></div>
+  <div class="field"><label>Kata laluan</label><input id="password" type="password" placeholder="Kata laluan"></div>
   <button class="primary" style="width:100%" id="authButton" onclick="authenticate()">Log Masuk</button>
   <p class="status" id="authStatus"></p>
-  <div class="row"><button class="secondary" onclick="toggleSignup()">Daftar Murid</button><button class="secondary" onclick="toggleLogin()">Kembali Login</button></div>
+  <div class="row"><button class="secondary" onclick="toggleSignup()">Daftar Akaun</button><button class="secondary" onclick="toggleLogin()">Kembali</button></div>
  </div>
 </section>
 
-<!-- PEMILIHAN WATAK 3D -->
+<!-- PEMILIHAN HERO 3D STYLE MLBB -->
 <section id="characterScreen" class="screen hidden">
  <div class="panel" style="max-width:800px">
-  <h1 class="character-heading">🌟 PILIH WATAK PAHLAWAN 3D 🌟</h1>
-  <p style="text-align:center;margin-bottom:10px">Pratonton Watak 3D Sinematik Anda</p>
+  <h1 style="text-align:center;color:#ffe17a">⚔️ PILIH HERO PAHLAWAN 3D ⚔️</h1>
   <div class="character-preview-3d" id="characterPreview3D"></div>
   <div class="character-grid" id="characterGrid"></div>
-  <button class="primary" style="width:100%;font-size:17px;margin-top:10px" onclick="confirmCharacter()">PILIH WATAK INI & TERUSKAN</button>
-  <button class="secondary" style="width:100%;margin-top:9px" onclick="cancelCharacter()">Kembali</button>
+  <button class="primary" style="width:100%;margin-top:10px" onclick="confirmCharacter()">SAHKAN HERO INI</button>
  </div>
 </section>
 
@@ -164,51 +108,45 @@ button:disabled{opacity:.5;cursor:not-allowed;transform:none}
 <section id="introScreen" class="screen hidden">
  <div class="panel" style="text-align:center">
   <div class="brand">MISI PAHLAWAN ALPHA</div>
-  <p class="subtitle">3D CINEMATIX EDITION</p>
-  <h2>Selamat Datang, <span id="welcomeName">Pahlawan</span>!</h2>
+  <h2>Selamat Datang, <span id="welcomeName">Hero</span>!</h2>
   <div class="character-preview-3d" id="menuCharacter3D" style="height:160px"></div>
-  <p>Alami pengembaraan, selesaikan cabaran dan bina jati diri melalui empat teras utama.</p>
-  <div class="notice" id="introStats">Mutiara: 0</div>
-  <button class="primary" style="width:100%" onclick="startGame()">🌴 MASUK KE DUNIA BORNEO 3D</button>
-  <button class="secondary" style="width:100%;margin-top:9px" onclick="openCharacterPicker()">🐾 TUKAR WATAK 3D</button>
-  <div class="row" style="margin-top:10px"><button class="secondary" onclick="showLeaderboard()">🏆 Ranking</button><button class="secondary" onclick="signOut()">Log Keluar</button></div>
+  <div class="notice" id="introStats">💎 Mutiara: 0</div>
+  <button class="primary" style="width:100%" onclick="startGame()">🎮 MASUK DUNIA 3D MLBB</button>
+  <button class="secondary" style="width:100%;margin-top:9px" onclick="openCharacterPicker()">🐾 TUKAR HERO 3D</button>
+  <div class="row" style="margin-top:10px"><button class="secondary" onclick="signOut()">Log Keluar</button></div>
  </div>
 </section>
 
-<!-- DUNIA PERMAINAN 3D -->
+<!-- DUNIA PERMAINAN 3D MOBA -->
 <section id="gameScreen" class="hidden">
  <div class="topbar">
-  <div><b>⚔️ PAHLAWAN ALPHA 3D</b></div>
+  <div><b>⚔️ PAHLAWAN ALPHA (MLBB 3D)</b></div>
   <div class="row" style="flex:0"><div class="stat">💎 <span id="gameBalance">0</span></div><div class="stat">⏱ <span id="timeLeft">15:00</span></div></div>
-  <button class="small secondary" onclick="showLeaderboard()">🏆</button>
   <button class="small secondary" onclick="backToIntro()">Menu</button>
-  <button class="small secondary" onclick="toggleMusic()">♫</button>
  </div>
  
  <div id="webgl-container"></div>
  <div class="world-title-3d" id="worldTitle">🌴 KAMPUNG PERMULAAN 🌴</div>
 
- <div class="world-actions">
-  <button onclick="openMap()">🗺️ PETA DUNIA 3D</button>
-  <button onclick="interact()">📜 MISI</button>
+ <div style="position:absolute;right:20px;top:80px;z-index:15">
+  <button class="secondary small" onclick="openMap()">🗺️ PETA DUNIA</button>
  </div>
 
  <div class="controls">
-  <button class="up" onclick="move3D(0,-1)">▲</button>
-  <button class="left" onclick="move3D(-1,0)">◀</button>
-  <button class="down" onclick="move3D(0,1)">▼</button>
-  <button class="right" onclick="move3D(1,0)">▶</button>
+  <button style="grid-column:2" onclick="move3D(0,-1)">▲</button>
+  <button style="grid-column:1;grid-row:2" onclick="move3D(-1,0)">◀</button>
+  <button style="grid-column:2;grid-row:2" onclick="move3D(0,1)">▼</button>
+  <button style="grid-column:3;grid-row:2" onclick="move3D(1,0)">▶</button>
  </div>
  
- <button class="interact" onclick="interact()">✨ INTERAKSI</button>
+ <button class="interact" onclick="interact()">✨ MISI / INTERAKSI</button>
 
  <!-- MODAL PETA -->
  <div id="mapModal" class="map-modal hidden">
   <div class="map-card">
-   <h2>🗺️ PETA PENGEMBARAAN BORNEO 3D</h2>
-   <p>Pilih lokasi sinematik untuk diterokai:</p>
+   <h2>🗺️ PETA PENGEMBARAAN BORNEO</h2>
    <div id="destinationList" class="map-grid"></div>
-   <button class="secondary" style="width:100%;margin-top:15px" onclick="closeMap()">Kembali ke Dunia 3D</button>
+   <button class="secondary" style="width:100%;margin-top:15px" onclick="closeMap()">Kembali</button>
   </div>
  </div>
 
@@ -217,79 +155,47 @@ button:disabled{opacity:.5;cursor:not-allowed;transform:none}
   <div class="mission-card">
    <div style="font-size:12px;color:#286c50;font-weight:bold" id="missionPillar">TERAS</div>
    <h2 id="missionTitle">Misi</h2>
-   <p id="missionStory" style="line-height:1.6"></p><hr>
-   <b id="missionQuestion" style="font-size:16px"></b>
+   <p id="missionStory"></p><hr>
+   <b id="missionQuestion"></b>
    <div id="missionOptions"></div><div id="missionFeedback"></div>
-   <button class="secondary hidden" id="closeMission" style="width:100%;margin-top:15px" onclick="closeMission()">Teruskan Pengembaraan</button>
+   <button class="secondary hidden" id="closeMission" style="width:100%;margin-top:15px" onclick="closeMission()">Teruskan</button>
   </div>
  </div>
 </section>
-
-<!-- RANKING -->
-<section id="leaderScreen" class="screen hidden">
- <div class="panel"><h1>🏆 Ranking Pahlawan</h1><div id="leaderList">Memuatkan ranking...</div><button class="secondary" style="width:100%;margin-top:10px" onclick="closeLeaderboard()">Kembali</button></div>
-</section>
-
-<!-- MASTER PANEL -->
-<section id="masterScreen" class="screen hidden">
- <div class="panel" style="max-width:850px">
-  <h1>👑 PANEL MASTER</h1><p>Pengurusan Misi Pahlawan Alpha</p>
-  <div class="tabs">
-   <button class="active" id="tabMissions" onclick="masterTab('missions')">Misi</button>
-   <button id="tabStudents" onclick="masterTab('students')">Murid</button>
-   <button id="tabRanking" onclick="masterTab('ranking')">Ranking</button>
-  </div>
-  <div id="masterContent">Memuatkan...</div>
-  <button class="secondary" style="width:100%;margin-top:15px" onclick="signOut()">Log Keluar</button>
- </div>
-</section>
-
-<audio id="bgMusic" src="./Naga%20Api%20Zabarjad.mp3" preload="auto" loop></audio>
 
 <script>
-/* ==================== SUPABASE & VARIABLE CONFIG ==================== */
 const SUPABASE_URL="https://krijvnbpbmqqyquzzrxu.supabase.co";
 const SUPABASE_KEY="sb_publishable_NRa91_nx4Xc2PSvUoiCWWw_zgf3xJha";
 const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-let currentUser=null,profile=null,isMaster=false,missions=[],progressRows=[],currentMission=null;
-let balance=0,remainingSeconds=900,heartbeatTimer=null,clockTimer=null,authMode="login",previousScreen="introScreen";
-let selectedCharacter="hamster",characterBeforePicker="introScreen",currentArea=0;
-let openingStarted=false,musicEnabled=true,voiceMale=null,voiceFemale=null;
+let currentUser=null,missions=[],progressRows=[],currentMission=null;
+let balance=0,remainingSeconds=900,authMode="login",selectedCharacter="hamster",currentArea=0;
 
 const $=id=>document.getElementById(id);
-const music=$("bgMusic");
 
 const characters=[
- {id:"hamster",name:"Hamster",tag:"Si Comel Berani",body:0xd99a54,light:0xf4c98d,cloth:0xe7a82e},
- {id:"tupai",name:"Tupai",tag:"Si Pantas Tangkas",body:0xb96d39,light:0xf0bd79,cloth:0x4c9c77},
- {id:"kucing",name:"Kucing",tag:"Si Bijak Ceria",body:0xa8b6c0,light:0xf4e5d0,cloth:0xe36b67},
- {id:"arnab",name:"Arnab",tag:"Si Lincah Mesra",body:0xe8d9c6,light:0xfff4e4,cloth:0x8a73c8},
- {id:"kijang",name:"Kijang",tag:"Si Gagah Wibawa",body:0xbd8953,light:0xf1d0a0,cloth:0x328c91}
+ {id:"hamster",name:"Hamster",tag:"Si Comel Berani",body:0xd99a54,armor:0xffb700,cloth:0xe7a82e},
+ {id:"tupai",name:"Tupai",tag:"Si Pantas Tangkas",body:0xb96d39,armor:0x228b22,cloth:0x4c9c77},
+ {id:"kucing",name:"Kucing",tag:"Si Bijak Ceria",body:0xa8b6c0,armor:0xd14747,cloth:0xe36b67},
+ {id:"arnab",name:"Arnab",tag:"Si Lincah Mesra",body:0xe8d9c6,armor:0x8a2be2,cloth:0x8a73c8},
+ {id:"kijang",name:"Kijang",tag:"Si Gagah Wibawa",body:0xbd8953,armor:0x008b8b,cloth:0x328c91}
 ];
 
 const areas=[
- {id:"village",name:"Kampung Permulaan",subtitle:"Kampung yang damai",icon:"🏡",bgColor:0xa4e5ff,groundColor:0x3e8945,unlock:0,description:"Kenali penduduk kampung dan mulakan perjalanan."},
- {id:"forest",name:"Hutan Rimba",subtitle:"Laluan hijau Borneo",icon:"🌳",bgColor:0x1b4d3e,groundColor:0x16452d,unlock:2,description:"Teroka hutan dan bantu mereka yang memerlukan."},
- {id:"waterfall",name:"Lembah Air Terjun",subtitle:"Sungai dan jeram",icon:"🏞️",bgColor:0x65c6e4,groundColor:0x165c56,unlock:4,description:"Hadapi cabaran sungai dan laluan berbatu."},
- {id:"longhouse",name:"Perkampungan Rumah Panjang",subtitle:"Warisan masyarakat Borneo",icon:"🛖",bgColor:0xe4e7b9,groundColor:0x81512c,unlock:6,description:"Belajar bekerjasama dan menghargai warisan."},
- {id:"cave",name:"Gua Batu Kapur",subtitle:"Cabaran terakhir",icon:"⛰️",bgColor:0x0b1918,groundColor:0x273d38,unlock:7,description:"Selesaikan cabaran terakhir pengembaraan."}
+ {id:"village",name:"Kampung Permulaan",icon:"🏡",bgColor:0x7ec0ee,groundColor:0x3a8e3d,unlock:0},
+ {id:"forest",name:"Hutan Rimba",icon:"🌳",bgColor:0x1b4d3e,groundColor:0x1a5e20,unlock:2},
+ {id:"waterfall",name:"Lembah Air Terjun",icon:"🏞️",bgColor:0x4682b4,groundColor:0x2e8b57,unlock:4},
+ {id:"longhouse",name:"Rumah Panjang",icon:"🛖",bgColor:0xd2b48c,groundColor:0x8b4513,unlock:6},
+ {id:"cave",name:"Gua Batu Kapur",icon:"⛰️",bgColor:0x1a1a2e,groundColor:0x2b2b2b,unlock:7}
 ];
 
-function toast(message){
- const el=$("toast");el.textContent=message;el.style.display="block";
- clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.style.display="none",3000);
-}
-function showScreen(id){
- ["openingScreen","authScreen","characterScreen","introScreen","gameScreen","leaderScreen","masterScreen"].forEach(x=>$(x).classList.add("hidden"));
- $(id).classList.remove("hidden");
-}
-function escapeHTML(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function formatTime(s){s=Math.max(0,Number(s)||0);return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
+function toast(m){const e=$("toast");e.textContent=m;e.style.display="block";clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.display="none",3000)}
+function showScreen(id){["openingScreen","authScreen","characterScreen","introScreen","gameScreen"].forEach(x=>$(x).classList.add("hidden"));$(id).classList.remove("hidden")}
 
-/* ==================== THREE.JS 3D ENGINE SYSTEM ==================== */
-let scene, camera, renderer, player3DGroup, terrainMesh, lightsGroup, previewScene, previewCamera, previewRenderer, previewPlayerGroup;
+/* ==================== THREE.JS MLBB GRAPHIC ENGINE ==================== */
+let scene, camera, renderer, player3DGroup, terrainMesh, previewScene, previewCamera, previewRenderer, previewPlayerGroup;
 let playerTargetPos = { x: 0, z: 0 }, playerPos = { x: 0, z: 0 }, playerRotation = 0;
+let magicParticles = [];
 
 function init3DEngine() {
  const container = $("webgl-container");
@@ -297,8 +203,9 @@ function init3DEngine() {
  scene.background = new THREE.Color(areas[0].bgColor);
  scene.fog = new THREE.FogExp2(areas[0].bgColor, 0.015);
 
- camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
- camera.position.set(0, 12, 18);
+ // Kamera Isometric Gaya MOBA / Mobile Legends
+ camera = new THREE.PerspectiveCamera(38, window.innerWidth / window.innerHeight, 0.1, 1000);
+ camera.position.set(0, 18, 22);
 
  renderer = new THREE.WebGLRenderer({ antialias: true });
  renderer.setSize(window.innerWidth, window.innerHeight);
@@ -307,524 +214,241 @@ function init3DEngine() {
  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
  container.appendChild(renderer.domElement);
 
- setup3DLighting();
- create3DTerrain();
+ setupMLBBLighting();
+ createMLBBTerrain();
  createPlayer3DModel();
- buildAreaScenery3D();
+ buildVFXParticles();
+ buildEnvironmentObjects();
 
  window.addEventListener("resize", onWindowResize);
  animate3D();
 }
 
-function setup3DLighting() {
- lightsGroup = new THREE.Group();
- const ambient = new THREE.AmbientLight(0xffffff, 0.6);
- lightsGroup.add(ambient);
+function setupMLBBLighting() {
+ const ambient = new THREE.AmbientLight(0xffffff, 0.85);
+ scene.add(ambient);
 
- const sun = new THREE.DirectionalLight(0xfffaed, 1.2);
+ const sun = new THREE.DirectionalLight(0xfff5cc, 1.3);
  sun.position.set(15, 25, 15);
  sun.castShadow = true;
  sun.shadow.mapSize.width = 2048;
  sun.shadow.mapSize.height = 2048;
- sun.shadow.camera.near = 0.5;
- sun.shadow.camera.far = 80;
- const d = 25;
- sun.shadow.camera.left = -d; sun.shadow.camera.right = d;
- sun.shadow.camera.top = d; sun.shadow.camera.bottom = -d;
- lightsGroup.add(sun);
- scene.add(lightsGroup);
+ scene.add(sun);
 }
 
-function create3DTerrain() {
- const geo = new THREE.PlaneGeometry(100, 100, 32, 32);
- const mat = new THREE.MeshStandardMaterial({ color: areas[0].groundColor, roughness: 0.8 });
+function createMLBBTerrain() {
+ const geo = new THREE.PlaneGeometry(100, 100);
+ const mat = new THREE.MeshToonMaterial({ color: areas[0].groundColor });
  terrainMesh = new THREE.Mesh(geo, mat);
  terrainMesh.rotation.x = -Math.PI / 2;
  terrainMesh.receiveShadow = true;
  scene.add(terrainMesh);
-
- // Path / Jalan 3D
- const pathGeo = new THREE.PlaneGeometry(6, 100);
- const pathMat = new THREE.MeshStandardMaterial({ color: 0xc7a16b, roughness: 0.9 });
- const pathMesh = new THREE.Mesh(pathGeo, pathMat);
- pathMesh.rotation.x = -Math.PI / 2;
- pathMesh.position.y = 0.02;
- pathMesh.receiveShadow = true;
- scene.add(pathMesh);
 }
 
-/* PEMBINAAN MODEL WATAK 3D CINEMATIX */
-function createCharacter3DGeometry(charId) {
+/* PEMBINAAN HERO STYLE MLBB (TOON SHADED & HERO ARMOR) */
+function createMLBBHero3D(charId) {
  const c = characters.find(x => x.id === charId) || characters[0];
- const group = new THREE.Group();
+ const heroGroup = new THREE.Group();
+ heroGroup.scale.set(0.5, 0.5, 0.5);
 
- // Badan utama (Stylized Capsule)
- const bodyMat = new THREE.MeshStandardMaterial({ color: c.body, roughness: 0.3 });
- const bodyGeo = new THREE.SphereGeometry(1, 32, 32);
- bodyGeo.scale(1, 1.3, 0.9);
- const body = new THREE.Mesh(bodyGeo, bodyMat);
- body.position.y = 1.3;
- body.castShadow = true;
- group.add(body);
+ // Material Gaya Cartoon MLBB (MeshToonMaterial)
+ const bodyMat = new THREE.MeshToonMaterial({ color: c.body });
+ const armorMat = new THREE.MeshToonMaterial({ color: c.armor });
+ const clothMat = new THREE.MeshToonMaterial({ color: c.cloth });
 
- // Dada/Perut (Light Accent)
- const bellyMat = new THREE.MeshStandardMaterial({ color: c.light, roughness: 0.5 });
- const belly = new THREE.Mesh(new THREE.SphereGeometry(0.7, 16, 16), bellyMat);
- belly.position.set(0, 1.1, 0.45);
- group.add(belly);
+ // Badan Utama
+ const body = new THREE.Mesh(new THREE.SphereGeometry(0.75, 24, 24), bodyMat);
+ body.position.y = 0.85; body.castShadow = true;
+ heroGroup.add(body);
 
- // Pakaian Pahlawan (Armor Vest)
- const clothMat = new THREE.MeshStandardMaterial({ color: c.cloth, roughness: 0.4, metalness: 0.1 });
- const vest = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 0.9, 0.8, 16), clothMat);
- vest.position.y = 1.0;
- vest.castShadow = true;
- group.add(vest);
+ // Perisai Dada (Hero Armor)
+ const chestArmor = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.7, 0.6, 16), armorMat);
+ chestArmor.position.y = 0.8; chestArmor.castShadow = true;
+ heroGroup.add(chestArmor);
 
- // Kepala
- const headMat = new THREE.MeshStandardMaterial({ color: c.body, roughness: 0.3 });
- const head = new THREE.Mesh(new THREE.SphereGeometry(0.85, 32, 32), headMat);
- head.position.y = 2.4;
- head.castShadow = true;
- group.add(head);
+ // Perisai Bahu MLBB (Pauldrons)
+ const shoulderL = new THREE.Mesh(new THREE.SphereGeometry(0.3, 16, 16), armorMat);
+ shoulderL.position.set(-0.75, 1.1, 0);
+ const shoulderR = shoulderL.clone(); shoulderR.position.x = 0.75;
+ heroGroup.add(shoulderL); heroGroup.add(shoulderR);
 
- // Mata Sinematik
- const eyeMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.1 });
- const eyeL = new THREE.Mesh(new THREE.SphereGeometry(0.12, 16, 16), eyeMat);
- eyeL.position.set(-0.28, 2.5, 0.72);
- const eyeR = eyeL.clone();
- eyeR.position.x = 0.28;
- group.add(eyeL); group.add(eyeR);
+ // Kepala Chibi MLBB
+ const head = new THREE.Mesh(new THREE.SphereGeometry(0.85, 32, 32), bodyMat);
+ head.position.y = 1.8; head.castShadow = true;
+ heroGroup.add(head);
 
- // Telinga Haiwan Mengikut Spesies
- const earMat = new THREE.MeshStandardMaterial({ color: c.body, roughness: 0.3 });
- if (charId === "tupai" || charId === "kucing") {
-  const earGeo = new THREE.ConeGeometry(0.25, 0.6, 16);
-  const earL = new THREE.Mesh(earGeo, earMat);
-  earL.position.set(-0.5, 3.1, 0); earL.rotation.z = 0.3;
-  const earR = earL.clone(); earR.position.x = 0.5; earR.rotation.z = -0.3;
-  group.add(earL); group.add(earR);
- } else if (charId === "arnab") {
-  const earGeo = new THREE.CylinderGeometry(0.1, 0.18, 1.2, 16);
-  const earL = new THREE.Mesh(earGeo, earMat);
-  earL.position.set(-0.35, 3.4, 0); earL.rotation.z = 0.15;
-  const earR = earL.clone(); earR.position.x = 0.35; earR.rotation.z = -0.15;
-  group.add(earL); group.add(earR);
- } else if (charId === "kijang") {
-  const antlerMat = new THREE.MeshStandardMaterial({ color: 0x5c4028, roughness: 0.7 });
-  const antlerL = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.07, 0.9), antlerMat);
-  antlerL.position.set(-0.4, 3.2, 0); antlerL.rotation.z = 0.4;
-  const antlerR = antlerL.clone(); antlerR.position.x = 0.4; antlerR.rotation.z = -0.4;
-  group.add(antlerL); group.add(antlerR);
- } else { // Hamster Round Ears
-  const earGeo = new THREE.SphereGeometry(0.25, 16, 16);
-  const earL = new THREE.Mesh(earGeo, earMat);
-  earL.position.set(-0.6, 3.0, 0);
-  const earR = earL.clone(); earR.position.x = 0.6;
-  group.add(earL); group.add(earR);
- }
+ // Topi / Mahkota Pahlawan
+ const crown = new THREE.Mesh(new THREE.ConeGeometry(0.5, 0.6, 8), armorMat);
+ crown.position.y = 2.6; crown.rotation.x = -0.2;
+ heroGroup.add(crown);
 
- return group;
+ // Mata Hero Bercahaya
+ const eyeMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+ const pupilMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
+ 
+ const eyeL = new THREE.Mesh(new THREE.SphereGeometry(0.14, 16, 16), eyeMat);
+ eyeL.position.set(-0.28, 1.9, 0.72);
+ const pupilL = new THREE.Mesh(new THREE.SphereGeometry(0.07, 16, 16), pupilMat);
+ pupilL.position.set(-0.28, 1.9, 0.82);
+
+ const eyeR = eyeL.clone(); eyeR.position.x = 0.28;
+ const pupilR = pupilL.clone(); pupilR.position.x = 0.28;
+ heroGroup.add(eyeL); heroGroup.add(pupilL);
+ heroGroup.add(eyeR); heroGroup.add(pupilR);
+
+ // Telinga Haiwan Pahlawan
+ const earL = new THREE.Mesh(new THREE.SphereGeometry(0.28, 16, 16), bodyMat);
+ earL.position.set(-0.6, 2.4, 0);
+ const earR = earL.clone(); earR.position.x = 0.6;
+ heroGroup.add(earL); heroGroup.add(earR);
+
+ return heroGroup;
 }
 
 function createPlayer3DModel() {
  if (player3DGroup) scene.remove(player3DGroup);
- player3DGroup = createCharacter3DGeometry(selectedCharacter);
+ player3DGroup = createMLBBHero3D(selectedCharacter);
  scene.add(player3DGroup);
 }
 
-function buildAreaScenery3D() {
- // Buang objek pemandangan lama
- scene.children.filter(c => c.isScenery).forEach(c => scene.remove(c));
+/* KESAN PARTICLES MAGIK MLBB (VFX) */
+function buildVFXParticles() {
+ magicParticles = [];
+ const pGeo = new THREE.OctahedronGeometry(0.12);
+ const pMat = new THREE.MeshBasicMaterial({ color: 0xffe17a });
 
- const treeMat = new THREE.MeshStandardMaterial({ color: 0x2d8a4e, roughness: 0.6 });
- const trunkMat = new THREE.MeshStandardMaterial({ color: 0x5a3d28, roughness: 0.9 });
+ for (let i = 0; i < 20; i++) {
+  const p = new THREE.Mesh(pGeo, pMat);
+  p.position.set(-15 + Math.random() * 30, 1 + Math.random() * 6, -15 + Math.random() * 30);
+  scene.add(p);
+  magicParticles.push(p);
+ }
+}
 
- // Tambah Pokok 3D Sinematik mengelilingi kawasan
- for (let i = 0; i < 24; i++) {
+function buildEnvironmentObjects() {
+ const treeMat = new THREE.MeshToonMaterial({ color: 0x228b22 });
+ const trunkMat = new THREE.MeshToonMaterial({ color: 0x4a2e18 });
+
+ for (let i = 0; i < 16; i++) {
   const tree = new THREE.Group();
-  tree.isScenery = true;
-  const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.5, 3), trunkMat);
-  trunk.position.y = 1.5; trunk.castShadow = true;
-  tree.add(trunk);
+  const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.4, 2), trunkMat);
+  trunk.position.y = 1; tree.add(trunk);
+  const top = new THREE.Mesh(new THREE.DodecahedronGeometry(1.6), treeMat);
+  top.position.y = 2.8; tree.add(top);
 
-  const leaves = new THREE.Mesh(new THREE.ConeGeometry(2, 5, 8), treeMat);
-  leaves.position.y = 4.5; leaves.castShadow = true;
-  tree.add(leaves);
-
-  const angle = (i / 24) * Math.PI * 2;
-  const radius = 18 + Math.random() * 15;
-  tree.position.set(Math.cos(angle) * radius, 0, Math.sin(angle) * radius);
+  const angle = (i / 16) * Math.PI * 2;
+  tree.position.set(Math.cos(angle) * 17, 0, Math.sin(angle) * 17);
   scene.add(tree);
  }
 }
 
 function move3D(dx, dz) {
- if (remainingSeconds <= 0) return;
- playerTargetPos.x += dx * 2.2;
- playerTargetPos.z += dz * 2.2;
- playerTargetPos.x = Math.max(-15, Math.min(15, playerTargetPos.x));
- playerTargetPos.z = Math.max(-15, Math.min(15, playerTargetPos.z));
-
+ playerTargetPos.x += dx * 2.0;
+ playerTargetPos.z += dz * 2.0;
+ playerTargetPos.x = Math.max(-14, Math.min(14, playerTargetPos.x));
+ playerTargetPos.z = Math.max(-14, Math.min(14, playerTargetPos.z));
  playerRotation = Math.atan2(dx, dz);
 }
 
 function animate3D() {
  requestAnimationFrame(animate3D);
 
- // Kehalusan Pergerakan & Animasi Bounce
- playerPos.x += (playerTargetPos.x - playerPos.x) * 0.15;
- playerPos.z += (playerTargetPos.z - playerPos.z) * 0.15;
+ playerPos.x += (playerTargetPos.x - playerPos.x) * 0.14;
+ playerPos.z += (playerTargetPos.z - playerPos.z) * 0.14;
 
  if (player3DGroup) {
   player3DGroup.position.set(playerPos.x, 0, playerPos.z);
   player3DGroup.rotation.y += (playerRotation - player3DGroup.rotation.y) * 0.2;
-
   const isMoving = Math.abs(playerTargetPos.x - playerPos.x) > 0.05 || Math.abs(playerTargetPos.z - playerPos.z) > 0.05;
-  if (isMoving) {
-   player3DGroup.position.y = Math.abs(Math.sin(Date.now() * 0.01)) * 0.4;
-  } else {
-   player3DGroup.position.y = Math.sin(Date.now() * 0.003) * 0.08;
-  }
+  player3DGroup.position.y = isMoving ? Math.abs(Math.sin(Date.now() * 0.015)) * 0.35 : Math.sin(Date.now() * 0.003) * 0.05;
  }
 
- // Kamera Mengikut Watak (Third-Person Follow)
+ // Animasi Particles Magik Persekitaran
+ magicParticles.forEach((p, idx) => {
+  p.rotation.y += 0.03;
+  p.position.y += Math.sin(Date.now() * 0.002 + idx) * 0.01;
+ });
+
+ // Kamera MOBA Pandangan Atas
  camera.position.x += (playerPos.x - camera.position.x) * 0.08;
- camera.position.z += (playerPos.z + 18 - camera.position.z) * 0.08;
- camera.lookAt(playerPos.x, 2, playerPos.z);
+ camera.position.z += (playerPos.z + 20 - camera.position.z) * 0.08;
+ camera.lookAt(playerPos.x, 1.0, playerPos.z);
 
  renderer.render(scene, camera);
 }
 
 function onWindowResize() {
- if (!camera || !renderer) return;
  camera.aspect = window.innerWidth / window.innerHeight;
  camera.updateProjectionMatrix();
  renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
-/* ==================== PRATONTON WATAK 3D (PREVIEW ENGINE) ==================== */
+/* PRATONTON HERO 3D */
 function initPreview3D(containerId) {
  const container = $(containerId);
  container.innerHTML = "";
-
  previewScene = new THREE.Scene();
- previewCamera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
- previewCamera.position.set(0, 2.5, 7);
+ previewCamera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 0.1, 100);
+ previewCamera.position.set(0, 1.5, 5);
 
  previewRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
  previewRenderer.setSize(container.clientWidth, container.clientHeight);
- previewRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
- previewRenderer.shadowMap.enabled = true;
  container.appendChild(previewRenderer.domElement);
 
- const light = new THREE.DirectionalLight(0xfffaed, 1.5);
- light.position.set(5, 10, 5);
+ const light = new THREE.DirectionalLight(0xffffff, 1.4);
+ light.position.set(3, 5, 3);
  previewScene.add(light);
  previewScene.add(new THREE.AmbientLight(0xffffff, 0.7));
 
- previewPlayerGroup = createCharacter3DGeometry(selectedCharacter);
+ previewPlayerGroup = createMLBBHero3D(selectedCharacter);
  previewScene.add(previewPlayerGroup);
 
  function renderPreview() {
   if (!container.parentElement) return;
   requestAnimationFrame(renderPreview);
-  if (previewPlayerGroup) previewPlayerGroup.rotation.y += 0.015;
+  if (previewPlayerGroup) previewPlayerGroup.rotation.y += 0.02;
   previewRenderer.render(previewScene, previewCamera);
  }
  renderPreview();
 }
 
-/* ==================== INTEGRASI LOGIK PERMAINAN & SUPABASE ==================== */
-function updateWorld3D() {
- const a = areas[currentArea];
- scene.background = new THREE.Color(a.bgColor);
- scene.fog.color = new THREE.Color(a.bgColor);
- terrainMesh.material.color = new THREE.Color(a.groundColor);
- $("worldTitle").textContent = a.icon + " " + a.name.toUpperCase();
-}
-
-function travelTo(index) {
- if (!Number.isInteger(index) || index < 0 || index >= areas.length) return;
- if (!areaUnlocked(index)) { toast("Kawasan ini belum dibuka. Selesaikan misi terdahulu."); return; }
- currentArea = index;
- playerTargetPos = { x: 0, z: 0 }; playerPos = { x: 0, z: 0 };
- closeMap(); updateWorld3D(); toast("Selamat tiba di " + areas[index].name + "!");
-}
-
+/* LOGIK PERMAINAN & SUPABASE */
 function renderCharacterCards() {
- if (!characters.some(c => c.id === selectedCharacter)) selectedCharacter = "hamster";
  $("characterGrid").innerHTML = characters.map(c => `
   <div class="character-card ${selectedCharacter === c.id ? "selected" : ""}" onclick="chooseCharacter('${c.id}')">
-   <b>${c.name}</b><small style="font-size:11px">${c.tag}</small>
+   <b>${c.name}</b>
   </div>`).join("");
  initPreview3D("characterPreview3D");
 }
 function chooseCharacter(id) { selectedCharacter = id; renderCharacterCards(); }
+function confirmCharacter() { createPlayer3DModel(); showScreen("introScreen"); initPreview3D("menuCharacter3D"); }
+function openCharacterPicker() { renderCharacterCards(); showScreen("characterScreen"); }
 
-function confirmCharacter() {
- saveCharacter(selectedCharacter);
- createPlayer3DModel();
- showScreen("introScreen");
- initPreview3D("menuCharacter3D");
- toast("Watak 3D " + characters.find(c => c.id === selectedCharacter).name + " dipilih!");
-}
-function cancelCharacter() { showScreen(characterBeforePicker || "introScreen"); }
-function openCharacterPicker() { characterBeforePicker = "introScreen"; renderCharacterCards(); showScreen("characterScreen"); }
+function beginOpening() { showScreen("authScreen"); }
+function toggleSignup() { authMode = "signup"; $("authHeading").textContent = "Daftar Akaun"; $("signupName").classList.remove("hidden"); }
+function toggleLogin() { authMode = "login"; $("authHeading").textContent = "Log Masuk"; $("signupName").classList.add("hidden"); }
 
-function getSavedCharacter() { try { const v = localStorage.getItem("mpa_character_" + currentUser.id); return characters.some(c => c.id === v) ? v : null } catch (e) { return null } }
-function saveCharacter(id) { try { localStorage.setItem("mpa_character_" + currentUser.id, id) } catch (e) {} selectedCharacter = id; }
-
-/* AUDIO & AUDIOVOICE */
-music.volume = .45;
-function setMusicVolume(val) { music.volume = Math.max(0, Math.min(1, Number(val) / 100)) }
-async function playMusic() { if (!musicEnabled) return; try { await music.play(); $("musicToggle").textContent = "♫ Muzik ON" } catch (e) {} }
-function toggleMusic() { musicEnabled = !musicEnabled; if (musicEnabled) { playMusic(); $("musicToggle").textContent = "♫ Muzik ON" } else { music.pause(); $("musicToggle").textContent = "♫ Muzik OFF" } }
-
-function loadVoices() {
- if (!("speechSynthesis" in window)) return;
- const voices = speechSynthesis.getVoices();
- const ms = voices.filter(v => /^ms/i.test(v.lang) || /Malay/i.test(v.name));
- const pool = ms.length ? ms : voices.filter(v => /^en/i.test(v.lang));
- voiceFemale = pool.find(v => /female|zira|samantha/i.test(v.name)) || pool[0] || null;
- voiceMale = pool.find(v => /male|david|mark/i.test(v.name) && v !== voiceFemale) || pool.find(v => v !== voiceFemale) || null;
-}
-if ("speechSynthesis" in window) { loadVoices(); speechSynthesis.onvoiceschanged = loadVoices }
-function speakWithVoice(text, gender, rate = 1) {
- return new Promise(resolve => {
-  if (!("speechSynthesis" in window)) { resolve(); return }
-  const u = new SpeechSynthesisUtterance(text); u.lang = "ms-MY"; u.rate = rate;
-  const voice = gender === "female" ? voiceFemale : voiceMale; if (voice) u.voice = voice;
-  u.onend = resolve; u.onerror = resolve; speechSynthesis.speak(u);
- });
-}
-async function beginOpening() {
- if (openingStarted) { await continueAfterOpening(); return }
- openingStarted = true; $("openingStart").disabled = true; $("openingStart").textContent = "PENGEMBARAAN BERMULA...";
- await playMusic(); loadVoices();
- $("voiceCaption").textContent = "Suara lelaki: Wahai para pahlawan!";
- await speakWithVoice("Wahai para pahlawan! Bersediakah kamu mengembara ke bumi Borneo?", "male", .91);
- $("voiceCaption").textContent = "Suara perempuan: Satu pengembaraan hebat 3D sedang menanti!";
- await speakWithVoice("Satu pengembaraan hebat tiga D sedang menanti! Buktikan keberanian dan kebijaksanaanmu!", "female", 1.02);
- await continueAfterOpening();
-}
-
-async function continueAfterOpening() {
- if (currentUser) { await loadUser(); return }
- try { const { data } = await db.auth.getSession(); if (data.session) { currentUser = data.session.user; await loadUser() } else showScreen("authScreen") }
- catch (e) { showScreen("authScreen") }
-}
-
-/* AUTHENTICATION */
-function setAuthMessage(m) { $("authStatus").textContent = m }
-function toggleSignup() { authMode = "signup"; $("authHeading").textContent = "Daftar Akaun Murid"; $("authButton").textContent = "Daftar Akaun"; $("signupName").classList.remove("hidden"); setAuthMessage("") }
-function toggleLogin() { authMode = "login"; $("authHeading").textContent = "Log Masuk"; $("authButton").textContent = "Log Masuk"; $("signupName").classList.add("hidden"); setAuthMessage("") }
 async function authenticate() {
- const email = $("email").value.trim(), password = $("password").value, name = $("displayName").value.trim();
- if (!email || !password) { setAuthMessage("Masukkan e-mel dan kata laluan."); return }
- if (authMode === "signup" && !name) { setAuthMessage("Masukkan nama murid."); return }
- $("authButton").disabled = true; setAuthMessage("Sedang menghubungkan...");
+ const email = $("email").value.trim(), password = $("password").value;
+ if (!email || !password) return;
  try {
-  if (authMode === "signup") {
-   const { data, error } = await db.auth.signUp({ email, password, options: { data: { display_name: name, username: name } } });
-   if (error) throw error;
-   if (!data.session) { setAuthMessage("Pendaftaran diterima. Semak e-mel pengesahan."); return }
-   currentUser = data.user;
-  } else {
-   const { data, error } = await db.auth.signInWithPassword({ email, password });
-   if (error) throw error; currentUser = data.user;
-  }
-  await loadUser();
- } catch (e) { setAuthMessage(e.message || "Gagal log masuk.") }
- finally { $("authButton").disabled = false }
+  const { data, error } = await db.auth.signInWithPassword({ email, password });
+  if (error) throw error; currentUser = data.user;
+  showScreen("introScreen"); initPreview3D("menuCharacter3D");
+ } catch (e) { toast(e.message); }
 }
-async function signOut() {
- stopTimers(); await db.auth.signOut(); currentUser = null; profile = null; isMaster = false;
- showScreen("authScreen"); toggleLogin(); toast("Anda telah log keluar.");
-}
+async function signOut() { await db.auth.signOut(); showScreen("authScreen"); }
 
-async function loadUser() {
- try {
-  const { data, error } = await db.from("profiles").select("id,username,display_name,role").eq("id", currentUser.id).single();
-  if (error) throw error;
-  profile = data; isMaster = data.role === "master";
-  if (isMaster) { showScreen("masterScreen"); await masterTab("missions"); return }
-  await loadStudentData();
-  selectedCharacter = getSavedCharacter() || "hamster";
-  $("welcomeName").textContent = profile.display_name || profile.username || "Pahlawan";
-  $("introStats").textContent = "💎 Mutiara: " + balance + " | ⏱ Baki masa: " + formatTime(remainingSeconds);
-  showScreen("introScreen");
-  initPreview3D("menuCharacter3D");
- } catch (e) { setAuthMessage("Gagal profil: " + e.message); showScreen("authScreen") }
-}
-
-async function loadStudentData() {
- const { data: mData } = await db.from("missions").select("*").eq("published", true).order("week_number").order("day_number");
- missions = mData || [];
- const { data: pData } = await db.from("student_progress").select("mission_id,completed,xp").eq("user_id", currentUser.id);
- progressRows = pData || [];
- balance = Math.max(0, progressRows.reduce((sum, row) => sum + (Number(row.xp) || 0), 0));
- $("gameBalance").textContent = balance;
- try { const { data } = await db.rpc("record_daily_usage"); updateUsage(data); } catch (e) {}
-}
-
-function attempted(mId) { return progressRows.some(r => String(r.mission_id) === String(mId)) }
-function attemptedCount() { return progressRows.length }
-function areaUnlocked(idx) { return attemptedCount() >= areas[idx].unlock }
-function missionAreaIndex(m) {
- const idx = missions.findIndex(x => String(x.id) === String(m.id));
- if (idx < 2) return 0; if (idx < 4) return 1; if (idx < 6) return 2; if (idx === 6) return 3; return 4;
-}
-
-/* KENDALIAN DUNIA 3D */
-async function startGame() {
- await loadStudentData();
- if (remainingSeconds <= 0) { toast("Had masa harian telah tamat."); return; }
+function startGame() {
  showScreen("gameScreen");
  if (!renderer) init3DEngine();
- else updateWorld3D();
- startTimers(); playMusic();
- toast("Selamat datang ke Dunia 3D Borneo!");
 }
-function backToIntro() {
- stopTimers(); $("missionModal").classList.add("hidden"); $("mapModal").classList.add("hidden");
- $("introStats").textContent = "💎 Mutiara: " + balance + " | ⏱ Baki masa: " + formatTime(remainingSeconds);
- showScreen("introScreen"); initPreview3D("menuCharacter3D");
-}
+function backToIntro() { showScreen("introScreen"); initPreview3D("menuCharacter3D"); }
+function openMap() { $("mapModal").classList.remove("hidden"); }
+function closeMap() { $("mapModal").classList.add("hidden"); }
+function interact() { toast("Mencari misi pahlawan di kawasan 3D..."); }
 
-/* PETA & MISI */
-function openMap() { renderMap(); $("mapModal").classList.remove("hidden") }
-function closeMap() { $("mapModal").classList.add("hidden") }
-function renderMap() {
- $("destinationList").innerHTML = areas.map((a, i) => {
-  const unlocked = areaUnlocked(i), current = i === currentArea;
-  return `<button class="destination ${!unlocked ? "locked" : ""} ${current ? "current" : ""}" ${unlocked ? `onclick="travelTo(${i})"` : "disabled"}>
-   <b>${a.icon} ${a.name}</b><small>${a.description}</small>
-   <div style="font-size:11px;margin-top:5px;font-weight:bold">${current ? "📍 ANDA DI SINI" : unlocked ? "✓ TERBUKA" : "🔒 " + a.unlock + " MISI"}</div>
-  </button>`;
- }).join("");
-}
-
-function interact() {
- if (remainingSeconds <= 0) { toast("Masa harian telah tamat."); return }
- const available = missions.filter(m => !attempted(m.id) && missionAreaIndex(m) === currentArea);
- if (!available.length) {
-  const remaining = missions.filter(m => !attempted(m.id));
-  if (!remaining.length) { toast("Tahniah! Semua misi telah dicuba."); return }
-  if (missionAreaIndex(remaining[0]) > currentArea) { toast("Misi kawasan ini selesai. Buka Peta Dunia!"); openMap() }
-  else toast("Tiada misi baharu di kawasan ini.");
-  return;
- }
- openMission(available[0]);
-}
-
-function openMission(m) {
- currentMission = m;
- $("missionPillar").textContent = (m.pillar || "MISI").toUpperCase();
- $("missionTitle").textContent = m.title || "Misi";
- $("missionStory").textContent = m.story || "";
- $("missionQuestion").textContent = m.question || "";
- $("missionFeedback").innerHTML = ""; $("closeMission").classList.add("hidden");
- const options = Array.isArray(m.options) ? m.options : [];
- $("missionOptions").innerHTML = "";
- options.forEach((opt, idx) => {
-  const btn = document.createElement("button"); btn.className = "option";
-  btn.textContent = String.fromCharCode(65 + idx) + ". " + opt;
-  btn.onclick = () => submitAnswer(String(opt), btn);
-  $("missionOptions").appendChild(btn);
- });
- $("missionModal").classList.remove("hidden");
-}
-
-async function submitAnswer(ans, btn) {
- if (!currentMission) return;
- const btns = $("missionOptions").querySelectorAll("button"); btns.forEach(b => b.disabled = true);
- btn.textContent += " ✓"; $("missionFeedback").textContent = "Menyemak..."; $("missionFeedback").className = "feedback";
- try {
-  const { data, error } = await db.rpc("submit_mission_answer", { p_mission_id: currentMission.id, p_answer: ans });
-  if (error) throw error;
-  const res = Array.isArray(data) ? data[0] : data;
-  const correct = res.correct === true, change = Number(res.xp_change ?? (correct ? 20 : -3));
-  balance = Math.max(0, Number(res.balance ?? (balance + change))); $("gameBalance").textContent = balance;
-  $("missionFeedback").className = "feedback " + (correct ? "good" : "bad");
-  $("missionFeedback").innerHTML = "<b>" + (correct ? "🎉 JAWAPAN BETUL!" : "❌ JAWAPAN BELUM TEPAT") + "</b><br>" + (correct ? "+" : "") + change + " Mutiara<br>" + escapeHTML(res.explanation || currentMission.explanation || "");
-  await refreshProgress(); $("closeMission").classList.remove("hidden");
- } catch (e) {
-  $("missionFeedback").className = "feedback bad"; $("missionFeedback").textContent = "Ralat: " + e.message;
-  btns.forEach(b => b.disabled = false);
- }
-}
-async function refreshProgress() {
- const { data } = await db.from("student_progress").select("mission_id,completed,xp").eq("user_id", currentUser.id);
- progressRows = data || []; balance = Math.max(0, progressRows.reduce((sum, r) => sum + (Number(r.xp) || 0), 0));
- $("gameBalance").textContent = balance;
-}
-function closeMission() { $("missionModal").classList.add("hidden"); currentMission = null }
-
-/* TIMERS & LEADERBOARD */
-function updateUsage(data) {
- if (!data) return; const res = Array.isArray(data) ? data[0] : data;
- const found = res.remaining_seconds ?? res.seconds_remaining ?? res.remaining;
- if (found !== undefined) remainingSeconds = Math.max(0, Number(found));
- $("timeLeft").textContent = formatTime(remainingSeconds);
-}
-function startTimers() {
- stopTimers();
- heartbeatTimer = setInterval(async () => {
-  if (document.hidden) return;
-  try { const { data } = await db.rpc("record_daily_usage"); updateUsage(data); } catch (e) {}
- }, 20000);
- clockTimer = setInterval(() => {
-  if (remainingSeconds > 0) remainingSeconds--;
-  $("timeLeft").textContent = formatTime(remainingSeconds);
-  if (remainingSeconds <= 0) { stopTimers(); toast("Masa harian tamat."); $("missionModal").classList.add("hidden") }
- }, 1000);
-}
-function stopTimers() { clearInterval(heartbeatTimer); clearInterval(clockTimer); heartbeatTimer = null; clockTimer = null; }
-
-async function showLeaderboard() {
- previousScreen = isMaster ? "masterScreen" : "introScreen";
- showScreen("leaderScreen"); $("leaderList").textContent = "Memuatkan...";
- try {
-  const { data } = await db.rpc("get_leaderboard");
-  if (!data || !data.length) { $("leaderList").textContent = "Tiada rekod."; return }
-  $("leaderList").innerHTML = data.map(r => `<div class="list-item"><b>#${escapeHTML(r.rank)} — ${escapeHTML(r.student_name || "Murid")}</b><div>💎 ${escapeHTML(r.total_mutiara)} Mutiara</div></div>`).join("");
- } catch (e) { $("leaderList").textContent = "Ralat: " + e.message }
-}
-function closeLeaderboard() { showScreen(previousScreen) }
-
-/* PANEL MASTER */
-async function masterTab(tab) {
- ["tabMissions", "tabStudents", "tabRanking"].forEach(id => $(id).classList.remove("active"));
- if (tab === "missions") { $("tabMissions").classList.add("active"); await loadMasterMissions(); }
- if (tab === "students") { $("tabStudents").classList.add("active"); await loadMasterStudents(); }
- if (tab === "ranking") { $("tabRanking").classList.add("active"); await loadMasterRanking(); }
-}
-async function loadMasterMissions() {
- const { data } = await db.from("missions").select("*").order("week_number").order("day_number");
- let html = '<h2>Pengurusan Misi</h2><button class="primary" onclick="missionForm()">+ Tambah Misi</button>';
- (data || []).forEach(m => {
-  html += `<div class="list-item"><b>${escapeHTML(m.title)}</b><div><small>${escapeHTML(m.pillar)} | Status: ${m.published ? "Diterbitkan" : "Disembunyikan"}</small></div><div class="row" style="margin-top:6px"><button class="secondary small" onclick="togglePublish(${m.id},${!m.published})">${m.published ? "Sembunyikan" : "Terbitkan"}</button></div></div>`;
- });
- $("masterContent").innerHTML = html;
-}
-async function togglePublish(id, published) {
- await db.from("missions").update({ published }).eq("id", id); await loadMasterMissions();
-}
-async function loadMasterStudents() {
- const { data } = await db.from("profiles").select("*").eq("role", "student");
- $("masterContent").innerHTML = "<h2>Senarai Murid</h2>" + (data || []).map(s => `<div class="list-item"><b>${escapeHTML(s.display_name || s.username)}</b></div>`).join("");
-}
-async function loadMasterRanking() {
- const { data } = await db.rpc("get_leaderboard");
- $("masterContent").innerHTML = "<h2>Ranking Murid</h2>" + (data || []).map(r => `<div class="list-item"><b>#${r.rank} ${escapeHTML(r.student_name)}</b> - 💎 ${r.total_mutiara}</div>`).join("");
-}
-
-/* INITIALIZATION */
-async function initialise() {
- try { const { data } = await db.auth.getSession(); if (data.session) currentUser = data.session.user; } catch (e) {}
-}
 showScreen("openingScreen");
-initialise();
 </script>
 </body>
 </html>
