@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ms">
 <head>
@@ -52,6 +53,21 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 #toast{position:absolute;top:44%;left:50%;transform:translate(-50%,-50%);z-index:30;display:none;background:#102c25ed;color:white;border:1px solid #f2d080;padding:13px 18px;border-radius:12px;font-size:13px;text-align:center;max-width:85%}
 #voiceStatus{position:absolute;bottom:150px;right:14px;z-index:9;background:#102c25d9;color:white;padding:7px 10px;border-radius:10px;font-size:10px;pointer-events:none}
 .speakable{cursor:pointer}
+
+/* INTRO CERITA */
+#intro{position:absolute;inset:0;z-index:100;background:radial-gradient(ellipse at 50% 35%,#477b50,#173c31 65%,#091d18);display:flex;align-items:center;justify-content:center;padding:18px;color:white}
+.introBox{width:min(560px,100%);max-height:94%;overflow:auto;text-align:center;padding:22px 19px;border:2px solid #e8c778;border-radius:23px;background:linear-gradient(160deg,#244d3aee,#102b24f5);box-shadow:0 15px 50px #0009}
+.introMark{font-size:55px;margin:2px 0 8px;filter:drop-shadow(0 5px 5px #0006)}
+.introTitle{font-size:clamp(25px,7vw,38px);font-weight:1000;letter-spacing:1px;color:#ffe5a4;line-height:1.15}
+.introSub{font-size:12px;letter-spacing:3px;color:#d4e5c9;font-weight:850;margin-top:8px}
+.introLine{height:2px;background:linear-gradient(90deg,transparent,#e8c778,transparent);margin:17px 0}
+#introText{min-height:145px;display:flex;align-items:center;justify-content:center;font-size:clamp(18px,4.7vw,23px);line-height:1.7;font-weight:750;color:#fff8e8;padding:8px 2px}
+.introPage{font-size:11px;color:#e9d69f;font-weight:850;letter-spacing:2px;margin:8px}
+.introButtons{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
+.introBtn{border:0;border-radius:12px;padding:14px 8px;font-weight:950;font-size:13px;background:#e6c16e;color:#263b2b;touch-action:manipulation}
+.introBtn.secondaryIntro{background:#e8f0df;color:#294b36}
+.introBtn.full{grid-column:1/-1;background:#ffe5a0;font-size:15px;padding:16px}
+#introStart{width:100%;margin-top:15px;padding:16px;border:0;border-radius:13px;background:linear-gradient(145deg,#ffe6a6,#d4a044);color:#302c1d;font-weight:1000;font-size:16px}
 @media(max-width:390px){
  #joystick{width:112px;height:112px}
  #stick{left:29px;top:29px}
@@ -60,6 +76,8 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
  .act.green{width:51px;height:51px}
  #hint{bottom:145px}
  #voiceStatus{bottom:130px}
+ .introBox{padding:17px 14px}
+ #introText{min-height:125px}
 }
 </style>
 </head>
@@ -102,29 +120,44 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 
 <div id="overlay"><div class="panel" id="panel"></div></div>
 <div id="toast"></div>
+
+<!-- PAPARAN INTRO -->
+<div id="intro">
+ <div class="introBox">
+  <div class="introMark">🌴 🐾 🌺</div>
+  <div class="introTitle">MISI PAHLAWAN<br>ALPHA</div>
+  <div class="introSub">PENGEMBARAAN BERMULA DI BORNEO</div>
+  <div class="introLine"></div>
+  <div class="introPage" id="introPage">SEBUAH KISAH PENGEMBARAAN</div>
+  <div id="introText">Sediakan diri untuk sebuah pengembaraan yang penuh cabaran, persahabatan dan ilmu!</div>
+  <div class="introLine"></div>
+  <button id="introStart" onclick="startIntro()">▶ MULA DENGAR CERITA</button>
+  <div class="introButtons" id="introControls" style="display:none">
+   <button class="introBtn secondaryIntro" onclick="repeatIntro()">🔊 ULANG SUARA</button>
+   <button class="introBtn" onclick="nextIntro()">TERUSKAN ➜</button>
+  </div>
+ </div>
+</div>
 </div>
 
 <script>
 "use strict";
 
 /* ===========================
-   SISTEM SUARA BAHASA MELAYU
+   SUARA BAHASA MELAYU
 =========================== */
-
 let speechReady=false;
 let malayVoice=null;
+let speechSequence=0;
 
 function findMalayVoice(){
  if(!("speechSynthesis" in window))return;
-
  const voices=speechSynthesis.getVoices();
-
  malayVoice=
- voices.find(v=>v.lang.toLowerCase()==="ms-my") ||
- voices.find(v=>v.lang.toLowerCase().startsWith("ms")) ||
- voices.find(v=>v.lang.toLowerCase().includes("malay")) ||
- null;
-
+  voices.find(v=>v.lang.toLowerCase()==="ms-my")||
+  voices.find(v=>v.lang.toLowerCase().startsWith("ms"))||
+  voices.find(v=>v.lang.toLowerCase().includes("malay"))||
+  null;
  speechReady=true;
 }
 
@@ -135,50 +168,124 @@ if("speechSynthesis" in window){
 
 function speak(text){
  if(!("speechSynthesis" in window)){
-  notify("Maaf, telefon ini tidak menyokong fungsi suara.");
+  notify("Telefon ini tidak menyokong fungsi suara.");
   return;
  }
-
  text=String(text||"").replace(/\s+/g," ").trim();
  if(!text)return;
 
+ speechSequence++;
+ const thisSequence=speechSequence;
  speechSynthesis.cancel();
 
  const utterance=new SpeechSynthesisUtterance(text);
  utterance.lang="ms-MY";
- utterance.rate=0.82;
- utterance.pitch=1.05;
+ utterance.rate=0.94;
+ utterance.pitch=1.08;
  utterance.volume=1;
 
  findMalayVoice();
-
  if(malayVoice)utterance.voice=malayVoice;
 
+ utterance.onerror=function(e){
+  if(e.error!=="canceled"&&e.error!=="interrupted"){
+   document.getElementById("voiceStatus").textContent="🔊 SEMAK TETAPAN SUARA";
+  }
+ };
+ utterance.onstart=function(){
+  document.getElementById("voiceStatus").textContent="🔊 PENCERITA SEDANG BERCAKAP";
+ };
+ utterance.onend=function(){
+  if(thisSequence===speechSequence){
+   document.getElementById("voiceStatus").textContent="🔊 SUARA AKTIF";
+  }
+ };
  speechSynthesis.speak(utterance);
 }
 
 function stopSpeech(){
+ speechSequence++;
  if("speechSynthesis" in window)speechSynthesis.cancel();
+ document.getElementById("voiceStatus").textContent="🔊 SUARA AKTIF";
 }
 
 /* SENTUH TEKS UNTUK MEMBACA */
 document.addEventListener("click",function(e){
  const target=e.target.closest(
   ".panel p,.panel h2,.panel h3,.panel small,"+
-  ".panel .choice,.panel .tile,.panel b,"+
-  "#place,#hint,.brand,.stat"
+  ".panel .tile,.panel b,#place,#hint,.brand,.stat"
  );
-
- if(!target)return;
-
- if(target.closest(".close"))return;
-
- let text=target.innerText||target.textContent||"";
- speak(text);
+ if(!target||target.closest(".close"))return;
+ speak(target.innerText||target.textContent||"");
 },true);
 
-/* DATA PERMAINAN */
+/* INTRO CERITA */
+const introStories=[
+ {
+  label:"BAB 1 · BUMI BORNEO",
+  text:"Jauh di bumi Borneo yang indah, terdapat sebuah kampung yang aman dan damai. Di sekelilingnya terbentang hutan hijau, sungai yang jernih dan rumah panjang tempat masyarakat hidup bersama."
+ },
+ {
+  label:"BAB 2 · MASALAH MUNCUL",
+  text:"Namun pada suatu hari, penduduk kampung mula berdepan dengan pelbagai masalah. Ada yang memerlukan bantuan. Ada tugas yang perlu diselesaikan. Kampung itu memerlukan sahabat yang sedia membantu."
+ },
+ {
+  label:"BAB 3 · LAHIRNYA PAHLAWAN",
+  text:"Seorang pahlawan tidak semestinya paling kuat. Pahlawan yang sebenar berani mencuba, bijak membuat pilihan, jujur menunaikan amanah dan sentiasa mengambil berat tentang orang lain."
+ },
+ {
+  label:"BAB 4 · MISI BERMULA",
+  text:"Kini tiba giliran kamu! Pilih teman pengembaraanmu, jelajahi kampung Borneo dan selesaikan pelbagai misi. Setiap pilihan mengajar kamu menjadi lebih baik. Bersediakah kamu menjadi Pahlawan Alpha?"
+ }
+];
+let introIndex=0;
+let introStarted=false;
 
+function showIntroPage(){
+ const s=introStories[introIndex];
+ document.getElementById("introPage").textContent=s.label;
+ document.getElementById("introText").textContent=s.text;
+ const next=document.querySelector("#introControls .introBtn:last-child");
+ if(introIndex===introStories.length-1){
+  next.textContent="MULA PENGEMBARAAN ➜";
+ }else{
+  next.textContent="TERUSKAN ➜";
+ }
+}
+
+function startIntro(){
+ introStarted=true;
+ introIndex=0;
+ document.getElementById("introStart").style.display="none";
+ document.getElementById("introControls").style.display="grid";
+ showIntroPage();
+ speak(introStories[introIndex].text);
+}
+
+function repeatIntro(){
+ if(!introStarted)return;
+ speak(introStories[introIndex].text);
+}
+
+function nextIntro(){
+ if(!introStarted)return;
+ if(introIndex<introStories.length-1){
+  introIndex++;
+  showIntroPage();
+  speak(introStories[introIndex].text);
+ }else{
+  finishIntro();
+ }
+}
+
+function finishIntro(){
+ stopSpeech();
+ document.getElementById("intro").style.display="none";
+ notify("Pengembaraan bermula! Selamat menjadi Pahlawan Alpha.");
+ speak("Pengembaraan bermula! Gerakkan wira kamu dan hampiri tanda seru untuk memulakan misi.");
+}
+
+/* DATA PERMAINAN */
 const heroes=[
  {name:"Arnab",title:"Wira Lincah",emoji:"🐰"},
  {name:"Hamster",title:"Wira Ketahanan",emoji:"🐹"},
@@ -277,7 +384,6 @@ function notify(s){
 }
 
 /* DUNIA PERMAINAN */
-
 const canvas=document.getElementById("world");
 const ctx=canvas.getContext("2d");
 let W=0,H=0,dpr=1;
@@ -418,7 +524,6 @@ function draw(){
 }
 
 /* JOYSTICK */
-
 const joy=document.getElementById("joystick");
 const stick=document.getElementById("stick");
 let joyPointer=null;
@@ -453,7 +558,6 @@ joy.addEventListener("pointercancel",stopJoy);
 joy.addEventListener("lostpointercapture",stopJoy);
 
 /* BUTANG ARAH */
-
 function bindDirection(id,dir){
  const el=document.getElementById(id);
  const down=e=>{
@@ -474,14 +578,12 @@ bindDirection("dLeft","left");
 bindDirection("dRight","right");
 
 /* LOMPAT */
-
 document.getElementById("jump").addEventListener("pointerdown",e=>{
  e.preventDefault();
  if(player.jump===0&&player.jumpV===0)player.jumpV=350;
 });
 
 /* PAPAN KEKUNCI */
-
 const keys={};
 
 addEventListener("keydown",e=>{
@@ -498,7 +600,6 @@ function jump(){
 }
 
 /* GERAKAN */
-
 function update(dt){
  time+=dt;
  let x=joyX,y=joyY;
@@ -542,7 +643,6 @@ function loop(t){
 requestAnimationFrame(loop);
 
 /* SISTEM MISI */
-
 let current=-1,answered=false;
 
 function mission(id){
@@ -589,6 +689,8 @@ function action(){
  <div id="feedback"></div>
  <button class="primary" id="finish" style="display:none" onclick="finish()">KEMBALI KE DUNIA</button>
  `);
+
+ speak(m.story+" Apakah tindakan kamu?");
 }
 
 function answer(i){
@@ -623,12 +725,14 @@ function answer(i){
  `;
 
  document.getElementById("finish").style.display="block";
+ speak((correct?"Syabas, Wira! ":"Terus belajar, Wira! ")+m.options[i][0]+". "+m.lesson);
 }
 
 function finish(){
  closePanel();
  if(data.done.length>=230){
   notify("Tahniah! Semua 230 misi selesai.");
+  speak("Tahniah! Kamu telah menyelesaikan semua dua ratus tiga puluh misi. Kamu seorang Pahlawan Alpha!");
   return;
  }
  const id=nextMission(),w=Math.floor(id/5);
@@ -638,7 +742,6 @@ function finish(){
 }
 
 /* PETA */
-
 function openMap(){
  let html=`<button class="close" onclick="closePanel()">✕</button>
  <small>PETA PENGEMBARAAN</small>
@@ -657,7 +760,6 @@ function openMap(){
 }
 
 /* BEG */
-
 function openBag(){
  let html=`<button class="close" onclick="closePanel()">✕</button>
  <small>STATUS WIRA</small>
@@ -697,11 +799,11 @@ function resetGame(){
   player.x=460;player.y=720;
   marker.x=800;marker.y=850;
   notify("Permainan dimulakan semula.");
+  speak("Permainan dimulakan semula. Selamat mengembara, Wira!");
  }
 }
 
 /* PILIH WIRA */
-
 function chooseHero(){
  let html=`<button class="close" onclick="closePanel()">✕</button>
  <small>PILIH WIRA</small>
@@ -719,22 +821,20 @@ function chooseHero(){
 function setHero(i){
  data.hero=i;persist();closePanel();
  notify(hero().name+" dipilih!");
+ speak(hero().name+" dipilih sebagai teman pengembaraan kamu!");
 }
 
 /* BUTANG AKSI */
-
 document.getElementById("action").addEventListener("pointerdown",e=>{
  e.preventDefault();action();
 });
 
-/* AKTIFKAN SUARA SELEPAS SENTUHAN PERTAMA */
-
+/* SUARA DISEDIAKAN SELEPAS INTERAKSI PERTAMA */
 document.getElementById("game").addEventListener("pointerdown",function(){
  if(!speechReady)findMalayVoice();
 },{once:true});
 
 hud();
 </script>
-</div>
 </body>
 </html>
