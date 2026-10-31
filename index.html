@@ -4,107 +4,107 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#102b26">
+<meta name="theme-color" content="#102c25">
 <title>Misi Pahlawan Alpha</title>
 <style>
-*{box-sizing:border-box;touch-action:manipulation}
-body{margin:0;background:#102b26;color:#fff;font-family:system-ui,Arial,sans-serif;overflow:hidden;user-select:none}
-button{font:inherit;cursor:pointer;border:0}
-#game{position:relative;width:100vw;height:100dvh;max-width:1100px;margin:auto;overflow:hidden;background:#477c56}
-canvas{display:block;width:100%;height:100%;touch-action:none}
-#topbar{position:absolute;top:0;left:0;right:0;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:10px 13px;background:linear-gradient(#102b26eF,#102b2680,transparent);pointer-events:none}
-.logo{font-size:13px;font-weight:950;letter-spacing:1px;text-shadow:0 2px 4px #000}
-.logo span{color:#f4ce78}
-.hud{display:flex;gap:7px}
-.hud div{background:#102b26d9;border:1px solid #ffffff35;border-radius:10px;padding:5px 9px;text-align:center;font-size:9px;color:#dce9d8;min-width:49px}
-.hud b{display:block;color:#f4ce78;font-size:14px}
-#location{position:absolute;top:66px;left:13px;background:#102b26c9;border:1px solid #ffffff35;padding:7px 11px;border-radius:9px;font-size:11px;font-weight:800}
-#controlLayer{position:absolute;bottom:18px;left:0;right:0;z-index:8;display:flex;justify-content:space-between;align-items:flex-end;padding:0 17px;pointer-events:none}
-#joystick{width:142px;height:142px;border-radius:50%;background:#102b2670;border:2px solid #ffffff80;position:relative;pointer-events:auto;touch-action:none;box-shadow:0 4px 18px #0003}
-#stick{position:absolute;width:59px;height:59px;left:39px;top:39px;border-radius:50%;background:linear-gradient(145deg,#f6e4ad,#d0a953);border:3px solid #fff7d9;box-shadow:0 4px 10px #0005;pointer-events:none}
-.controlRight{display:flex;align-items:flex-end;gap:12px;pointer-events:auto}
-.actionBtn{width:69px;height:69px;border-radius:50%;font-weight:950;color:#263c2d;background:linear-gradient(145deg,#f8df9b,#d3a64c);border:3px solid #fff1c9;box-shadow:0 5px 0 #8e6b30,0 6px 15px #0005;font-size:12px}
-.actionBtn.jump{width:59px;height:59px;background:linear-gradient(145deg,#d7ebc1,#77a66c);border-color:#efffe5;box-shadow:0 5px 0 #426c43,0 6px 15px #0005}
-.controlHint{position:absolute;bottom:165px;left:18px;font-size:10px;color:#fff;text-shadow:0 2px 4px #000;pointer-events:none}
-#quickButtons{position:absolute;top:66px;right:12px;z-index:6;display:flex;gap:6px}
-.quick{background:#102b26d9;color:white;border:1px solid #ffffff55;border-radius:10px;padding:8px 10px;font-size:11px;font-weight:850}
-#toast{position:absolute;top:45%;left:50%;transform:translate(-50%,-50%);background:#102b26ed;border:1px solid #f4ce78;color:#fff;padding:13px 18px;border-radius:13px;font-size:13px;text-align:center;z-index:30;display:none;max-width:85%;box-shadow:0 8px 25px #0005}
-#overlay{position:absolute;inset:0;background:#0b211bd9;z-index:20;display:none;align-items:center;justify-content:center;padding:16px}
-.panel{background:#fff8e9;color:#253e31;border-radius:20px;padding:19px;width:min(520px,100%);max-height:85%;overflow:auto;box-shadow:0 15px 45px #0006}
-.panel h2{margin:0 0 8px;font-size:22px}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#102c25;font-family:system-ui,Arial;touch-action:none;user-select:none}
+#game{position:relative;width:100%;height:100dvh;overflow:hidden;background:#477e55}
+canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+#hud{position:absolute;z-index:5;top:0;left:0;right:0;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(#102c25ed,#102c2580,transparent);pointer-events:none;color:white}
+.brand{font-size:13px;font-weight:950;letter-spacing:1px}
+.brand span{color:#f3cf7e}
+.stats{display:flex;gap:6px}
+.stat{background:#102c25dd;border:1px solid #ffffff44;border-radius:9px;padding:5px 9px;text-align:center;font-size:9px;min-width:48px}
+.stat b{display:block;color:#f3cf7e;font-size:14px}
+#place{position:absolute;top:62px;left:12px;background:#102c25d9;color:white;border:1px solid #ffffff44;border-radius:9px;padding:7px 10px;font-size:11px;font-weight:800;z-index:5}
+#topButtons{position:absolute;top:62px;right:12px;display:flex;gap:6px;z-index:7}
+.topBtn{background:#102c25e8;color:white;border:1px solid #ffffff55;border-radius:9px;padding:9px 11px;font-weight:850;font-size:11px}
+#controls{position:absolute;bottom:15px;left:0;right:0;z-index:8;display:flex;justify-content:space-between;align-items:flex-end;padding:0 13px;pointer-events:none}
+#joystick{width:130px;height:130px;border-radius:50%;border:3px solid #ffffffa0;background:#173c326e;position:relative;pointer-events:auto;touch-action:none}
+#stick{position:absolute;width:54px;height:54px;border-radius:50%;left:35px;top:35px;background:linear-gradient(145deg,#fff0bd,#d3a650);border:3px solid white;box-shadow:0 4px 12px #0006;pointer-events:none}
+#dpad{display:grid;grid-template-columns:48px 48px 48px;grid-template-rows:48px 48px 48px;gap:3px;pointer-events:auto}
+.dir{border:1px solid #ffffff88;border-radius:12px;background:#173c32d9;color:white;font-size:21px;font-weight:900;touch-action:none;box-shadow:0 3px 7px #0005}
+.dir:active{background:#e8c46e;color:#263d2e}
+#dUp{grid-column:2;grid-row:1}
+#dLeft{grid-column:1;grid-row:2}
+#dRight{grid-column:3;grid-row:2}
+#dDown{grid-column:2;grid-row:3}
+#actions{display:flex;flex-direction:column;gap:10px;align-items:center;pointer-events:auto}
+.act{width:66px;height:66px;border-radius:50%;border:3px solid #fff1c8;background:linear-gradient(145deg,#ffe6a6,#d5a449);color:#3d3520;font-size:11px;font-weight:950;box-shadow:0 5px 0 #8b6830,0 7px 12px #0005;touch-action:none}
+.act.green{width:57px;height:57px;background:linear-gradient(145deg,#e0f1c9,#83ad72);border-color:#efffe7;box-shadow:0 5px 0 #496c40}
+#hint{position:absolute;bottom:164px;left:15px;color:white;font-size:10px;text-shadow:0 2px 5px black;z-index:6;pointer-events:none}
+#overlay{position:absolute;inset:0;z-index:20;background:#071c16d9;display:none;align-items:center;justify-content:center;padding:15px}
+.panel{width:min(520px,100%);max-height:86%;overflow:auto;background:#fff8e9;color:#294334;border-radius:19px;padding:18px;box-shadow:0 15px 40px #0008}
+.panel h2{margin:4px 0 10px;font-size:22px}
 .panel p{font-size:14px;line-height:1.55}
-.panel small{color:#718477}
-.close{float:right;background:#e6eadc;border-radius:9px;padding:7px 11px;color:#31523c;font-weight:900}
-.primary{width:100%;background:#24563e;color:white;padding:13px;border-radius:12px;font-weight:900;margin-top:10px}
-.secondary{background:#e5eddf;color:#31523c;padding:11px;border-radius:11px;font-weight:850}
-.choice{width:100%;text-align:left;background:#f0f1e6;border:1px solid #dce3d5;color:#294234;padding:12px;border-radius:12px;margin:6px 0;font-weight:700;line-height:1.4}
-.choice.correct{background:#dff0dc;border-color:#6ba46d}
-.choice.wrong{background:#f7e4dc;border-color:#ce8977}
+.close{float:right;background:#e5eadf;border:0;border-radius:9px;padding:8px 12px;color:#294334;font-weight:900}
+.choice{display:block;width:100%;text-align:left;padding:12px;margin:7px 0;border-radius:11px;border:1px solid #dce2d5;background:#eff1e7;color:#294334;font-weight:750;line-height:1.4}
+.choice.correct{background:#dff0dc;border-color:#6caa70}
+.choice.wrong{background:#f6e2da;border-color:#cb8775}
 .choice:disabled{opacity:1}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:12px}
-.tile{background:#edf0e5;border:1px solid #dce4d6;border-radius:11px;padding:10px 5px;color:#31523c;font-weight:800;font-size:11px;text-align:center}
+.primary{width:100%;padding:13px;border:0;border-radius:11px;background:#285a40;color:white;font-weight:900;margin-top:10px}
+.secondary{padding:10px;border:0;border-radius:10px;background:#e4ecdc;color:#294d36;font-weight:850}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.tile{background:#edf1e6;border:1px solid #dbe3d5;border-radius:10px;padding:10px 5px;text-align:center;font-size:11px;font-weight:800;color:#31523c}
 .tile.done{background:#dcebd9}
-.tile.locked{opacity:.4}
-.bar{height:9px;background:#dce4d8;border-radius:20px;overflow:hidden;margin:8px 0}
-.bar span{height:100%;display:block;background:#76a86d;width:0}
-#miniMap{position:absolute;right:13px;top:113px;width:110px;height:78px;border:2px solid #f4e8c3;border-radius:9px;background:#8bb38a;z-index:4;opacity:.9;pointer-events:none}
+.bar{height:9px;background:#dfe7db;border-radius:20px;overflow:hidden}
+.bar span{display:block;height:100%;background:#76a96d}
+#toast{position:absolute;top:44%;left:50%;transform:translate(-50%,-50%);z-index:30;display:none;background:#102c25ed;color:white;border:1px solid #f2d080;padding:13px 18px;border-radius:12px;font-size:13px;text-align:center;max-width:85%}
 @media(max-width:390px){
- #joystick{width:124px;height:124px}
- #stick{left:32px;top:32px}
- .actionBtn{width:62px;height:62px}
- .actionBtn.jump{width:53px;height:53px}
- .controlHint{bottom:148px}
+ #joystick{width:112px;height:112px}
+ #stick{left:29px;top:29px}
+ #dpad{grid-template-columns:40px 40px 40px;grid-template-rows:40px 40px 40px}
+ .act{width:58px;height:58px}
+ .act.green{width:51px;height:51px}
+ #hint{bottom:145px}
 }
 </style>
 </head>
 <body>
 <div id="game">
- <canvas id="world"></canvas>
+<canvas id="world"></canvas>
 
- <div id="topbar">
-  <div class="logo">MISI PAHLAWAN <span>ALPHA</span></div>
-  <div class="hud">
-   <div>TAHAP<b id="level">1</b></div>
-   <div>XP<b id="xp">0</b></div>
-   <div>SYILING<b id="coins">0</b></div>
-  </div>
+<div id="hud">
+ <div class="brand">MISI PAHLAWAN <span>ALPHA</span></div>
+ <div class="stats">
+  <div class="stat">TAHAP<b id="level">1</b></div>
+  <div class="stat">XP<b id="xp">0</b></div>
+  <div class="stat">SYILING<b id="coins">0</b></div>
  </div>
+</div>
 
- <div id="location">🌿 KAMPUNG BORNEO</div>
- <div id="quickButtons">
-  <button class="quick" onclick="openMap()">🗺️ PETA</button>
-  <button class="quick" onclick="openBag()">🎒 BEG</button>
- </div>
- <canvas id="miniMap" width="220" height="156"></canvas>
+<div id="place">🌿 KAMPUNG BORNEO</div>
+<div id="topButtons">
+ <button class="topBtn" onclick="openMap()">🗺️ PETA</button>
+ <button class="topBtn" onclick="openBag()">🎒 BEG</button>
+ <button class="topBtn" onclick="chooseHero()">🐾 WIRA</button>
+</div>
 
- <div class="controlHint">GERAKKAN JOYSTICK UNTUK BERJALAN</div>
- <div id="controlLayer">
-  <div id="joystick"><div id="stick"></div></div>
-  <div class="controlRight">
-   <button class="actionBtn jump" id="jumpBtn">LOMPAT</button>
-   <button class="actionBtn" id="actionBtn">AKSI</button>
-  </div>
- </div>
- <div id="toast"></div>
+<div id="hint">JOYSTICK ATAU BUTANG ARAH UNTUK BERGERAK</div>
 
- <div id="overlay">
-  <div class="panel" id="panelContent"></div>
+<div id="controls">
+ <div id="joystick"><div id="stick"></div></div>
+ <div id="dpad">
+  <button class="dir" id="dUp">▲</button>
+  <button class="dir" id="dLeft">◀</button>
+  <button class="dir" id="dRight">▶</button>
+  <button class="dir" id="dDown">▼</button>
  </div>
+ <div id="actions">
+  <button class="act green" id="jump">LOMPAT</button>
+  <button class="act" id="action">AKSI</button>
+ </div>
+</div>
+
+<div id="overlay"><div class="panel" id="panel"></div></div>
+<div id="toast"></div>
 </div>
 
 <script>
 "use strict";
 
-/* =========================================================
-   MISI PAHLAWAN ALPHA — RPG 2D SENTUH
-   Kawalan: joystick / WASD / anak panah, lompat, aksi.
-   ========================================================= */
-
-const canvas=document.getElementById("world");
-const ctx=canvas.getContext("2d");
-const mini=document.getElementById("miniMap");
-const mctx=mini.getContext("2d");
-
+/* DATA PERMAINAN */
 const heroes=[
  {name:"Arnab",title:"Wira Lincah",emoji:"🐰"},
  {name:"Hamster",title:"Wira Ketahanan",emoji:"🐹"},
@@ -138,495 +138,417 @@ const places=[
 "Sekolah","Kampung","Komuniti","Rumah panjang","Kampung","Laluan pengembaraan","Borneo"
 ];
 
-const daily=[
- {
-  title:"Membantu seseorang",trait:"Penyayang",icon:"💚",
+const tasks=[
+ {title:"Membantu seseorang",trait:"Penyayang",icon:"💚",
   story:"Di {place}, kamu ternampak seseorang memerlukan bantuan. Apakah tindakan terbaik?",
-  options:[
-   ["Berpura-pura tidak nampak.",false],
-   ["Tawarkan bantuan dengan sopan mengikut kemampuan.",true],
-   ["Menyuruh orang lain tanpa menghiraukan keadaan.",false]
-  ],
-  lesson:"Sikap penyayang bermula dengan keprihatinan terhadap orang lain."
- },
- {
-  title:"Menunaikan amanah",trait:"Berdaya Tahan",icon:"🛡️",
+  options:[["Berpura-pura tidak nampak.",false],["Tawarkan bantuan dengan sopan mengikut kemampuan.",true],["Menyuruh orang lain tanpa menghiraukan keadaan.",false]],
+  lesson:"Sikap penyayang bermula dengan keprihatinan terhadap orang lain."},
+ {title:"Menunaikan amanah",trait:"Berdaya Tahan",icon:"🛡️",
   story:"Kamu diberikan satu tanggungjawab berkaitan {theme}. Tiada sesiapa memeriksa tugas kamu. Apakah pilihan terbaik?",
-  options:[
-   ["Laksanakan tugas dengan jujur dan bersungguh-sungguh.",true],
-   ["Abaikan kerana tiada orang melihat.",false],
-   ["Buat sekadar melepaskan tanggungjawab.",false]
-  ],
-  lesson:"Amanah perlu ditunaikan walaupun tanpa pujian atau pengawasan."
- },
- {
-  title:"Memimpin dengan baik",trait:"Berupaya Memimpin",icon:"🧭",
+  options:[["Laksanakan tugas dengan jujur dan bersungguh-sungguh.",true],["Abaikan kerana tiada orang melihat.",false],["Buat sekadar melepaskan tanggungjawab.",false]],
+  lesson:"Amanah perlu ditunaikan walaupun tanpa pengawasan."},
+ {title:"Memimpin dengan baik",trait:"Berupaya Memimpin",icon:"🧭",
   story:"Dalam aktiviti {theme}, ahli kumpulan mempunyai pandangan berbeza. Apakah tindakan pemimpin yang baik?",
-  options:[
-   ["Paksa semua orang ikut kehendak sendiri.",false],
-   ["Tidak mahu mendengar pandangan sesiapa.",false],
-   ["Dengar pandangan semua dan buat keputusan secara adil.",true]
-  ],
-  lesson:"Pemimpin yang baik mendengar, berlaku adil dan menunjukkan teladan."
- },
- {
-  title:"Menjaga kepentingan bersama",trait:"Warganegara Aktif",icon:"🌏",
+  options:[["Paksa semua orang ikut kehendak sendiri.",false],["Tidak mahu mendengar pandangan sesiapa.",false],["Dengar pandangan semua dan buat keputusan secara adil.",true]],
+  lesson:"Pemimpin yang baik mendengar dan berlaku adil."},
+ {title:"Menjaga kepentingan bersama",trait:"Warganegara Aktif",icon:"🌏",
   story:"Kamu menyedari satu masalah di {place} yang boleh menjejaskan orang ramai. Apakah tindakan terbaik?",
-  options:[
-   ["Biarkan kerana bukan urusan sendiri.",false],
-   ["Ambil tindakan selamat atau laporkan kepada pihak bertanggungjawab.",true],
-   ["Menyalahkan orang lain tanpa membantu.",false]
-  ],
-  lesson:"Warganegara aktif mengambil berat tentang kesejahteraan masyarakat."
- },
- {
-  title:"Menghadapi kesukaran",trait:"Berdaya Tahan",icon:"💪",
+  options:[["Biarkan kerana bukan urusan sendiri.",false],["Ambil tindakan selamat atau laporkan kepada pihak bertanggungjawab.",true],["Menyalahkan orang lain tanpa membantu.",false]],
+  lesson:"Warganegara aktif mengambil berat tentang kesejahteraan masyarakat."},
+ {title:"Menghadapi kesukaran",trait:"Berdaya Tahan",icon:"💪",
   story:"Ketika menjalankan aktiviti {theme}, rancangan kamu tidak menjadi. Apakah tindakan terbaik?",
-  options:[
-   ["Berhenti terus dan menyalahkan orang lain.",false],
-   ["Terus mencuba tanpa memikirkan cara yang lebih sesuai.",false],
-   ["Tenangkan diri, belajar daripada kesilapan dan cuba lagi.",true]
-  ],
-  lesson:"Ketabahan bermaksud sanggup belajar dan bangkit semula selepas kegagalan."
- }
+  options:[["Berhenti terus dan menyalahkan orang lain.",false],["Terus mencuba tanpa memikirkan cara yang lebih sesuai.",false],["Tenangkan diri, belajar daripada kesilapan dan cuba lagi.",true]],
+  lesson:"Ketabahan bermaksud sanggup belajar dan bangkit semula."}
 ];
 
-const KEY="mpalpha_full_v2";
-function blankSave(){
- return {hero:0,xp:0,coins:0,done:[],traits:{
-  "Penyayang":0,"Berdaya Tahan":0,"Berupaya Memimpin":0,"Warganegara Aktif":0
- }};
-}
-function loadSave(){
+const KEY="mpalpha_control_fix_3";
+const empty=()=>({hero:0,xp:0,coins:0,done:[],traits:{
+ "Penyayang":0,"Berdaya Tahan":0,"Berupaya Memimpin":0,"Warganegara Aktif":0
+}});
+function readSave(){
  try{
   const d=JSON.parse(localStorage.getItem(KEY));
-  if(d&&Array.isArray(d.done))return {...blankSave(),...d};
+  if(d&&Array.isArray(d.done))return {...empty(),...d};
  }catch(e){}
- return blankSave();
+ return empty();
 }
-let save=loadSave();
-function persist(){
- try{localStorage.setItem(KEY,JSON.stringify(save));}catch(e){}
+let data=readSave();
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(data))}catch(e){}}
+function level(){return Math.floor(data.xp/100)+1}
+function hero(){return heroes[data.hero]||heroes[0]}
+function nextMission(){
+ for(let i=0;i<230;i++)if(!data.done.includes(i))return i;
+ return 229;
+}
+function isDone(i){return data.done.includes(i)}
+function hud(){
+ document.getElementById("level").textContent=level();
+ document.getElementById("xp").textContent=data.xp;
+ document.getElementById("coins").textContent=data.coins;
+}
+function notify(s){
+ const el=document.getElementById("toast");
+ el.textContent=s;el.style.display="block";
+ clearTimeout(notify.timer);
+ notify.timer=setTimeout(()=>el.style.display="none",2200);
 }
 
-const player={
- x:480,y:700,vx:0,vy:0,speed:210,
- jump:0,jumpV:0,face:1,
- moving:false
-};
-const world={w:1900,h:1450};
-let camera={x:0,y:0};
-let W=innerWidth,H=innerHeight,DPR=1;
-let lastTime=0;
-let joystick={x:0,y:0,active:false,pointer:null};
-let keys={};
-let currentMission=-1;
-let missionAnswered=false;
-let npc={x:1120,y:560};
-let marker={x:800,y:850};
-let nearAction=false;
-let toastTimer=null;
-let sceneTime=0;
-
-/* Dunia dan peta */
+/* DUNIA PERMAINAN */
+const canvas=document.getElementById("world");
+const ctx=canvas.getContext("2d");
+let W=0,H=0,dpr=1;
 function resize(){
- W=innerWidth;H=innerHeight;DPR=Math.min(devicePixelRatio||1,2);
- canvas.width=Math.round(W*DPR);canvas.height=Math.round(H*DPR);
- ctx.setTransform(DPR,0,0,DPR,0,0);
+ W=innerWidth;H=innerHeight;dpr=Math.min(devicePixelRatio||1,2);
+ canvas.width=W*dpr;canvas.height=H*dpr;
+ ctx.setTransform(dpr,0,0,dpr,0,0);
 }
 addEventListener("resize",resize);resize();
 
-function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
-function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y)}
-function level(){return Math.floor(save.xp/100)+1}
-function nextMission(){for(let i=0;i<230;i++)if(!save.done.includes(i))return i;return 229}
-function completed(id){return save.done.includes(id)}
-function hero(){return heroes[save.hero]||heroes[0]}
-function say(s){
- const el=document.getElementById("toast");
- el.textContent=s;el.style.display="block";
- clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.style.display="none",2200);
-}
-function hud(){
- document.getElementById("level").textContent=level();
- document.getElementById("xp").textContent=save.xp;
- document.getElementById("coins").textContent=save.coins;
-}
+const map={w:1900,h:1500};
+const player={x:460,y:720,jump:0,jumpV:0,speed:240};
+const camera={x:0,y:0};
+const marker={x:800,y:850};
+const npc={x:1170,y:550};
+let time=0,near=false;
+let joyX=0,joyY=0;
+let held={up:false,down:false,left:false,right:false};
+let last=0;
 
-/* Lukisan dunia */
+function clamp(n,a,b){return Math.max(a,Math.min(b,n))}
 function ellipse(x,y,rx,ry,color){
  ctx.fillStyle=color;ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,Math.PI*2);ctx.fill();
 }
 function tree(x,y,s=1){
  ctx.save();ctx.translate(x,y);ctx.scale(s,s);
- ctx.fillStyle="#684b34";ctx.fillRect(-9,-92,18,95);
- ctx.strokeStyle="#684b34";ctx.lineWidth=8;
- ctx.beginPath();ctx.moveTo(0,-52);ctx.lineTo(-36,-95);ctx.moveTo(0,-40);ctx.lineTo(37,-90);ctx.stroke();
- ellipse(-30,-111,43,34,"#286447");
- ellipse(14,-132,52,42,"#225b40");
- ellipse(48,-103,38,33,"#34734a");
- ellipse(-2,-96,43,32,"#3d8050");
- ellipse(-18,-137,18,13,"#70a86b");
- ellipse(28,-147,19,13,"#73aa70");
+ ctx.fillStyle="#694b35";ctx.fillRect(-9,-90,18,95);
+ ctx.strokeStyle="#694b35";ctx.lineWidth=8;
+ ctx.beginPath();ctx.moveTo(0,-50);ctx.lineTo(-35,-90);ctx.moveTo(0,-40);ctx.lineTo(35,-90);ctx.stroke();
+ ellipse(-27,-105,43,33,"#285d42");
+ ellipse(12,-127,52,42,"#20563c");
+ ellipse(46,-100,38,31,"#34764b");
+ ellipse(-3,-91,44,33,"#408451");
+ ellipse(-17,-137,18,13,"#78aa6d");
+ ellipse(26,-143,19,14,"#79ad70");
  ctx.restore();
 }
-function drawGround(){
- ctx.fillStyle="#568957";ctx.fillRect(0,0,world.w,world.h);
- // tompok cahaya
- for(let i=0;i<45;i++){
-  const x=(i*239+70)%world.w,y=(i*173+60)%world.h;
-  ellipse(x,y,30+(i%4)*9,12+(i%3)*7,i%2?"#63945a":"#4c8251");
+function house(x,y,s){
+ ctx.save();ctx.translate(x,y);ctx.scale(s,s);
+ ellipse(0,5,135,20,"#234b3755");
+ ctx.fillStyle="#79543a";
+ for(let x=-90;x<=90;x+=60)ctx.fillRect(x,-55,9,95);
+ ctx.fillStyle="#a9784c";ctx.fillRect(-115,-125,230,75);
+ ctx.fillStyle="#d3a16b";ctx.fillRect(-105,-115,210,55);
+ ctx.fillStyle="#e8d09c";
+ for(let x=-85;x<=85;x+=55)ctx.fillRect(x,-103,27,28);
+ ctx.fillStyle="#694b36";ctx.beginPath();
+ ctx.moveTo(-140,-125);ctx.lineTo(-90,-205);ctx.lineTo(90,-205);ctx.lineTo(140,-125);ctx.closePath();ctx.fill();
+ ctx.restore();
+}
+function ground(){
+ ctx.fillStyle="#568958";ctx.fillRect(0,0,map.w,map.h);
+ for(let i=0;i<60;i++){
+  let x=(i*239+80)%map.w,y=(i*177+70)%map.h;
+  ellipse(x,y,35,15,i%2?"#66955c":"#4e8151");
  }
- // sungai berliku
+ // sungai
  ctx.beginPath();
- ctx.moveTo(0,210);ctx.bezierCurveTo(430,80,480,400,850,360);
+ ctx.moveTo(0,200);ctx.bezierCurveTo(430,80,480,410,850,360);
  ctx.bezierCurveTo(1190,330,1280,110,1600,190);
- ctx.bezierCurveTo(1730,220,1810,330,1900,350);
- ctx.lineTo(1900,480);
+ ctx.bezierCurveTo(1740,220,1810,330,1900,350);
+ ctx.lineTo(1900,490);
  ctx.bezierCurveTo(1740,460,1650,320,1550,300);
  ctx.bezierCurveTo(1240,220,1150,470,840,455);
  ctx.bezierCurveTo(490,500,420,210,0,330);ctx.closePath();
- const water=ctx.createLinearGradient(0,180,0,480);
- water.addColorStop(0,"#74b8a9");water.addColorStop(1,"#327f7d");
- ctx.fillStyle=water;ctx.fill();
- ctx.strokeStyle="#b9e4d1";ctx.lineWidth=5;
+ let g=ctx.createLinearGradient(0,180,0,480);
+ g.addColorStop(0,"#80c5b4");g.addColorStop(1,"#347f7c");
+ ctx.fillStyle=g;ctx.fill();
+ ctx.strokeStyle="#c7ead7";ctx.lineWidth=4;
  for(let i=0;i<10;i++){
-  ctx.beginPath();ctx.moveTo(i*180,270+(i%3)*30);ctx.lineTo(i*180+70,264+(i%3)*30);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(i*180,275+(i%3)*30);ctx.lineTo(i*180+70,270+(i%3)*30);ctx.stroke();
  }
- // jalan tanah
- ctx.strokeStyle="#bca477";ctx.lineWidth=100;ctx.lineCap="round";
+ // laluan
+ ctx.strokeStyle="#bca477";ctx.lineWidth=105;ctx.lineCap="round";
  ctx.beginPath();ctx.moveTo(300,1300);ctx.bezierCurveTo(500,1080,700,1090,800,850);
- ctx.bezierCurveTo(930,600,1050,700,1120,560);
- ctx.bezierCurveTo(1240,360,1450,450,1600,350);ctx.stroke();
- ctx.strokeStyle="#d8c69b";ctx.lineWidth=5;
- ctx.beginPath();ctx.moveTo(300,1300);ctx.bezierCurveTo(500,1080,700,1090,800,850);
- ctx.bezierCurveTo(930,600,1050,700,1120,560);ctx.stroke();
- // kawasan rumput
- for(let i=0;i<100;i++){
-  let x=(i*191+30)%world.w,y=(i*277+20)%world.h;
-  ctx.strokeStyle=i%2?"#a5c37c":"#8bad6b";ctx.lineWidth=2;
-  ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x-5,y-10);ctx.moveTo(x,y);ctx.lineTo(x+5,y-13);ctx.stroke();
- }
+ ctx.bezierCurveTo(930,600,1050,700,1170,550);
+ ctx.bezierCurveTo(1300,350,1450,450,1600,350);ctx.stroke();
+ ctx.strokeStyle="#ddcba1";ctx.lineWidth=4;ctx.stroke();
 }
-function drawHouse(x,y,s=1){
- ctx.save();ctx.translate(x,y);ctx.scale(s,s);
- // bayang
- ellipse(0,8,135,25,"#254d3c55");
- // tiang
- ctx.fillStyle="#77553b";
- for(let i=-90;i<=90;i+=60)ctx.fillRect(i, -55,9,90);
- // badan
- ctx.fillStyle="#a9784b";ctx.fillRect(-115,-125,230,75);
- ctx.fillStyle="#d0a16b";ctx.fillRect(-105,-115,210,55);
- ctx.strokeStyle="#714a31";ctx.lineWidth=5;
- for(let i=-85;i<=85;i+=55){
-  ctx.fillStyle="#e8d09c";ctx.fillRect(i,-103,27,28);
-  ctx.strokeRect(i,-103,27,28);
- }
- // bumbung
- ctx.fillStyle="#664b37";
- ctx.beginPath();ctx.moveTo(-140,-125);ctx.lineTo(-90,-205);ctx.lineTo(90,-205);ctx.lineTo(140,-125);ctx.closePath();ctx.fill();
- ctx.strokeStyle="#c89d68";ctx.lineWidth=5;ctx.stroke();
- ctx.restore();
-}
-function drawWorld(){
- ctx.save();ctx.translate(-camera.x,-camera.y);
- drawGround();
- // pokok latar
- for(let i=0;i<42;i++){
-  const x=(i*347+30)%world.w;
-  const y=(i*211+30)%world.h;
-  tree(x,y,0.7+(i%4)*.16);
- }
- // rumah panjang
- drawHouse(1280,500,1.05);
- drawHouse(440,1080,.72);
- // batu sungai
- for(let i=0;i<22;i++){
-  const x=(i*151+40)%world.w,y=200+(i*67)%290;
-  ellipse(x,y,12,7,"#829b83");
- }
- // penanda misi
- const pulse=1+Math.sin(sceneTime*3)*.12;
- ctx.save();ctx.translate(marker.x,marker.y);
- ellipse(0,10,33*pulse,12*pulse,"#f4d47a77");
- ctx.strokeStyle="#ffe7a2";ctx.lineWidth=4;
- ctx.beginPath();ctx.arc(0,0,22*pulse,0,Math.PI*2);ctx.stroke();
- ctx.fillStyle="#fff1bd";ctx.font="bold 24px system-ui";ctx.textAlign="center";ctx.fillText("!",0,8);
- ctx.restore();
- // NPC kampung
- drawNPC(npc.x,npc.y);
- // pemain
- drawPlayer();
- // sempadan visual
- ctx.restore();
-}
-function drawNPC(x,y){
- ctx.save();ctx.translate(x,y);
- ellipse(0,13,22,8,"#183c2c55");
- ctx.fillStyle="#e3b77e";ctx.beginPath();ctx.arc(0,-30,14,0,Math.PI*2);ctx.fill();
- ctx.fillStyle="#376c54";ctx.fillRect(-15,-16,30,30);
- ctx.fillStyle="#503b2c";ctx.fillRect(-12,-2,9,17);ctx.fillRect(3,-2,9,17);
- ctx.fillStyle="#f1d99d";ctx.font="bold 11px system-ui";ctx.textAlign="center";ctx.fillText("PENDUDUK",0,-56);
+function drawNPC(){
+ ctx.save();ctx.translate(npc.x,npc.y);
+ ellipse(0,12,22,8,"#163b2c66");
+ ellipse(0,-30,14,14,"#e3b77e");
+ ctx.fillStyle="#386d54";ctx.fillRect(-15,-17,30,31);
+ ctx.fillStyle="#503b2c";ctx.fillRect(-12,12,9,15);ctx.fillRect(3,12,9,15);
+ ctx.fillStyle="#fff4d2";ctx.font="bold 12px system-ui";ctx.textAlign="center";ctx.fillText("PENDUDUK",0,-55);
  ctx.restore();
 }
 function drawPlayer(){
- const h=hero();
  ctx.save();ctx.translate(player.x,player.y-player.jump);
- ellipse(0,17,22,9,"#183c2c66");
- ctx.font="48px system-ui";ctx.textAlign="center";ctx.textBaseline="middle";
- ctx.fillText(h.emoji,0,-8);
- if(player.moving){
-  ctx.strokeStyle="#f3d78e";ctx.lineWidth=3;
-  ctx.beginPath();ctx.arc(0,-8,31,Math.PI*1.1,Math.PI*1.9);ctx.stroke();
+ ellipse(0,16,22,8,"#163b2c66");
+ ctx.font="49px system-ui";ctx.textAlign="center";ctx.textBaseline="middle";
+ ctx.fillText(hero().emoji,0,-8);
+ if(Math.hypot(joyX,joyY)>.1||held.up||held.down||held.left||held.right){
+  ctx.strokeStyle="#ffe4a1";ctx.lineWidth=3;
+  ctx.beginPath();ctx.arc(0,-8,31,3.3,5.9);ctx.stroke();
  }
  ctx.restore();
 }
-function drawMiniMap(){
- mctx.clearRect(0,0,220,156);
- mctx.fillStyle="#65966b";mctx.fillRect(0,0,220,156);
- mctx.strokeStyle="#75c2b2";mctx.lineWidth=24;
- mctx.beginPath();mctx.moveTo(0,40);mctx.quadraticCurveTo(80,5,110,65);mctx.quadraticCurveTo(155,120,220,75);mctx.stroke();
- mctx.strokeStyle="#c5ad7d";mctx.lineWidth=10;
- mctx.beginPath();mctx.moveTo(35,140);mctx.quadraticCurveTo(75,90,100,85);mctx.quadraticCurveTo(140,65,180,35);mctx.stroke();
- mctx.fillStyle="#f7d47c";mctx.beginPath();mctx.arc(marker.x/world.w*220,marker.y/world.h*156,6,0,Math.PI*2);mctx.fill();
- mctx.fillStyle="#fff";mctx.beginPath();mctx.arc(player.x/world.w*220,player.y/world.h*156,6,0,Math.PI*2);mctx.fill();
+function drawMarker(){
+ ctx.save();ctx.translate(marker.x,marker.y);
+ let p=1+Math.sin(time*3)*.13;
+ ellipse(0,10,31*p,12*p,"#f4d47a77");
+ ctx.strokeStyle="#fff0bd";ctx.lineWidth=4;
+ ctx.beginPath();ctx.arc(0,0,22*p,0,Math.PI*2);ctx.stroke();
+ ctx.fillStyle="#fff1bd";ctx.font="bold 25px system-ui";ctx.textAlign="center";ctx.fillText("!",0,8);
+ ctx.restore();
 }
-
-/* Gerakan dan kamera */
-function update(dt){
- sceneTime+=dt;
- let ax=joystick.x,ay=joystick.y;
- if(keys.ArrowLeft||keys.a)ax-=1;
- if(keys.ArrowRight||keys.d)ax+=1;
- if(keys.ArrowUp||keys.w)ay-=1;
- if(keys.ArrowDown||keys.s)ay+=1;
- const mag=Math.hypot(ax,ay);
- if(mag>1){ax/=mag;ay/=mag}
- player.vx=ax*player.speed;player.vy=ay*player.speed;
- player.moving=mag>.12;
- if(ax!==0)player.face=Math.sign(ax);
- player.x=clamp(player.x+player.vx*dt,40,world.w-40);
- player.y=clamp(player.y+player.vy*dt,80,world.h-40);
- if(player.jump>0||player.jumpV>0){
-  player.jump+=player.jumpV*dt;
-  player.jumpV-=720*dt;
-  if(player.jump<0){player.jump=0;player.jumpV=0}
- }
- camera.x=clamp(player.x-W/2,0,world.w-W);
- camera.y=clamp(player.y-H/2,0,world.h-H);
- nearAction=dist(player,marker)<105||dist(player,npc)<105;
- document.getElementById("actionBtn").style.filter=nearAction?"brightness(1.15)":"";
- document.getElementById("actionBtn").textContent=nearAction?"AKSI!":"AKSI";
-}
-function frame(t){
- const dt=Math.min((t-lastTime)/1000||0,.04);lastTime=t;
- update(dt);
+function draw(){
  ctx.clearRect(0,0,W,H);
- drawWorld();drawMiniMap();
- requestAnimationFrame(frame);
+ ctx.save();ctx.translate(-camera.x,-camera.y);
+ ground();
+ for(let i=0;i<44;i++){
+  tree((i*347+30)%map.w,(i*211+30)%map.h,.72+(i%4)*.15);
+ }
+ house(1300,500,1);
+ house(440,1080,.7);
+ drawMarker();drawNPC();drawPlayer();
+ ctx.restore();
 }
-requestAnimationFrame(frame);
 
-/* Kawalan joystick sentuh */
+/* KAWALAN: JOYSTICK */
 const joy=document.getElementById("joystick");
 const stick=document.getElementById("stick");
-function joyMove(e){
+let joyPointer=null;
+function moveJoy(e){
  const r=joy.getBoundingClientRect();
- let x=e.clientX-(r.left+r.width/2),y=e.clientY-(r.top+r.height/2);
- const max=r.width*.34,len=Math.hypot(x,y);
- if(len>max){x=x/len*max;y=y/len*max}
- joystick.x=x/max;joystick.y=y/max;
- stick.style.transform=`translate(${x}px,${y}px)`;
+ let x=e.clientX-(r.left+r.width/2);
+ let y=e.clientY-(r.top+r.height/2);
+ const max=r.width*.34;
+ const length=Math.hypot(x,y);
+ if(length>max){x=x/length*max;y=y/length*max}
+ joyX=x/max;joyY=y/max;
+ stick.style.transform="translate("+x+"px,"+y+"px)";
 }
-function joyEnd(){
- joystick.x=0;joystick.y=0;joystick.active=false;
- stick.style.transform="translate(0,0)";
+function stopJoy(){
+ joyPointer=null;joyX=0;joyY=0;
+ stick.style.transform="translate(0px,0px)";
 }
 joy.addEventListener("pointerdown",e=>{
- e.preventDefault();joystick.active=true;joy.setPointerCapture(e.pointerId);joyMove(e);
+ e.preventDefault();joyPointer=e.pointerId;
+ joy.setPointerCapture(e.pointerId);moveJoy(e);
 });
-joy.addEventListener("pointermove",e=>{if(joystick.active)joyMove(e)});
-joy.addEventListener("pointerup",joyEnd);
-joy.addEventListener("pointercancel",joyEnd);
-joy.addEventListener("lostpointercapture",joyEnd);
+joy.addEventListener("pointermove",e=>{
+ if(e.pointerId===joyPointer)moveJoy(e);
+});
+joy.addEventListener("pointerup",e=>{if(e.pointerId===joyPointer)stopJoy()});
+joy.addEventListener("pointercancel",stopJoy);
+joy.addEventListener("lostpointercapture",stopJoy);
 
-/* Butang lompat dan aksi */
-document.getElementById("jumpBtn").addEventListener("pointerdown",e=>{
+/* KAWALAN: BUTANG ARAH */
+function bindDirection(id,dir){
+ const el=document.getElementById(id);
+ const down=e=>{
+  e.preventDefault();held[dir]=true;
+  try{el.setPointerCapture(e.pointerId)}catch(err){}
+ };
+ const up=e=>{e.preventDefault();held[dir]=false};
+ el.addEventListener("pointerdown",down);
+ el.addEventListener("pointerup",up);
+ el.addEventListener("pointercancel",up);
+ el.addEventListener("lostpointercapture",up);
+ el.addEventListener("contextmenu",e=>e.preventDefault());
+}
+bindDirection("dUp","up");
+bindDirection("dDown","down");
+bindDirection("dLeft","left");
+bindDirection("dRight","right");
+
+/* LOMPAT */
+document.getElementById("jump").addEventListener("pointerdown",e=>{
  e.preventDefault();
- if(player.jump===0&&player.jumpV===0)player.jumpV=330;
+ if(player.jump===0&&player.jumpV===0)player.jumpV=350;
 });
-document.getElementById("actionBtn").addEventListener("click",action);
-addEventListener("keydown",e=>{
- keys[e.key]=true;
- if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].includes(e.key))e.preventDefault();
- if(e.key===" "){if(player.jump===0&&player.jumpV===0)player.jumpV=330}
- if(e.key==="e"||e.key==="E")action();
- if(e.key==="m"||e.key==="M")openMap();
-});
-addEventListener("keyup",e=>keys[e.key]=false);
 
-/* Misi */
-function missionData(id){
- const w=Math.floor(id/5),d=id%5,t=daily[d];
+/* PAPAN KEKUNCI */
+const keys={};
+addEventListener("keydown",e=>{
+ keys[e.key.toLowerCase()]=true;
+ if(["arrowup","arrowdown","arrowleft","arrowright"," "].includes(e.key.toLowerCase()))e.preventDefault();
+ if(e.key===" ")jump();
+ if(e.key.toLowerCase()==="e")action();
+});
+addEventListener("keyup",e=>keys[e.key.toLowerCase()]=false);
+function jump(){if(player.jump===0&&player.jumpV===0)player.jumpV=350}
+
+/* GERAKAN */
+function update(dt){
+ time+=dt;
+ let x=joyX,y=joyY;
+ if(held.left||keys.arrowleft||keys.a)x-=1;
+ if(held.right||keys.arrowright||keys.d)x+=1;
+ if(held.up||keys.arrowup||keys.w)y-=1;
+ if(held.down||keys.arrowdown||keys.s)y+=1;
+ const mag=Math.hypot(x,y);
+ if(mag>1){x/=mag;y/=mag}
+ player.x=clamp(player.x+x*player.speed*dt,35,map.w-35);
+ player.y=clamp(player.y+y*player.speed*dt,75,map.h-35);
+
+ if(player.jump>0||player.jumpV>0){
+  player.jump+=player.jumpV*dt;
+  player.jumpV-=850*dt;
+  if(player.jump<0){player.jump=0;player.jumpV=0}
+ }
+ camera.x=clamp(player.x-W/2,0,map.w-W);
+ camera.y=clamp(player.y-H/2,0,map.h-H);
+
+ const dm=Math.hypot(player.x-marker.x,player.y-marker.y);
+ const dn=Math.hypot(player.x-npc.x,player.y-npc.y);
+ near=dm<115||dn<115;
+ document.getElementById("action").textContent=near?"AKSI!":"AKSI";
+ const place=document.getElementById("place");
+ if(dm<115)place.textContent="✨ PENANDA MISI — TEKAN AKSI";
+ else if(dn<115)place.textContent="👋 PENDUDUK — TEKAN AKSI";
+ else if(player.y<430)place.textContent="🌊 TEPI SUNGAI BORNEO";
+ else if(player.y>1050)place.textContent="🌳 LALUAN HUTAN";
+ else place.textContent="🌿 KAMPUNG BORNEO";
+}
+function loop(t){
+ let dt=Math.min((t-last)/1000||0,.04);last=t;
+ update(dt);draw();requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+/* SISTEM MISI */
+let current=-1,answered=false;
+function mission(id){
+ let w=Math.floor(id/5),d=id%5,t=tasks[d];
  return {
-  id,w,d,title:t.title,trait:t.trait,icon:t.icon,
+  title:t.title,trait:t.trait,icon:t.icon,
   story:t.story.replaceAll("{place}",places[w]).replaceAll("{theme}",themes[w]),
-  options:t.options,lesson:t.lesson
+  options:t.options,lesson:t.lesson,w,d
  };
 }
-function action(){
- if(!nearAction){
-  say("Dekati penanda misi atau penduduk kampung untuk berinteraksi.");
-  return;
- }
- const id=nextMission();
- if(save.done.length>=230){openBag();say("Semua misi telah selesai!");return}
- openMission(id);
-}
-function openOverlay(html){
- document.getElementById("panelContent").innerHTML=html;
+function overlay(html){
+ document.getElementById("panel").innerHTML=html;
  document.getElementById("overlay").style.display="flex";
 }
-function closeOverlay(){
- document.getElementById("overlay").style.display="none";
-}
-function openMission(id){
- currentMission=id;missionAnswered=false;
- const m=missionData(id);
- openOverlay(`
-  <button class="close" onclick="closeOverlay()">✕</button>
-  <small>MINGGU ${m.w+1} · HARI ${m.d+1} · MISI ${id+1}/230</small>
-  <h2>${m.icon} ${m.title}</h2>
-  <p>${m.story}</p>
-  <p><b>Apakah tindakan kamu, Wira?</b></p>
-  <div id="missionChoices">
-   ${m.options.map((o,i)=>`<button class="choice" onclick="answer(${i})">${String.fromCharCode(65+i)}. ${o[0]}</button>`).join("")}
-  </div>
-  <div id="missionFeedback"></div>
-  <button id="continueBtn" class="primary" style="display:none" onclick="finishMission()">KEMBALI KE PENGEMBARAAN</button>
+function closePanel(){document.getElementById("overlay").style.display="none"}
+function action(){
+ if(!near){notify("Gerakkan wira menghampiri tanda ! atau penduduk kampung.");return}
+ if(data.done.length>=230){openBag();return}
+ current=nextMission();answered=false;
+ const m=mission(current);
+ overlay(`
+ <button class="close" onclick="closePanel()">✕</button>
+ <small>MINGGU ${m.w+1} · HARI ${m.d+1} · MISI ${current+1}/230</small>
+ <h2>${m.icon} ${m.title}</h2>
+ <p>${m.story}</p><b>Apakah tindakan kamu?</b>
+ <div id="choices">${m.options.map((o,i)=>`<button class="choice" onclick="answer(${i})">${String.fromCharCode(65+i)}. ${o[0]}</button>`).join("")}</div>
+ <div id="feedback"></div>
+ <button class="primary" id="finish" style="display:none" onclick="finish()">KEMBALI KE DUNIA</button>
  `);
 }
-function answer(index){
- if(missionAnswered)return;
- missionAnswered=true;
- const m=missionData(currentMission);
- const good=m.options[index][1];
- const first=!completed(currentMission);
- const xp=good?10:3;
- const buttons=[...document.querySelectorAll("#missionChoices button")];
- buttons.forEach((b,i)=>{
+function answer(i){
+ if(answered)return;answered=true;
+ const m=mission(current),correct=m.options[i][1],first=!isDone(current);
+ const xp=correct?10:3;
+ document.querySelectorAll("#choices button").forEach((b,n)=>{
   b.disabled=true;
-  if(m.options[i][1])b.classList.add("correct");
-  else if(i===index)b.classList.add("wrong");
+  if(m.options[n][1])b.classList.add("correct");
+  else if(n===i)b.classList.add("wrong");
  });
  if(first){
-  save.done.push(currentMission);
-  save.xp+=xp;save.coins+=good?5:2;
-  save.traits[m.trait]=(save.traits[m.trait]||0)+(good?2:1);
+  data.done.push(current);data.xp+=xp;data.coins+=correct?5:2;
+  data.traits[m.trait]=(data.traits[m.trait]||0)+(correct?2:1);
   persist();hud();
  }
- document.getElementById("missionFeedback").innerHTML=`
-  <p style="background:${good?"#e0efdb":"#f3ead5"};padding:12px;border-radius:11px">
-  <b>${good?"🌟 Syabas, Wira!":"🌱 Terus belajar, Wira."}</b><br>
-  ${m.lesson}<br><br>
-  <b>Ganjaran: ${first?"+"+xp+" XP · "+(good?5:2)+" syiling":"Misi sudah direkod sebelum ini"}</b>
-  </p>`;
- document.getElementById("continueBtn").style.display="block";
+ document.getElementById("feedback").innerHTML=
+ `<p style="padding:12px;background:${correct?"#e2f0dc":"#f3ead7"};border-radius:10px">
+ <b>${correct?"🌟 Syabas, Wira!":"🌱 Terus belajar!"}</b><br>
+ ${m.lesson}<br><br><b>${first?"Ganjaran: +"+xp+" XP · "+(correct?5:2)+" syiling":"Misi sudah selesai sebelum ini"}</b>
+ </p>`;
+ document.getElementById("finish").style.display="block";
 }
-function finishMission(){
- closeOverlay();
- if(save.done.length>=230){say("Tahniah! Semua 230 misi selesai.");return}
- const id=nextMission();
- const w=Math.floor(id/5);
- marker.x=800+(w%5)*120;
- marker.y=850-(w%4)*100;
- say("Misi direkod! Teruskan perjalanan ke penanda seterusnya.");
+function finish(){
+ closePanel();
+ if(data.done.length>=230){notify("Tahniah! Semua 230 misi selesai.");return}
+ const id=nextMission(),w=Math.floor(id/5);
+ marker.x=800+(w%5)*100;marker.y=850-(w%4)*90;
+ notify("Misi selesai! Teruskan ke penanda seterusnya.");
 }
 
-/* Peta, beg dan menu */
+/* PETA */
 function openMap(){
- const done=save.done.length;
- let html=`<button class="close" onclick="closeOverlay()">✕</button>
+ let html=`<button class="close" onclick="closePanel()">✕</button>
  <small>PETA PENGEMBARAAN</small><h2>🗺️ Jejak Wira Borneo</h2>
- <p>Kemajuan: <b>${done}/230 misi</b></p>
- <div class="bar"><span style="width:${done/230*100}%"></span></div>
+ <p>Kemajuan: <b>${data.done.length}/230</b></p>
+ <div class="bar"><span style="width:${data.done.length/230*100}%"></span></div>
  <div class="grid">`;
- themes.forEach((name,i)=>{
-  const count=[0,1,2,3,4].filter(d=>completed(i*5+d)).length;
-  const locked=i*5>nextMission()&&!count;
-  html+=`<div class="tile ${count===5?"done":""} ${locked?"locked":""}">
-   Minggu ${i+1}<br>${count===5?"✓ ":""}${name}<br><small>${count}/5 misi</small>
-  </div>`;
+ themes.forEach((n,w)=>{
+  let count=[0,1,2,3,4].filter(d=>isDone(w*5+d)).length;
+  html+=`<div class="tile ${count===5?"done":""}">Minggu ${w+1}<br>${n}<br><small>${count}/5</small></div>`;
  });
- html+=`</div><button class="primary" onclick="closeOverlay()">KEMBALI KE DUNIA</button>`;
- openOverlay(html);
+ html+=`</div><button class="primary" onclick="closePanel()">KEMBALI</button>`;
+ overlay(html);
 }
+
+/* BEG */
 function openBag(){
- const done=save.done.length;
- const traitNames=["Penyayang","Berdaya Tahan","Berupaya Memimpin","Warganegara Aktif"];
- let html=`<button class="close" onclick="closeOverlay()">✕</button>
+ let html=`<button class="close" onclick="closePanel()">✕</button>
  <small>STATUS WIRA</small><h2>🎒 Beg Pengembaraan</h2>
  <p>${hero().emoji} <b>${hero().name} — ${hero().title}</b></p>
  <div class="grid">
-  <div class="tile">⭐ XP<br>${save.xp}</div>
-  <div class="tile">🪙 Syiling<br>${save.coins}</div>
+  <div class="tile">⭐ XP<br>${data.xp}</div>
+  <div class="tile">🪙 Syiling<br>${data.coins}</div>
   <div class="tile">🏅 Tahap<br>${level()}</div>
  </div>
- <p><b>Kemajuan misi ${done}/230</b></p><div class="bar"><span style="width:${done/230*100}%"></span></div>
+ <p><b>Kemajuan: ${data.done.length}/230 misi</b></p>
+ <div class="bar"><span style="width:${data.done.length/230*100}%"></span></div>
  <h3>Nilai karakter</h3>`;
- traitNames.forEach(n=>{
-  html+=`<p style="margin:7px 0;font-size:13px"><b>${n}</b> — ${save.traits[n]||0} mata</p>`;
- });
- html+=`<p><small>Permainan disimpan secara automatik pada peranti ini.</small></p>
- <button class="secondary" onclick="downloadSave()">SIMPAN SALINAN</button>
- <button class="secondary" onclick="resetGame()" style="margin-left:5px">RESET</button>
- <button class="primary" onclick="closeOverlay()">KEMBALI KE DUNIA</button>`;
- openOverlay(html);
+ Object.keys(data.traits).forEach(k=>html+=`<p style="font-size:13px;margin:7px 0">${k}: <b>${data.traits[k]}</b> mata</p>`);
+ html+=`<button class="secondary" onclick="downloadSave()">SIMPAN SALINAN</button>
+ <button class="secondary" onclick="resetGame()">RESET</button>
+ <button class="primary" onclick="closePanel()">KEMBALI</button>`;
+ overlay(html);
 }
 function downloadSave(){
- const blob=new Blob([JSON.stringify(save,null,2)],{type:"application/json"});
+ const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
  const url=URL.createObjectURL(blob);
  const a=document.createElement("a");a.href=url;a.download="Misi-Pahlawan-Alpha-save.json";a.click();
  URL.revokeObjectURL(url);
- say("Salinan simpanan disediakan.");
 }
 function resetGame(){
  if(confirm("Padam semua kemajuan permainan?")){
-  save=blankSave();persist();hud();closeOverlay();
-  player.x=480;player.y=700;marker.x=800;marker.y=850;
-  say("Permainan dimulakan semula.");
+  data=empty();persist();hud();closePanel();
+  player.x=460;player.y=720;marker.x=800;marker.y=850;
+  notify("Permainan dimulakan semula.");
  }
 }
 
-/* Pemilihan wira — tekan butang W pada papan kekunci */
+/* PILIH WIRA */
 function chooseHero(){
- let html=`<button class="close" onclick="closeOverlay()">✕</button>
- <small>PILIH WIRA</small><h2>🐾 Pilih teman pengembaraan</h2><div class="grid">`;
+ let html=`<button class="close" onclick="closePanel()">✕</button>
+ <small>PILIH WIRA</small><h2>🐾 Teman pengembaraan</h2><div class="grid">`;
  heroes.forEach((h,i)=>{
-  html+=`<button class="tile" onclick="setHero(${i})" style="font-size:14px">${h.emoji}<br>${h.name}<br><small>${h.title}</small></button>`;
+  html+=`<button class="tile" onclick="setHero(${i})" style="font-size:15px">${h.emoji}<br>${h.name}<br><small>${h.title}</small></button>`;
  });
- html+=`</div><button class="primary" onclick="closeOverlay()">KEMBALI</button>`;
- openOverlay(html);
+ html+=`</div><button class="primary" onclick="closePanel()">KEMBALI</button>`;
+ overlay(html);
 }
-function setHero(i){save.hero=i;persist();closeOverlay();say(hero().name+" menjadi wira pilihan kamu.");}
+function setHero(i){data.hero=i;persist();closePanel();notify(hero().name+" dipilih!");}
 
-/* Lokasi dan maklum balas */
-function updateLocation(){
- const d=dist(player,npc);
- const el=document.getElementById("location");
- if(dist(player,marker)<110)el.textContent="✨ PENANDA MISI — TEKAN AKSI";
- else if(d<110)el.textContent="👋 PENDUDUK KAMPUNG — TEKAN AKSI";
- else if(player.y<420)el.textContent="🌊 TEPI SUNGAI BORNEO";
- else if(player.y>1000)el.textContent="🌳 LALUAN HUTAN";
- else el.textContent="🌿 KAMPUNG BORNEO";
+/* BUTANG AKSI */
+document.getElementById("action").addEventListener("pointerdown",e=>{
+ e.preventDefault();action();
+});
+function notify(s){
+ const el=document.getElementById("toast");
+ el.textContent=s;el.style.display="block";
+ clearTimeout(notify.timer);
+ notify.timer=setTimeout(()=>el.style.display="none",2300);
 }
-const oldUpdate=update;
-update=function(dt){oldUpdate(dt);updateLocation()};
-
-/* Interaksi tambahan */
-document.getElementById("location").addEventListener("click",chooseHero);
 hud();
 </script>
+</div>
 </body>
 </html>
