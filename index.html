@@ -1,670 +1,1064 @@
+
 <!DOCTYPE html>
 <html lang="ms">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>KARAKTER QUEST 2027</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#102d25">
+<title>MISI PAHLAWAN ALPHA</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-*{box-sizing:border-box}
-body{
- margin:0;font-family:Arial,sans-serif;
- background:#102c38;color:white;
- overflow:hidden;touch-action:manipulation
+:root {
+  --gold:#ffd65a;
+  --green:#174d38;
+  --dark:#102d25;
+  --cream:#fff7df;
+  --red:#e84b4b;
 }
-button{font-family:inherit;cursor:pointer}
-#game{
- width:100%;height:100dvh;position:relative;
- overflow:hidden;background:#75d9ef
+* {box-sizing:border-box}
+body {
+  margin:0;
+  font-family:Arial,sans-serif;
+  color:white;
+  background:#102d25;
+  min-height:100vh;
 }
-#world{
- position:absolute;inset:0;overflow:hidden;
- background:linear-gradient(#63d7f4 0%,#b2f0ed 52%,#6acb65 53%,#26894d 100%);
+button,input,textarea,select {font:inherit}
+button {
+  border:0;
+  border-radius:12px;
+  padding:12px 17px;
+  font-weight:bold;
+  cursor:pointer;
 }
-.sun{
- position:absolute;right:9%;top:7%;width:65px;height:65px;
- border-radius:50%;background:#ffe66b;
- box-shadow:0 0 45px #fff2a0;
+button:disabled {opacity:.5}
+.primary {background:var(--gold);color:#392b08}
+.secondary {background:#286c50;color:white}
+.danger {background:#b83232;color:white}
+.small {padding:8px 12px;font-size:12px}
+.hidden {display:none!important}
+.screen {min-height:100vh;padding:18px}
+.panel {
+  width:min(620px,100%);
+  margin:25px auto;
+  background:#fff7df;
+  color:#24382b;
+  padding:22px;
+  border-radius:22px;
+  box-shadow:0 12px 35px #0005;
 }
-.cloud{
- position:absolute;background:white;border-radius:50px;
- width:100px;height:28px;opacity:.8;
- animation:cloud 24s linear infinite
+.panel h1,.panel h2 {margin-top:0}
+.brand {
+  text-align:center;
+  color:var(--gold);
+  font-weight:1000;
+  font-size:clamp(27px,7vw,48px);
+  letter-spacing:1px;
+  text-shadow:3px 4px #713d16;
 }
-.cloud:before,.cloud:after{
- content:"";position:absolute;background:white;border-radius:50%;
- width:43px;height:43px;top:-20px;left:15px
+.subtitle {text-align:center;color:#e8e4c9}
+.field {margin:12px 0}
+.field label {display:block;font-weight:bold;margin-bottom:6px}
+.field input,.field textarea,.field select {
+  width:100%;
+  border:2px solid #d6d0b8;
+  border-radius:10px;
+  padding:12px;
+  background:white;
+  color:#172d22;
 }
-.cloud:after{left:48px;top:-12px;width:35px;height:35px}
-@keyframes cloud{from{transform:translateX(110vw)}to{transform:translateX(-150px)}}
-
-.mountain{
- position:absolute;bottom:38%;width:0;height:0;
- border-left:130px solid transparent;
- border-right:130px solid transparent;
- border-bottom:210px solid #398d9b;
+.field textarea {min-height:75px;resize:vertical}
+.row {display:flex;gap:9px;flex-wrap:wrap}
+.row>* {flex:1}
+.notice {
+  padding:12px;
+  background:#fff0bd;
+  color:#5c4612;
+  border-radius:10px;
+  margin:12px 0;
+  font-size:14px;
 }
-.mountain:after{
- content:"";position:absolute;top:35px;left:-35px;
- border-left:35px solid transparent;
- border-right:35px solid transparent;
- border-bottom:65px solid #e8ffff;
+.status {font-size:13px;min-height:20px;color:#8a301e}
+.topbar {
+  display:flex;justify-content:space-between;align-items:center;
+  gap:8px;flex-wrap:wrap;padding:10px 14px;
+  background:#102d25;border-bottom:2px solid #e7b94b;
 }
-.tree{
- position:absolute;bottom:29%;width:24px;height:90px;
- background:#80532e;border-radius:10px;
+.stat {
+  background:#235b40;padding:8px 12px;border-radius:12px;
+  font-weight:bold;font-size:13px;
 }
-.tree:before{
- content:"";position:absolute;width:90px;height:90px;
- background:#168b59;border-radius:50%;
- top:-55px;left:-33px;
- box-shadow:20px 15px 0 #2aab66,-17px 22px 0 #08764a;
+#gameScreen {padding:0;overflow:hidden}
+.game-world {
+  height:calc(100vh - 58px);
+  min-height:560px;
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(#65c9e9 0%,#b8e9df 48%,#78bd62 49%,#32834b 100%);
 }
-.ground{
- position:absolute;bottom:0;width:100%;height:34%;
- background:linear-gradient(#4bbd58,#197743);
+.sun {
+  position:absolute;right:12%;top:8%;
+  width:75px;height:75px;border-radius:50%;
+  background:#ffe477;box-shadow:0 0 35px #fff4a8;
 }
-.path{
- position:absolute;bottom:0;left:0;width:100%;height:85px;
- background:#c9a36a;transform:skewY(-3deg);
- border-top:8px solid #e6c38b;
+.cloud {
+  position:absolute;width:110px;height:28px;border-radius:30px;
+  background:#fff9e8;opacity:.9;
 }
-.flower{
- position:absolute;bottom:30%;font-size:25px;
- animation:sway 2s ease-in-out infinite alternate
+.cloud:before,.cloud:after {
+  content:"";position:absolute;background:inherit;border-radius:50%;
 }
-@keyframes sway{to{transform:rotate(12deg)}}
-
-/* HERO FULL BODY */
-#hero{
- position:absolute;z-index:5;
- width:100px;height:160px;
- left:35%;bottom:24%;
- transition:left .18s linear;
+.cloud:before {width:45px;height:45px;left:15px;top:-20px}
+.cloud:after {width:55px;height:55px;right:15px;top:-27px}
+.c1 {top:15%;left:10%}.c2 {top:24%;right:25%;transform:scale(.7)}
+.mountain {
+  position:absolute;bottom:40%;width:0;height:0;
+  border-left:150px solid transparent;border-right:150px solid transparent;
+  border-bottom:210px solid #478b76;
 }
-#hero.walking{animation:bob .24s infinite alternate}
-@keyframes bob{to{transform:translateY(-5px)}}
-.character{position:relative;width:100%;height:100%}
-.head{
- position:absolute;width:67px;height:68px;
- top:0;left:16px;background:#e9a45f;
- border-radius:48% 48% 45% 45%;
- border:4px solid #754b32;z-index:3;
+.m1 {left:-60px}.m2 {left:28%;border-bottom-color:#347e6c;transform:scale(1.2)}
+.m3 {right:-70px;border-bottom-color:#559b7a}
+.tree {
+  position:absolute;bottom:28%;width:35px;height:95px;
+  background:#79502e;border-radius:10px;
 }
-.ear{
- position:absolute;top:-15px;width:24px;height:35px;
- background:#e9a45f;border:4px solid #754b32;
- border-radius:70% 70% 20% 20%;
+.tree:before {
+  content:"";position:absolute;left:-38px;top:-48px;
+  width:110px;height:95px;border-radius:50%;
+  background:#176b43;box-shadow:20px -28px #25834d,-22px -22px #2d9251;
 }
-.ear.left{left:9px;transform:rotate(-20deg)}
-.ear.right{right:9px;transform:rotate(20deg)}
-.eye{
- position:absolute;width:8px;height:11px;
- background:#222;border-radius:50%;top:27px
+.t1 {left:5%}.t2 {right:8%;transform:scale(1.2)}
+.t3 {left:35%;transform:scale(.7)}
+.ground {
+  position:absolute;bottom:0;left:0;width:100%;height:32%;
+  background:linear-gradient(#5ba84e,#27713b);
 }
-.eye.left{left:17px}.eye.right{right:17px}
-.cheek{
- position:absolute;width:13px;height:8px;
- background:#ff9994;border-radius:50%;top:43px
+.path {
+  position:absolute;bottom:-8%;left:38%;width:30%;height:55%;
+  background:#c7a16b;transform:perspective(160px) rotateX(18deg);
+  border-radius:50% 50% 0 0;opacity:.95;
 }
-.cheek.left{left:8px}.cheek.right{right:8px}
-.nose{
- position:absolute;top:42px;left:28px;
- width:9px;height:7px;border-radius:50%;
- background:#573c35
+.flower {
+  position:absolute;bottom:20%;font-size:24px;
 }
-.body{
- position:absolute;top:60px;left:17px;
- width:65px;height:63px;background:#efad36;
- border:4px solid #754b32;
- border-radius:30px 30px 18px 18px;
- z-index:2;
+.f1 {left:16%}.f2 {left:76%;bottom:17%}.f3 {left:88%;bottom:25%}
+.world-title {
+  position:absolute;top:12px;left:50%;transform:translateX(-50%);
+  color:#fff;text-shadow:2px 2px 4px #17452c;
+  font-weight:bold;text-align:center;width:90%;
 }
-.badge{
- position:absolute;top:75px;left:39px;
- z-index:4;font-size:20px
+.character {
+  position:absolute;left:50%;bottom:22%;width:70px;height:145px;
+  transform:translateX(-50%);z-index:5;
 }
-.arm{
- position:absolute;top:73px;width:18px;height:45px;
- background:#e9a45f;border:4px solid #754b32;
- border-radius:15px;
+.char-head {
+  position:absolute;top:0;left:18px;width:36px;height:39px;
+  border-radius:48% 48% 45% 45%;background:#a9673f;
+  border:3px solid #693d28;
 }
-.arm.left{left:6px;transform:rotate(18deg)}
-.arm.right{right:5px;transform:rotate(-18deg)}
-.leg{
- position:absolute;top:113px;width:23px;height:40px;
- background:#8a5939;border:4px solid #563a2c;
- border-radius:12px;
- transform-origin:top center;
+.char-hair {
+  position:absolute;top:-4px;left:16px;width:40px;height:17px;
+  border-radius:50% 50% 25% 25%;background:#29221c;z-index:2;
 }
-.leg.left{left:24px}
-.leg.right{right:20px}
-.walking .leg.left{animation:legs .25s infinite alternate}
-.walking .leg.right{animation:legs .25s infinite alternate-reverse}
-@keyframes legs{to{transform:rotate(30deg)}}
-.foot{
- position:absolute;bottom:-2px;left:-5px;
- width:30px;height:12px;background:#513a2c;border-radius:50%
+.char-body {
+  position:absolute;top:40px;left:13px;width:44px;height:54px;
+  background:#e4a72d;border:3px solid #81511b;
+  border-radius:12px 12px 8px 8px;
 }
-#heroShadow{
- position:absolute;z-index:4;width:75px;height:15px;
- background:#175b36;opacity:.35;border-radius:50%;
- bottom:22%;left:36%;
+.char-belt {
+  position:absolute;top:76px;left:14px;width:42px;height:7px;
+  background:#54341e;z-index:2;
 }
-
-/* UI */
-#topbar{
- position:absolute;top:0;left:0;width:100%;
- z-index:10;padding:10px;
- display:flex;justify-content:space-between;gap:6px;
+.arm {
+  position:absolute;top:47px;width:13px;height:43px;
+  background:#a9673f;border:2px solid #693d28;border-radius:10px;
+  transform-origin:top;
 }
-.panel{
- background:#102e48df;border:2px solid #ffffff55;
- padding:8px 11px;border-radius:14px;
- box-shadow:0 4px 10px #173c5540;
- font-size:12px;font-weight:bold
+.arm.left {left:3px;transform:rotate(12deg)}
+.arm.right {right:3px;transform:rotate(-12deg)}
+.leg {
+  position:absolute;top:91px;width:15px;height:39px;
+  background:#315a87;border:2px solid #1c3858;
+  transform-origin:top;border-radius:5px;
 }
-#stats{display:flex;gap:5px;flex-wrap:wrap}
-#missionName{font-size:13px;color:#ffe777}
-#bottom{
- position:absolute;bottom:10px;left:0;width:100%;
- z-index:10;padding:8px;
- display:flex;justify-content:space-between;
- align-items:end;pointer-events:none
+.leg.left {left:18px}.leg.right {right:18px}
+.foot {
+  position:absolute;bottom:0;width:22px;height:10px;
+  background:#39281d;border-radius:8px;
 }
-#bottom button,#bottom .controls{pointer-events:auto}
-.controls{
- display:grid;grid-template-columns:48px 48px 48px;
- grid-template-rows:42px 42px;gap:4px
+.foot.left {left:11px}.foot.right {right:11px}
+.character.walk .leg.left {animation:walk .25s infinite alternate}
+.character.walk .leg.right {animation:walk .25s infinite alternate-reverse}
+.character.walk .arm.left {animation:arm .25s infinite alternate}
+.character.walk .arm.right {animation:arm .25s infinite alternate-reverse}
+@keyframes walk {to{transform:rotate(28deg)}}
+@keyframes arm {to{transform:rotate(-22deg)}}
+.controls {
+  position:absolute;bottom:12px;left:12px;z-index:8;
+  display:grid;grid-template-columns:48px 48px 48px;
+  grid-template-rows:45px 45px;gap:5px;
 }
-.ctrl{
- border:2px solid #ffffff99;
- background:#173b56dd;color:white;
- font-size:23px;border-radius:13px;
- box-shadow:0 4px 0 #102b40
+.controls button {
+  padding:5px;background:#153e31dd;color:white;
+  border:2px solid #ffe18a;font-size:20px;
 }
-.ctrl:active{transform:translateY(3px);box-shadow:none}
-#action{
- background:linear-gradient(135deg,#ffb52e,#ff762d);
- border:3px solid white;color:#34220c;
- font-size:15px;font-weight:bold;
- padding:15px;border-radius:17px;
- box-shadow:0 5px 0 #a44c17;
+.controls .up {grid-column:2}
+.controls .left {grid-column:1;grid-row:2}
+.controls .down {grid-column:2;grid-row:2}
+.controls .right {grid-column:3;grid-row:2}
+.interact {
+  position:absolute;right:14px;bottom:22px;z-index:8;
+  background:#ffdb63;color:#392a0b;padding:16px 19px;
 }
-#action:active{transform:translateY(3px)}
-#interaction{
- position:absolute;z-index:8;bottom:24%;
- left:50%;transform:translateX(-50%);
- color:white;background:#153e52dd;
- border-radius:20px;padding:8px 13px;
- font-size:12px;white-space:nowrap;
+.mission-modal {
+  position:absolute;inset:0;z-index:20;
+  background:#081c16c9;display:flex;align-items:center;
+  justify-content:center;padding:15px;
 }
-
-/* SCREENS */
-.screen{
- position:absolute;z-index:30;inset:0;
- display:flex;align-items:center;justify-content:center;
- padding:20px;
- background:linear-gradient(140deg,#092c4c,#116a75dd);
+.mission-card {
+  background:#fff7df;color:#23382b;border-radius:20px;
+  width:min(540px,100%);max-height:90%;overflow:auto;padding:20px;
 }
-.card{
- width:min(440px,100%);
- max-height:90%;overflow:auto;
- background:linear-gradient(150deg,#fff9df,#e4f8f1);
- color:#17394b;border-radius:25px;
- padding:23px;border:4px solid #ffd45a;
- box-shadow:0 15px 40px #061c31aa;
- text-align:center;
+.option {
+  display:block;width:100%;text-align:left;margin:9px 0;
+  background:#e7eddb;color:#203b2c;border:2px solid #c6d5b9;
 }
-.logo{
- font-size:32px;font-weight:1000;
- color:#e77c23;text-shadow:2px 3px #ffd85b;
- line-height:1.1
+.option:active {background:#f4d76d}
+.feedback {padding:12px;border-radius:10px;margin-top:10px}
+.good {background:#d5f0d4;color:#17532c}
+.bad {background:#ffe0d9;color:#7d241b}
+.bottom-hint {
+  position:absolute;top:58px;left:50%;transform:translateX(-50%);
+  background:#143d2dcc;color:white;padding:8px 12px;
+  border-radius:20px;font-size:12px;z-index:6;white-space:nowrap;
 }
-.subtitle{color:#39717a;font-weight:bold;font-size:13px}
-.bigbtn{
- width:100%;padding:15px;margin-top:10px;
- background:linear-gradient(120deg,#ffb42c,#ff783c);
- border:0;border-radius:14px;color:#3e2911;
- font-weight:900;font-size:17px;
- box-shadow:0 4px 0 #b95725;
+.list-item {
+  background:white;border:1px solid #ddd5bd;border-radius:12px;
+  padding:12px;margin:8px 0;color:#25382a;
 }
-.secondary{background:#287f8b;color:white;box-shadow:0 4px 0 #14505c}
-#questionScreen{display:none}
-.question{
- font-size:20px;font-weight:900;line-height:1.4;
- margin:15px 0;color:#183e53
+.list-item small {color:#657566}
+.tabs {display:flex;gap:7px;flex-wrap:wrap;margin-bottom:15px}
+.tabs button {background:#dfe8d7;color:#28432d}
+.tabs button.active {background:#235b40;color:white}
+#toast {
+  position:fixed;bottom:15px;left:50%;transform:translateX(-50%);
+  background:#102d25;color:white;padding:12px 18px;
+  border-radius:12px;z-index:100;display:none;
+  max-width:90%;text-align:center;
 }
-.choice{
- width:100%;text-align:left;
- padding:13px;margin:6px 0;
- border:2px solid #9ac8c0;border-radius:13px;
- background:#fff;color:#173c4b;
- font-size:14px;font-weight:bold;
-}
-.choice:active{background:#c8f2d9}
-.choice span{
- display:inline-block;background:#267f8a;
- color:white;border-radius:8px;padding:5px 9px;
- margin-right:8px
-}
-#result{font-size:15px;font-weight:bold;line-height:1.5}
-#toast{
- position:absolute;z-index:50;top:22%;
- left:50%;transform:translateX(-50%);
- background:#123e51;color:white;
- border:2px solid #ffe47b;
- padding:12px 18px;border-radius:15px;
- display:none;text-align:center;font-weight:bold;
-}
-#menu{
- display:none;position:absolute;z-index:20;
- top:75px;right:10px;
- background:#143d54;color:white;
- padding:15px;border-radius:15px;
-}
-#menu button{
- display:block;width:100%;padding:10px;
- margin:5px 0;border:0;border-radius:10px
-}
-@media(max-height:570px){
- #hero{transform:scale(.8);transform-origin:bottom}
- .card{padding:14px}
- .question{font-size:17px}
+@media(max-width:600px) {
+  .panel {padding:17px;margin:12px auto}
+  .game-world {min-height:520px}
+  .character {bottom:25%}
+  .interact {bottom:15px}
 }
 </style>
 </head>
 
 <body>
-<div id="game">
- <div id="world">
-  <div class="sun"></div>
-  <div class="cloud" style="top:17%;left:10%"></div>
-  <div class="cloud" style="top:27%;left:65%;animation-delay:-9s"></div>
 
-  <div class="mountain" style="left:4%;bottom:36%"></div>
-  <div class="mountain" style="left:40%;bottom:36%;border-bottom-color:#4b9e9b"></div>
-  <div class="mountain" style="right:-10%;bottom:36%"></div>
+<div id="toast"></div>
 
-  <div class="tree" style="left:8%;bottom:30%"></div>
-  <div class="tree" style="left:27%;bottom:30%"></div>
-  <div class="tree" style="right:14%;bottom:30%"></div>
-  <div class="tree" style="right:2%;bottom:30%"></div>
-
-  <div class="ground"></div>
-  <div class="path"></div>
-
-  <div class="flower" style="left:14%">🌺</div>
-  <div class="flower" style="left:25%;bottom:33%">🌼</div>
-  <div class="flower" style="right:23%">🌻</div>
-  <div class="flower" style="right:7%;bottom:35%">🌸</div>
- </div>
-
- <div id="topbar">
+<!-- AUTH -->
+<section id="authScreen" class="screen">
   <div class="panel">
-   <div>KARAKTER QUEST 2027</div>
-   <div id="missionName">MISI KENALI KARAKTER</div>
+    <div class="brand">MISI PAHLAWAN ALPHA</div>
+    <p class="subtitle">Pengembaraan membina jati diri di Borneo</p>
+    <h2 id="authHeading">Log Masuk</h2>
+
+    <div id="signupName" class="field hidden">
+      <label>Nama murid</label>
+      <input id="displayName" placeholder="Nama penuh">
+    </div>
+    <div class="field">
+      <label>E-mel</label>
+      <input id="email" type="email" autocomplete="username" placeholder="nama@email.com">
+    </div>
+    <div class="field">
+      <label>Kata laluan</label>
+      <input id="password" type="password" autocomplete="current-password" placeholder="Kata laluan">
+    </div>
+    <button class="primary" style="width:100%" id="authButton" onclick="authenticate()">Log Masuk</button>
+    <p class="status" id="authStatus"></p>
+    <div class="row">
+      <button class="secondary" onclick="toggleSignup()">Daftar Murid</button>
+      <button class="secondary" onclick="toggleLogin()">Kembali Login</button>
+    </div>
+    <div class="notice">
+      Akaun Master menggunakan akaun yang telah didaftarkan dalam Supabase.
+      Murid baharu boleh mendaftar melalui butang Daftar Murid.
+    </div>
   </div>
-  <div id="stats">
-   <div class="panel">⭐ <span id="xp">0</span> XP</div>
-   <div class="panel">🏅 <span id="level">1</span></div>
-   <button class="panel" onclick="toggleMenu()">☰</button>
+</section>
+
+<!-- INTRO -->
+<section id="introScreen" class="screen hidden">
+  <div class="panel" style="text-align:center">
+    <div class="brand">MISI PAHLAWAN ALPHA</div>
+    <p class="subtitle">THE GREAT BORNEO ADVENTURE</p>
+    <h2>Selamat Datang, <span id="welcomeName">Pahlawan</span>!</h2>
+    <p>Alami pengembaraan, selesaikan cabaran dan bina jati diri melalui empat teras utama.</p>
+    <div class="list-item">💚 <b>PENYAYANG</b><br><small>Prihatin dan menghormati orang lain.</small></div>
+    <div class="list-item">🔥 <b>BERDAYA TAHAN</b><br><small>Tabah menghadapi cabaran.</small></div>
+    <div class="list-item">👑 <b>BERUPAYA MEMIMPIN</b><br><small>Memimpin dengan adil dan bertanggungjawab.</small></div>
+    <div class="list-item">🌏 <b>WARGANEGARA AKTIF</b><br><small>Menyumbang kepada masyarakat.</small></div>
+    <div class="notice" id="introStats">Mutiara: 0</div>
+    <button class="primary" style="width:100%" onclick="startGame()">MULAKAN PENGEMBARAAN</button>
+    <div class="row" style="margin-top:10px">
+      <button class="secondary" onclick="showLeaderboard()">🏆 Ranking</button>
+      <button class="secondary" onclick="signOut()">Log Keluar</button>
+    </div>
   </div>
- </div>
+</section>
 
- <div id="heroShadow"></div>
- <div id="hero">
-  <div class="character">
-   <div class="head">
-    <div class="ear left"></div>
-    <div class="ear right"></div>
-    <div class="eye left"></div>
-    <div class="eye right"></div>
-    <div class="cheek left"></div>
-    <div class="cheek right"></div>
-    <div class="nose"></div>
-   </div>
-   <div class="body"></div>
-   <div class="badge">★</div>
-   <div class="arm left"></div>
-   <div class="arm right"></div>
-   <div class="leg left"><div class="foot"></div></div>
-   <div class="leg right"><div class="foot"></div></div>
+<!-- GAME -->
+<section id="gameScreen" class="hidden">
+  <div class="topbar">
+    <div><b>⚔️ MISI PAHLAWAN ALPHA</b></div>
+    <div class="row" style="flex:0">
+      <div class="stat">💎 <span id="gameBalance">0</span></div>
+      <div class="stat">⏱ <span id="timeLeft">15:00</span></div>
+    </div>
+    <button class="small secondary" onclick="showLeaderboard()">🏆</button>
+    <button class="small secondary" onclick="backToIntro()">Menu</button>
   </div>
- </div>
 
- <div id="interaction">🌳 Terokai dunia Borneo</div>
+  <div class="game-world" id="world">
+    <div class="sun"></div>
+    <div class="cloud c1"></div><div class="cloud c2"></div>
+    <div class="mountain m1"></div><div class="mountain m2"></div><div class="mountain m3"></div>
+    <div class="tree t1"></div><div class="tree t2"></div><div class="tree t3"></div>
+    <div class="ground"></div><div class="path"></div>
+    <div class="flower f1">🌺</div><div class="flower f2">🌼</div><div class="flower f3">🌸</div>
 
- <div id="bottom">
-  <div class="controls">
-   <div></div>
-   <button class="ctrl" ontouchstart="move(0,-1)" onclick="move(0,-1)">⬆</button>
-   <div></div>
-   <button class="ctrl" ontouchstart="move(-1,0)" onclick="move(-1,0)">⬅</button>
-   <button class="ctrl" onclick="move(0,1)">⬇</button>
-   <button class="ctrl" ontouchstart="move(1,0)" onclick="move(1,0)">➡</button>
+    <div class="world-title">🌴 DUNIA BORNEO — TERUSKAN MISI ANDA 🌴</div>
+    <div class="bottom-hint">Berjalan ke kawasan misi dan tekan INTERAKSI</div>
+
+    <div class="character" id="character">
+      <div class="char-hair"></div><div class="char-head"></div>
+      <div class="char-body"></div><div class="char-belt"></div>
+      <div class="arm left"></div><div class="arm right"></div>
+      <div class="leg left"></div><div class="leg right"></div>
+      <div class="foot left"></div><div class="foot right"></div>
+    </div>
+
+    <div class="controls">
+      <button class="up" onclick="move(0,-1)">▲</button>
+      <button class="left" onclick="move(-1,0)">◀</button>
+      <button class="down" onclick="move(0,1)">▼</button>
+      <button class="right" onclick="move(1,0)">▶</button>
+    </div>
+    <button class="interact" onclick="interact()">INTERAKSI</button>
+
+    <div id="missionModal" class="mission-modal hidden">
+      <div class="mission-card">
+        <div style="font-size:12px;color:#55704d;font-weight:bold" id="missionPillar">TERAS</div>
+        <h2 id="missionTitle">Misi</h2>
+        <p id="missionStory"></p>
+        <hr>
+        <b id="missionQuestion"></b>
+        <div id="missionOptions"></div>
+        <div id="missionFeedback"></div>
+        <button class="secondary hidden" id="closeMission" style="width:100%;margin-top:10px" onclick="closeMission()">Kembali ke dunia</button>
+      </div>
+    </div>
   </div>
-  <button id="action" onclick="interact()">INTERAKSI ✨</button>
- </div>
+</section>
 
- <div id="toast"></div>
-
- <div id="menu">
-  <b>MENU PENGEMBARA</b>
-  <button onclick="showJournal()">📖 Jurnal Misi</button>
-  <button onclick="speakToggle()">🔊 Suara: <span id="voiceState">ON</span></button>
-  <button onclick="closeMenu()">Kembali</button>
- </div>
-
- <!-- INTRO -->
- <div class="screen" id="intro">
-  <div class="card">
-   <div style="font-size:65px">🌴🦜🌈</div>
-   <div class="logo">KARAKTER<br>QUEST 2027</div>
-   <p class="subtitle">THE GREAT BORNEO ADVENTURE</p>
-   <hr>
-   <h3>Selamat Datang, Pengembara!</h3>
-   <p>
-    Sebuah pengembaraan bermula di bumi Borneo.
-    Setiap perjalanan menguji keperibadian,
-    tindakan dan nilai diri.
-   </p>
-   <p><b>Empat Teras Karakter</b></p>
-   <p>💚 Penyayang<br>
-   🛡️ Berdaya Tahan<br>
-   👑 Berupaya Memimpin<br>
-   🌏 Warganegara Aktif</p>
-   <button class="bigbtn" onclick="startGame()">MULA PENGEMBARAAN ▶</button>
+<!-- LEADERBOARD -->
+<section id="leaderScreen" class="screen hidden">
+  <div class="panel">
+    <h1>🏆 Ranking Pahlawan</h1>
+    <div id="leaderList">Memuatkan ranking...</div>
+    <button class="secondary" style="width:100%" onclick="closeLeaderboard()">Kembali</button>
   </div>
- </div>
+</section>
 
- <!-- QUESTION -->
- <div class="screen" id="questionScreen">
-  <div class="card">
-   <div style="font-size:38px" id="qIcon">🌟</div>
-   <div class="subtitle" id="qCategory">CABARAN KARAKTER</div>
-   <div class="question" id="qText"></div>
-   <div id="choices"></div>
-   <button class="bigbtn secondary" onclick="readAll()">🔊 BACA SEMUA PILIHAN</button>
-   <div id="result"></div>
-   <button class="bigbtn" id="continueBtn" style="display:none" onclick="nextMission()">TERUSKAN ▶</button>
+<!-- MASTER -->
+<section id="masterScreen" class="screen hidden">
+  <div class="panel" style="max-width:850px">
+    <h1>👑 PANEL MASTER</h1>
+    <p>Pengurusan Misi Pahlawan Alpha</p>
+    <div class="tabs">
+      <button class="active" id="tabMissions" onclick="masterTab('missions')">Misi</button>
+      <button id="tabStudents" onclick="masterTab('students')">Murid</button>
+      <button id="tabRanking" onclick="masterTab('ranking')">Ranking</button>
+    </div>
+    <div id="masterContent">Memuatkan...</div>
+    <button class="secondary" style="width:100%;margin-top:15px" onclick="signOut()">Log Keluar</button>
   </div>
- </div>
-</div>
+</section>
 
 <script>
-const $=id=>document.getElementById(id);
+/* ================================
+   SAMBUNGAN SUPABASE
+================================ */
+const SUPABASE_URL = "https://krijvnbpbmqqyquzzrxu.supabase.co";
+const SUPABASE_KEY = "sb_publishable_NRa91_nx4Xc2PSvUoiCWWw_zgf3xJha";
 
-let xp=Number(localStorage.getItem("kq_xp")||0);
-let completed=JSON.parse(localStorage.getItem("kq_done")||"[]");
-let voice=true;
-let heroX=35,heroY=24;
-let current=0;
-let answered=false;
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const missions=[
-{
- category:"PENYAYANG",
- icon:"💚",
- title:"Misi 1: Sahabat Baharu",
- q:"Kamu melihat seorang rakan terjatuh ketika bermain. Apakah tindakan kamu?",
- a:[
- "Membantu rakan bangun dan bertanya keadaannya.",
- "Meninggalkannya kerana mahu terus bermain.",
- "Mentertawakannya bersama rakan lain."
- ],
- good:0,
- explain:"Sifat penyayang ditunjukkan melalui keprihatinan dan tindakan membantu orang lain."
-},
-{
- category:"BERDAYA TAHAN",
- icon:"🛡️",
- title:"Misi 2: Cabaran Perjalanan",
- q:"Kamu gagal menyelesaikan satu tugasan walaupun sudah mencuba. Apakah tindakan terbaik?",
- a:[
- "Berhenti mencuba kerana takut gagal.",
- "Menyalahkan orang lain.",
- "Belajar daripada kesilapan dan mencuba semula."
- ],
- good:2,
- explain:"Berdaya tahan bermaksud tidak mudah menyerah dan sanggup memperbaiki diri."
-},
-{
- category:"BERUPAYA MEMIMPIN",
- icon:"👑",
- title:"Misi 3: Ketua Pasukan",
- q:"Pasukan kamu tidak sependapat ketika membuat keputusan. Apakah tindakan seorang pemimpin yang baik?",
- a:[
- "Memaksa semua orang mengikut kehendaknya.",
- "Mendengar pandangan ahli dan mencari keputusan bersama.",
- "Membiarkan pasukan bergaduh."
- ],
- good:1,
- explain:"Pemimpin yang baik mendengar, menghormati dan membimbing pasukan."
-},
-{
- category:"WARGANEGARA AKTIF",
- icon:"🌏",
- title:"Misi 4: Kampung Bersih",
- q:"Kamu melihat sampah bertaburan di kawasan kampung. Apakah tindakan kamu?",
- a:[
- "Membuang lebih banyak sampah.",
- "Berjalan pergi tanpa peduli.",
- "Membantu membersihkan kawasan dan mengajak orang lain."
- ],
- good:2,
- explain:"Warganegara aktif mengambil tanggungjawab terhadap masyarakat dan persekitaran."
-},
-{
- category:"PENYAYANG",
- icon:"💚",
- title:"Misi 5: Rakan Memerlukan",
- q:"Seorang rakan tidak mempunyai peralatan untuk menyertai aktiviti kumpulan. Apakah tindakan kamu?",
- a:[
- "Berkongsi peralatan jika mampu.",
- "Menyuruhnya pulang.",
- "Tidak membenarkannya menyertai kumpulan."
- ],
- good:0,
- explain:"Sikap berkongsi dan mengambil berat mengukuhkan persahabatan."
-},
-{
- category:"BERDAYA TAHAN",
- icon:"🛡️",
- title:"Misi 6: Hujan di Borneo",
- q:"Hujan menyebabkan aktiviti luar terpaksa dibatalkan. Apakah tindakan kamu?",
- a:[
- "Marah dan merosakkan peralatan.",
- "Mencari aktiviti alternatif yang sesuai.",
- "Terus mengeluh dan tidak mahu melakukan apa-apa."
- ],
- good:1,
- explain:"Orang yang berdaya tahan mampu menyesuaikan diri apabila berhadapan perubahan."
-},
-{
- category:"BERUPAYA MEMIMPIN",
- icon:"👑",
- title:"Misi 7: Tanggungjawab",
- q:"Kumpulan kamu diberikan satu tugasan penting. Apakah yang perlu dilakukan?",
- a:[
- "Memberikan semua tugas kepada orang lain.",
- "Mengabaikan tugasan.",
- "Membahagikan tugas secara adil dan memantau kemajuan."
- ],
- good:2,
- explain:"Kepimpinan memerlukan amanah, perancangan dan kerjasama."
-},
-{
- category:"WARGANEGARA AKTIF",
- icon:"🌏",
- title:"Misi 8: Warisan Borneo",
- q:"Kamu menyertai program kebudayaan masyarakat setempat. Apakah sikap yang sesuai?",
- a:[
- "Menghormati kepelbagaian budaya dan belajar dengan terbuka.",
- "Mengejek budaya orang lain.",
- "Tidak menghormati peserta lain."
- ],
- good:0,
- explain:"Masyarakat yang harmoni dibina melalui sikap saling menghormati."
-}
-];
+let currentUser = null;
+let profile = null;
+let isMaster = false;
+let missions = [];
+let progressRows = [];
+let currentMission = null;
+let balance = 0;
+let remainingSeconds = 900;
+let heartbeatTimer = null;
+let clockTimer = null;
+let authMode = "login";
+let previousScreen = "introScreen";
+let playerX = 50;
+let playerY = 0;
+let currentMasterTab = "missions";
 
-function save(){
- localStorage.setItem("kq_xp",xp);
- localStorage.setItem("kq_done",JSON.stringify(completed));
+/* ================================
+   UTILITI
+================================ */
+const $ = id => document.getElementById(id);
+
+function toast(message) {
+  const el = $("toast");
+  el.textContent = message;
+  el.style.display = "block";
+  clearTimeout(toast.timer);
+  toast.timer = setTimeout(()=>el.style.display="none",3000);
 }
 
-function updateStats(){
- $("xp").textContent=xp;
- $("level").textContent=1+Math.floor(xp/100);
+function showScreen(id) {
+  ["authScreen","introScreen","gameScreen","leaderScreen","masterScreen"]
+    .forEach(x=>$(x).classList.add("hidden"));
+  $(id).classList.remove("hidden");
 }
 
-function say(text){
- if(!voice || !("speechSynthesis" in window))return;
- speechSynthesis.cancel();
- let u=new SpeechSynthesisUtterance(text);
- u.lang="ms-MY";
- u.rate=.88;
- speechSynthesis.speak(u);
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  })[c]);
 }
 
-function startGame(){
- $("intro").style.display="none";
- say("Selamat datang ke Karakter Quest 2027. Pengembaraan kamu bermula sekarang.");
- updateStats();
+function formatTime(seconds) {
+  seconds = Math.max(0,Number(seconds)||0);
+  const m = Math.floor(seconds/60);
+  const s = seconds%60;
+  return String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
 }
 
-function move(dx,dy){
- if($("intro").style.display!=="none")return;
- if($("questionScreen").style.display==="flex")return;
-
- heroX=Math.max(4,Math.min(88,heroX+dx*4));
- heroY=Math.max(21,Math.min(34,heroY+dy*2));
-
- $("hero").style.left=heroX+"%";
- $("hero").style.bottom=heroY+"%";
- $("hero").classList.add("walking");
- setTimeout(()=>$("hero").classList.remove("walking"),300);
-
- $("heroShadow").style.left=(heroX+1)+"%";
- $("interaction").textContent="✨ Bergerak meneroka Borneo";
+function setAuthMessage(message) {
+  $("authStatus").textContent = message;
 }
 
-function interact(){
- if(completed.length>=missions.length){
-  toast("🏆 Tahniah! Semua misi contoh telah selesai.");
-  return;
- }
- current=completed.length;
- showQuestion();
+/* ================================
+   AUTH: LOGIN / DAFTAR
+================================ */
+function toggleSignup() {
+  authMode = "signup";
+  $("authHeading").textContent = "Daftar Akaun Murid";
+  $("authButton").textContent = "Daftar Akaun";
+  $("signupName").classList.remove("hidden");
+  $("password").autocomplete = "new-password";
+  setAuthMessage("");
 }
 
-function showQuestion(){
- let m=missions[current];
- answered=false;
-
- $("questionScreen").style.display="flex";
- $("qIcon").textContent=m.icon;
- $("qCategory").textContent=m.category+" • "+m.title;
- $("qText").textContent=m.q;
- $("result").textContent="";
- $("continueBtn").style.display="none";
- $("choices").innerHTML="";
-
- m.a.forEach((a,i)=>{
-  let b=document.createElement("button");
-  b.className="choice";
-  b.innerHTML="<span>"+String.fromCharCode(65+i)+"</span>"+a;
-  b.onclick=()=>choose(i);
-  $("choices").appendChild(b);
- });
-
- say(m.title+". "+m.q);
+function toggleLogin() {
+  authMode = "login";
+  $("authHeading").textContent = "Log Masuk";
+  $("authButton").textContent = "Log Masuk";
+  $("signupName").classList.add("hidden");
+  $("password").autocomplete = "current-password";
+  setAuthMessage("");
 }
 
-function readAll(){
- let m=missions[current];
- let all=m.q+" ";
- m.a.forEach((a,i)=>{
-  all+="Pilihan "+String.fromCharCode(65+i)+". "+a+". ";
- });
- say(all);
+async function authenticate() {
+  const email = $("email").value.trim();
+  const password = $("password").value;
+  const name = $("displayName").value.trim();
+
+  if (!email || !password) {
+    setAuthMessage("Masukkan e-mel dan kata laluan.");
+    return;
+  }
+  if (authMode==="signup" && !name) {
+    setAuthMessage("Masukkan nama murid.");
+    return;
+  }
+
+  $("authButton").disabled = true;
+  setAuthMessage("Sedang menghubungkan...");
+
+  try {
+    if (authMode==="signup") {
+      const {data,error} = await db.auth.signUp({
+        email,password,
+        options:{data:{display_name:name,username:name}}
+      });
+      if(error) throw error;
+
+      if(!data.session) {
+        setAuthMessage("Pendaftaran diterima. Semak e-mel untuk pengesahan akaun jika diminta.");
+        return;
+      }
+      currentUser = data.user;
+    } else {
+      const {data,error} = await db.auth.signInWithPassword({email,password});
+      if(error) throw error;
+      currentUser = data.user;
+    }
+    await loadUser();
+  } catch(error) {
+    setAuthMessage(error.message || "Tidak berjaya. Cuba sekali lagi.");
+  } finally {
+    $("authButton").disabled = false;
+  }
 }
 
-function choose(i){
- if(answered)return;
- answered=true;
-
- let m=missions[current];
- let correct=i===m.good;
-
- if(correct){
-  xp+=20;
-  completed.push(current);
-  $("result").innerHTML=
-   "🌟 TINDAKAN TERPUJI!<br>+20 XP<br><br>"+m.explain;
- }else{
-  $("result").innerHTML=
-   "💡 FIKIRKAN SEMULA<br><br>"+m.explain+
-   "<br><br>Cuba fahami nilai karakter yang sedang diuji.";
-  // Tidak menutup peluang belajar.
-  completed.push(current);
- }
-
- save();
- updateStats();
-
- [...$("choices").children].forEach((b,n)=>{
-  b.disabled=true;
-  if(n===m.good)b.style.background="#c4f0cf";
-  if(n===i&&!correct)b.style.background="#ffe1d5";
- });
-
- $("continueBtn").style.display="block";
- say(correct?"Syabas! Tindakan kamu menunjukkan karakter yang baik. "+m.explain:
- "Mari kita belajar. "+m.explain);
+async function signOut() {
+  stopTimers();
+  await db.auth.signOut();
+  currentUser = null;
+  profile = null;
+  isMaster = false;
+  showScreen("authScreen");
+  toggleLogin();
+  toast("Anda telah log keluar.");
 }
 
-function nextMission(){
- $("questionScreen").style.display="none";
+/* ================================
+   MUAT PROFIL
+================================ */
+async function loadUser() {
+  const {data,error} = await db
+    .from("profiles")
+    .select("id,username,display_name,role")
+    .eq("id",currentUser.id)
+    .single();
 
- if(completed.length>=missions.length){
-  toast("🏆 Pengembaraan contoh selesai!");
-  return;
- }
+  if(error) {
+    setAuthMessage("Akaun ditemui tetapi profil belum tersedia: "+error.message);
+    return;
+  }
 
- current=completed.length;
- $("missionName").textContent="MISI "+(current+1);
- toast("Misi seterusnya menanti!");
+  profile = data;
+  isMaster = data.role === "master";
+
+  if(isMaster) {
+    showScreen("masterScreen");
+    await masterTab("missions");
+  } else {
+    await loadStudentData();
+    $("welcomeName").textContent = profile.display_name || profile.username || "Pahlawan";
+    $("introStats").textContent = "💎 Mutiara: "+balance+" | ⏱ Baki masa: "+formatTime(remainingSeconds);
+    showScreen("introScreen");
+  }
 }
 
-function toast(t){
- $("toast").textContent=t;
- $("toast").style.display="block";
- setTimeout(()=>$("toast").style.display="none",2300);
+/* ================================
+   DATA MURID
+================================ */
+async function loadStudentData() {
+  const {data:missionData,error:missionError} = await db
+    .from("missions")
+    .select("*")
+    .eq("published",true)
+    .order("week_number")
+    .order("day_number");
+
+  if(missionError) throw missionError;
+  missions = missionData || [];
+
+  const {data:progress,error:progressError} = await db
+    .from("student_progress")
+    .select("mission_id,completed,xp")
+    .eq("user_id",currentUser.id);
+
+  if(progressError) throw progressError;
+  progressRows = progress || [];
+  balance = progressRows.reduce((sum,row)=>sum+(Number(row.xp)||0),0);
+  balance = Math.max(0,balance);
+
+  $("gameBalance").textContent = balance;
+
+  try {
+    const {data,error} = await db.rpc("record_daily_usage");
+    if(!error) updateUsage(data);
+    else console.warn("Rekod masa:",error.message);
+  } catch(e) {
+    console.warn(e);
+  }
 }
 
-function toggleMenu(){
- $("menu").style.display=
- $("menu").style.display==="block"?"none":"block";
+function attempted(missionId) {
+  return progressRows.some(row=>String(row.mission_id)===String(missionId));
 }
 
-function closeMenu(){
- $("menu").style.display="none";
+/* ================================
+   MULAKAN PERMAINAN
+================================ */
+async function startGame() {
+  try {
+    await loadStudentData();
+    if(remainingSeconds<=0) {
+      toast("Had masa harian telah digunakan.");
+      return;
+    }
+    showScreen("gameScreen");
+    startTimers();
+    toast("Selamat berjuang, Pahlawan!");
+  } catch(error) {
+    toast("Gagal memuatkan misi: "+error.message);
+  }
 }
 
-function speakToggle(){
- voice=!voice;
- $("voiceState").textContent=voice?"ON":"OFF";
- if(!voice)speechSynthesis.cancel();
+function backToIntro() {
+  stopTimers();
+  $("missionModal").classList.add("hidden");
+  $("introStats").textContent = "💎 Mutiara: "+balance+" | ⏱ Baki masa: "+formatTime(remainingSeconds);
+  showScreen("introScreen");
 }
 
-function showJournal(){
- closeMenu();
- toast("📖 Misi selesai: "+completed.length);
+/* ================================
+   PERGERAKAN WATAK
+================================ */
+function move(dx,dy) {
+  if(!$("missionModal").classList.contains("hidden")) return;
+  if(remainingSeconds<=0) return;
+
+  playerX = Math.max(7,Math.min(93,playerX+dx*3));
+  playerY = Math.max(-12,Math.min(12,playerY+dy*3));
+
+  const char = $("character");
+  char.style.left = playerX+"%";
+  char.style.bottom = (22+playerY)+"%";
+  char.classList.add("walk");
+
+  clearTimeout(move.timer);
+  move.timer = setTimeout(()=>char.classList.remove("walk"),350);
 }
 
-updateStats();
+function interact() {
+  if(remainingSeconds<=0) {
+    toast("Masa harian telah tamat.");
+    return;
+  }
+  const available = missions.filter(m=>!attempted(m.id));
+  if(!available.length) {
+    toast("Semua misi yang tersedia telah dijawab.");
+    return;
+  }
+
+  const mission = available[0];
+  openMission(mission);
+}
+
+/* ================================
+   PAPAR MISI
+================================ */
+function openMission(mission) {
+  currentMission = mission;
+  $("missionPillar").textContent = (mission.pillar||"MISI").toUpperCase();
+  $("missionTitle").textContent = mission.title || "Misi";
+  $("missionStory").textContent = mission.story || "";
+  $("missionQuestion").textContent = mission.question || "";
+  $("missionFeedback").innerHTML = "";
+  $("closeMission").classList.add("hidden");
+
+  const options = Array.isArray(mission.options) ? mission.options : [];
+  $("missionOptions").innerHTML = "";
+
+  options.forEach((option,index)=>{
+    const button = document.createElement("button");
+    button.className = "option";
+    button.textContent = String.fromCharCode(65+index)+". "+option;
+    button.onclick = ()=>submitAnswer(String(option),button);
+    $("missionOptions").appendChild(button);
+  });
+
+  $("missionModal").classList.remove("hidden");
+
+  speak(
+    (mission.title||"Misi")+". "+
+    (mission.story||"")+". "+
+    (mission.question||"")+". "+
+    options.map((o,i)=>String.fromCharCode(65+i)+". "+o).join(". ")
+  );
+}
+
+function speak(text) {
+  if(!("speechSynthesis" in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = "ms-MY";
+  utterance.rate = 0.9;
+  window.speechSynthesis.speak(utterance);
+}
+
+/* ================================
+   HANTAR JAWAPAN KE SUPABASE
+================================ */
+async function submitAnswer(answer,button) {
+  if(!currentMission) return;
+
+  const buttons = $("missionOptions").querySelectorAll("button");
+  buttons.forEach(b=>b.disabled=true);
+
+  button.textContent += " ✓";
+  $("missionFeedback").textContent = "Menyemak jawapan...";
+  $("missionFeedback").className = "feedback";
+
+  try {
+    const {data,error} = await db.rpc("submit_mission_answer",{
+      p_mission_id:currentMission.id,
+      p_answer:answer
+    });
+
+    if(error) throw error;
+
+    const result = Array.isArray(data) ? data[0] : data;
+    const correct = result.correct === true;
+    const change = Number(result.xp_change ?? (correct?20:-3));
+    balance = Math.max(0,Number(result.balance ?? (balance+change)));
+
+    $("gameBalance").textContent = balance;
+
+    const explanation = result.explanation || currentMission.explanation || "";
+    $("missionFeedback").className = "feedback "+(correct?"good":"bad");
+    $("missionFeedback").innerHTML =
+      "<b>"+(correct?"🎉 JAWAPAN BETUL!":"❌ JAWAPAN BELUM TEPAT")+"</b><br>"+
+      (correct?"+":"")+change+" Mutiara<br>"+
+      escapeHTML(explanation);
+
+    await refreshProgress();
+    $("closeMission").classList.remove("hidden");
+    speak(correct?"Tahniah! Jawapan anda betul.":"Jawapan belum tepat. Teruskan usaha. "+explanation);
+
+  } catch(error) {
+    $("missionFeedback").className = "feedback bad";
+    $("missionFeedback").textContent = "Jawapan tidak dapat dihantar: "+error.message;
+    buttons.forEach(b=>b.disabled=false);
+    button.disabled=true;
+  }
+}
+
+async function refreshProgress() {
+  const {data,error} = await db
+    .from("student_progress")
+    .select("mission_id,completed,xp")
+    .eq("user_id",currentUser.id);
+  if(error) throw error;
+
+  progressRows = data || [];
+  balance = Math.max(0,progressRows.reduce((sum,row)=>sum+(Number(row.xp)||0),0));
+  $("gameBalance").textContent = balance;
+}
+
+function closeMission() {
+  $("missionModal").classList.add("hidden");
+  currentMission = null;
+  window.speechSynthesis?.cancel();
+  if(missions.every(m=>attempted(m.id))) {
+    toast("Tahniah! Semua misi yang tersedia telah dicuba.");
+  }
+}
+
+/* ================================
+   HAD MASA 15 MINIT
+================================ */
+function updateUsage(data) {
+  if(!data) return;
+  const result = Array.isArray(data)?data[0]:data;
+
+  const possible = [
+    result.remaining_seconds,
+    result.seconds_remaining,
+    result.remaining,
+    result.seconds_left
+  ];
+  const found = possible.find(v=>v!==undefined && v!==null);
+  if(found!==undefined) remainingSeconds = Math.max(0,Number(found));
+
+  if(result.seconds_used!==undefined && found===undefined) {
+    remainingSeconds = Math.max(0,900-Number(result.seconds_used));
+  }
+  $("timeLeft").textContent = formatTime(remainingSeconds);
+}
+
+function startTimers() {
+  stopTimers();
+
+  heartbeatTimer = setInterval(async()=>{
+    if(document.hidden) return;
+    try {
+      const {data,error} = await db.rpc("record_daily_usage");
+      if(error) throw error;
+      updateUsage(data);
+
+      if(remainingSeconds<=0) {
+        stopTimers();
+        toast("Masa 15 minit anda telah tamat.");
+        $("missionModal").classList.add("hidden");
+      }
+    } catch(error) {
+      console.warn("Heartbeat gagal:",error.message);
+    }
+  },20000);
+
+  clockTimer = setInterval(()=>{
+    if(remainingSeconds>0) remainingSeconds--;
+    $("timeLeft").textContent = formatTime(remainingSeconds);
+    if(remainingSeconds<=0) {
+      stopTimers();
+      toast("Masa harian telah tamat.");
+      $("missionModal").classList.add("hidden");
+    }
+  },1000);
+}
+
+function stopTimers() {
+  if(heartbeatTimer) clearInterval(heartbeatTimer);
+  if(clockTimer) clearInterval(clockTimer);
+  heartbeatTimer = null;
+  clockTimer = null;
+}
+
+/* ================================
+   RANKING
+================================ */
+async function showLeaderboard() {
+  previousScreen = isMaster?"masterScreen":"introScreen";
+  showScreen("leaderScreen");
+  $("leaderList").textContent = "Memuatkan ranking...";
+
+  try {
+    const {data,error} = await db.rpc("get_leaderboard");
+    if(error) throw error;
+
+    if(!data || !data.length) {
+      $("leaderList").textContent = "Belum ada rekod ranking.";
+      return;
+    }
+
+    $("leaderList").innerHTML = data.map(row=>`
+      <div class="list-item">
+        <b>#${escapeHTML(row.rank)} — ${escapeHTML(row.student_name||"Murid")}</b>
+        <div>💎 ${escapeHTML(row.total_mutiara)} Mutiara</div>
+        <small>✅ ${escapeHTML(row.missions_completed)} misi berjaya</small>
+      </div>
+    `).join("");
+  } catch(error) {
+    $("leaderList").textContent = "Gagal memuatkan ranking: "+error.message;
+  }
+}
+
+function closeLeaderboard() {
+  if(previousScreen==="masterScreen") {
+    showScreen("masterScreen");
+    masterTab("ranking");
+  } else {
+    showScreen("introScreen");
+  }
+}
+
+/* ================================
+   PANEL MASTER
+================================ */
+async function masterTab(tab) {
+  currentMasterTab = tab;
+  ["tabMissions","tabStudents","tabRanking"].forEach(id=>$(id).classList.remove("active"));
+
+  const tabIds = {missions:"tabMissions",students:"tabStudents",ranking:"tabRanking"};
+  $(tabIds[tab]).classList.add("active");
+
+  if(tab==="missions") await loadMasterMissions();
+  if(tab==="students") await loadMasterStudents();
+  if(tab==="ranking") await loadMasterRanking();
+}
+
+async function loadMasterMissions() {
+  $("masterContent").textContent = "Memuatkan senarai misi...";
+  const {data,error} = await db.from("missions").select("*")
+    .order("week_number").order("day_number");
+
+  if(error) {
+    $("masterContent").textContent = error.message;
+    return;
+  }
+
+  let html = `
+    <h2>Pengurusan Misi</h2>
+    <button class="primary" onclick="missionForm()">+ Tambah Misi</button>
+  `;
+
+  (data||[]).forEach(m=>{
+    html += `
+      <div class="list-item">
+        <b>${escapeHTML(m.title)}</b>
+        <div><small>${escapeHTML(m.pillar)} | Minggu ${m.week_number}, Hari ${m.day_number}</small></div>
+        <div><small>Status: ${m.published?"Diterbitkan":"Disembunyikan"}</small></div>
+        <div class="row" style="margin-top:8px">
+          <button class="secondary small" onclick="missionForm(${Number(m.id)})">Edit</button>
+          <button class="secondary small" onclick="togglePublish(${Number(m.id)},${!m.published})">${m.published?"Sembunyikan":"Terbitkan"}</button>
+        </div>
+      </div>
+    `;
+  });
+
+  $("masterContent").innerHTML = html;
+}
+
+async function missionForm(id=null) {
+  let mission = null;
+
+  if(id!==null) {
+    const {data,error} = await db.from("missions").select("*").eq("id",id).single();
+    if(error) {toast(error.message);return}
+    mission = data;
+  }
+
+  const options = mission?.options || ["Pilihan A","Pilihan B","Pilihan C"];
+  $("masterContent").innerHTML = `
+    <h2>${mission?"Edit Misi":"Tambah Misi"}</h2>
+    <div class="field"><label>Minggu</label><input id="mfWeek" type="number" min="1" value="${mission?.week_number||1}"></div>
+    <div class="field"><label>Hari</label><input id="mfDay" type="number" min="1" value="${mission?.day_number||1}"></div>
+    <div class="field"><label>Teras</label>
+      <select id="mfPillar">
+        ${["Penyayang","Berdaya Tahan","Berupaya Memimpin","Warganegara Aktif"].map(p=>`<option ${mission?.pillar===p?"selected":""}>${p}</option>`).join("")}
+      </select>
+    </div>
+    <div class="field"><label>Tajuk</label><input id="mfTitle" value="${escapeHTML(mission?.title||"")}"></div>
+    <div class="field"><label>Cerita</label><textarea id="mfStory">${escapeHTML(mission?.story||"")}</textarea></div>
+    <div class="field"><label>Soalan</label><textarea id="mfQuestion">${escapeHTML(mission?.question||"")}</textarea></div>
+    <div class="field"><label>Pilihan A</label><input id="mfA" value="${escapeHTML(options[0]||"")}"></div>
+    <div class="field"><label>Pilihan B</label><input id="mfB" value="${escapeHTML(options[1]||"")}"></div>
+    <div class="field"><label>Pilihan C</label><input id="mfC" value="${escapeHTML(options[2]||"")}"></div>
+    <div class="field"><label>Jawapan betul</label>
+      <select id="mfCorrect">
+        ${["A","B","C"].map((x,i)=>`<option value="${i}" ${options[i]===mission?.correct_answer?"selected":""}>${x}</option>`).join("")}
+      </select>
+    </div>
+    <div class="field"><label>Penerangan jawapan</label><textarea id="mfExplanation">${escapeHTML(mission?.explanation||"")}</textarea></div>
+    <div class="row">
+      <button class="primary" onclick="saveMission(${mission?Number(mission.id):"null"})">Simpan</button>
+      <button class="secondary" onclick="loadMasterMissions()">Batal</button>
+    </div>
+  `;
+}
+
+async function saveMission(id) {
+  const options = [$("mfA").value.trim(),$("mfB").value.trim(),$("mfC").value.trim()];
+  const correctIndex = Number($("mfCorrect").value);
+
+  if(!options.every(Boolean)) {toast("Lengkapkan ketiga-tiga pilihan.");return}
+
+  const payload = {
+    week_number:Number($("mfWeek").value),
+    day_number:Number($("mfDay").value),
+    pillar:$("mfPillar").value,
+    title:$("mfTitle").value.trim(),
+    story:$("mfStory").value.trim(),
+    question:$("mfQuestion").value.trim(),
+    options,
+    correct_answer:options[correctIndex],
+    explanation:$("mfExplanation").value.trim()
+  };
+
+  if(!payload.title || !payload.question) {
+    toast("Tajuk dan soalan diperlukan.");
+    return;
+  }
+
+  let response;
+  if(id===null) {
+    payload.published = false;
+    response = await db.from("missions").insert(payload);
+  } else {
+    response = await db.from("missions").update(payload).eq("id",id);
+  }
+
+  if(response.error) {
+    toast("Gagal menyimpan: "+response.error.message);
+    return;
+  }
+
+  toast("Misi berjaya disimpan.");
+  await loadMasterMissions();
+}
+
+async function togglePublish(id,published) {
+  const {error} = await db.from("missions").update({published}).eq("id",id);
+  if(error) {toast(error.message);return}
+  toast(published?"Misi diterbitkan.":"Misi disembunyikan.");
+  await loadMasterMissions();
+}
+
+async function loadMasterStudents() {
+  $("masterContent").textContent = "Memuatkan senarai murid...";
+  const {data,error} = await db.from("profiles")
+    .select("id,username,display_name,role")
+    .order("display_name");
+
+  if(error) {
+    $("masterContent").textContent = error.message;
+    return;
+  }
+
+  const students = (data||[]).filter(p=>p.role==="student");
+
+  $("masterContent").innerHTML = "<h2>Senarai Murid</h2>"+
+    (students.length?students.map(s=>`
+      <div class="list-item">
+        <b>${escapeHTML(s.display_name||s.username||"Murid")}</b>
+        <div><small>${escapeHTML(s.username||"")}</small></div>
+        <div><small>ID: ${escapeHTML(s.id)}</small></div>
+      </div>
+    `).join(""):"Belum ada murid berdaftar.");
+}
+
+async function loadMasterRanking() {
+  $("masterContent").textContent = "Memuatkan ranking...";
+  const {data,error} = await db.rpc("get_leaderboard");
+
+  if(error) {
+    $("masterContent").textContent = error.message;
+    return;
+  }
+
+  $("masterContent").innerHTML = "<h2>Ranking Murid</h2>"+
+    ((data||[]).map(row=>`
+      <div class="list-item">
+        <b>#${escapeHTML(row.rank)} ${escapeHTML(row.student_name||"Murid")}</b>
+        <div>💎 ${escapeHTML(row.total_mutiara)} Mutiara</div>
+        <small>✅ ${escapeHTML(row.missions_completed)} misi berjaya</small>
+      </div>
+    `).join("")||"Belum ada rekod.");
+}
+
+/* ================================
+   PEMULIHAN SESSION
+================================ */
+async function initialise() {
+  const {data} = await db.auth.getSession();
+
+  if(data.session) {
+    currentUser = data.session.user;
+    await loadUser();
+  } else {
+    showScreen("authScreen");
+  }
+
+  db.auth.onAuthStateChange(async(event,session)=>{
+    if(event==="SIGNED_OUT") {
+      stopTimers();
+      currentUser = null;
+      showScreen("authScreen");
+    }
+  });
+}
+
+initialise();
 </script>
 </body>
 </html>
