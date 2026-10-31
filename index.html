@@ -108,10 +108,10 @@ footer{text-align:center;color:#c4dfc9;font-size:11px;padding:10px}
 
 <body>
 
-<!-- MUZIK ASAL: MP3 DALAM FOLDER YANG SAMA DENGAN index.html -->
-<audio id="bgMusic" src="./Naga%20Api%20Zabarjad.mp3" preload="auto" loop></audio>
+<audio id="bgMusic" src="https://idmiidmi.github.io/Misi-Pahlawan-Alpha/Naga%20Api%20Zabarjad.mp3" preload="auto" loop></audio>
 
-<section id="openingScreen" class="screen active center">
+<!-- SKRIN PEMBUKAAN DIKEKALKAN, TETAPI BUKAN SKRIN PERTAMA -->
+<section id="openingScreen" class="screen center">
  <div style="font-size:65px">🌴 🦜 🌺</div>
  <div class="logo">MISI<br>PAHLAWAN<br>ALPHA</div>
  <p class="subtitle">PENGEMBARAAN ILMU BORNEO</p>
@@ -125,7 +125,6 @@ footer{text-align:center;color:#c4dfc9;font-size:11px;padding:10px}
   <label>Volume</label>
   <input type="range" min="0" max="100" value="45" oninput="setMusicVolume(this.value)">
  </div>
- <button class="secondary" style="width:240px;margin-top:15px" onclick="guestPlay()">CUBA TANPA LOG MASUK</button>
  <footer>© MISI PAHLAWAN ALPHA</footer>
 </section>
 
@@ -142,20 +141,38 @@ footer{text-align:center;color:#c4dfc9;font-size:11px;padding:10px}
    </div>
    <button class="secondary" style="width:100%;margin-top:12px" onclick="toggleStoryVoice()">🔊 BACA / ULANG NARATOR</button>
    <button class="secondary" style="width:100%;margin-top:10px" onclick="stopVoice()">🔇 HENTIKAN SUARA</button>
-   <button class="secondary" style="width:100%;margin-top:10px" onclick="goToLogin()">LOG MASUK</button>
+   <button class="secondary" style="width:100%;margin-top:10px" onclick="goToLogin()">🔐 LOG MASUK / DAFTAR</button>
   </div>
  </div>
 </section>
 
-<section id="authScreen" class="screen center">
+<!-- SKRIN LOG MASUK MENJADI SKRIN PERTAMA -->
+<section id="authScreen" class="screen active center">
  <div class="panel">
+  <div style="font-size:45px">🌴 🦜 🌺</div>
   <h2>🔐 Pintu Pengembaraan</h2>
-  <label>Emel</label><input id="email" type="email" placeholder="Masukkan emel">
-  <label>Kata laluan</label><input id="password" type="password" placeholder="Kata laluan">
+  <p>Selamat datang ke Misi Pahlawan Alpha.</p>
+  <p>Semua murid perlu log masuk atau mendaftar akaun sebelum bermain.</p>
+
+  <label>Nama murid (untuk pendaftaran sahaja)</label>
+  <input id="fullName" type="text" maxlength="80" placeholder="Nama penuh murid">
+
+  <label>Emel</label>
+  <input id="email" type="email" placeholder="Masukkan emel">
+
+  <label>Kata laluan</label>
+  <input id="password" type="password" minlength="6" placeholder="Minimum 6 aksara">
+
   <button style="width:100%" onclick="login()">LOG MASUK</button>
-  <button class="secondary" style="width:100%;margin-top:12px" onclick="register()">DAFTAR AKAUN</button>
-  <button class="secondary" style="width:100%;margin-top:12px" onclick="showScreen('storyScreen')">KEMBALI KE INTRO</button>
-  <p id="authMessage" class="small"></p>
+  <button class="secondary" style="width:100%;margin-top:12px" onclick="register()">DAFTAR AKAUN MURID</button>
+
+  <div class="musicControl" style="margin-top:16px">
+   <button class="secondary" onclick="toggleMusic()">🎵 MUZIK ON / OFF</button>
+   <label>Volume</label>
+   <input type="range" min="0" max="100" value="45" oninput="setMusicVolume(this.value)">
+  </div>
+  <p id="authMessage" class="small" aria-live="polite"></p>
+  <footer>© MISI PAHLAWAN ALPHA</footer>
  </div>
 </section>
 
@@ -165,6 +182,7 @@ footer{text-align:center;color:#c4dfc9;font-size:11px;padding:10px}
   <p>Pilih sahabat yang akan menemani pengembaraan.</p>
   <div class="characterGrid" id="characterGrid"></div>
   <button style="width:100%;margin-top:15px" onclick="confirmCharacter()">PILIH WATAK INI</button>
+  <button class="secondary" style="width:100%;margin-top:12px" onclick="logout()">LOG KELUAR</button>
  </div>
 </section>
 
@@ -272,10 +290,8 @@ let musicOn=true;
 
 async function startMusic(){
  if(!musicOn)return;
- try{
-  bgMusic.volume=Number(bgMusic.volume)||0.45;
-  await bgMusic.play();
- }catch(e){
+ try{await bgMusic.play()}
+ catch(e){
   console.warn("Muzik tidak dapat dimainkan:",e);
   toast("Muzik belum dapat dimainkan. Semak lokasi fail MP3.");
  }
@@ -290,26 +306,20 @@ function setMusicVolume(value){
  bgMusic.volume=Math.max(0,Math.min(1,Number(value)/100));
 }
 
-/* SUARA NARATOR DAN SOALAN */
+/* SUARA */
 function stopVoice(){
  if("speechSynthesis" in window)window.speechSynthesis.cancel();
 }
 function speakText(text){
  if(!("speechSynthesis" in window)){
-  toast("Pelayar tidak menyokong fungsi suara.");
-  return;
+  toast("Pelayar tidak menyokong fungsi suara.");return;
  }
  stopVoice();
  const utterance=new SpeechSynthesisUtterance(String(text));
- utterance.lang="ms-MY";
- utterance.rate=0.88;
- utterance.pitch=1;
- utterance.volume=1;
-
+ utterance.lang="ms-MY";utterance.rate=0.88;utterance.pitch=1;utterance.volume=1;
  const voices=window.speechSynthesis.getVoices();
  const malay=voices.find(v=>v.lang.toLowerCase().startsWith("ms"));
  if(malay)utterance.voice=malay;
-
  utterance.onerror=()=>toast("Suara gagal dimainkan. Semak Teks-ke-Ucapan Android.");
  window.speechSynthesis.speak(utterance);
 }
@@ -355,21 +365,32 @@ const defaultMissions=[
 ];
 
 /* STATUS PERMAINAN */
-let user=null,profile=null,isMaster=false,guest=false;
+let user=null,profile=null,isMaster=false;
 let selectedCharacter="hamster";
 let missions=defaultMissions.map(m=>({...m}));
 let progress={},balance=0,currentArea=0;
 let heroX=45,heroY=22;
 let remainingSeconds=900,timer=null;
 let selectedAnswer=null,currentMission=null,pearlTaken=false;
+let authBusy=false;
 
+function requireLogin(){
+ if(!user){
+  clearInterval(timer);
+  showScreen("authScreen");
+  document.getElementById("authMessage").textContent="Sila log masuk dahulu untuk bermain.";
+  return false;
+ }
+ return true;
+}
 function attempted(id){return !!progress[id]?.attempted}
 function attemptedCount(){return Object.keys(progress).filter(k=>progress[k]?.attempted).length}
-function areaUnlocked(i){return isMaster||guest||attemptedCount()>=areas[i].unlock}
-function localKey(){return "mpa_"+(user?.id||"guest")}
+function areaUnlocked(i){return isMaster||attemptedCount()>=areas[i].unlock}
+function localKey(){return "mpa_"+user.id}
 
 /* INTRO */
 function beginStory(){
+ if(!requireLogin())return;
  storyIndex=0;renderStory();showScreen("storyScreen");
  startMusic();speakText(storyScenes[0].text);
 }
@@ -394,12 +415,16 @@ function previousStory(){
 function toggleStoryVoice(){speakText(storyScenes[storyIndex].text)}
 function goToLogin(){stopVoice();showScreen("authScreen")}
 function speakWelcome(){
+ if(!requireLogin())return;
  speakText("Selamat datang, wira. "+(profile?.full_name||"Pengembara")+
  " . Dunia Borneo menanti untuk diterokai. Selesaikan lapan cabaran dan kumpulkan Mutiara.");
 }
 
 /* PAPARAN */
 function showScreen(id){
+ if(["gameScreen","introScreen","characterScreen","leaderScreen","masterScreen","storyScreen"].includes(id)&&!user){
+  id="authScreen";
+ }
  stopVoice();
  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
  document.getElementById(id)?.classList.add("active");
@@ -411,6 +436,7 @@ function toast(msg){
  setTimeout(()=>t.style.display="none",2600);
 }
 function showModal(html){
+ if(!requireLogin())return;
  stopVoice();
  document.getElementById("modalContent").innerHTML=html;
  document.getElementById("modal").style.display="flex";
@@ -461,9 +487,13 @@ function renderCharacterPicker(){
  `<div class="character ${selectedCharacter===c.id?"selected":""}" onclick="chooseCharacter('${c.id}')">
  <div class="animal">${c.emoji}</div><b>${c.name}</b></div>`).join("");
 }
-function chooseCharacter(id){selectedCharacter=id;renderCharacterPicker()}
+function chooseCharacter(id){
+ if(!requireLogin())return;
+ selectedCharacter=id;renderCharacterPicker();
+}
 async function confirmCharacter(){
- if(user&&!guest)await saveCharacter();
+ if(!requireLogin())return;
+ await saveCharacter();
  document.getElementById("hero").innerHTML=heroGraphic();
  document.getElementById("welcomeName").textContent="Wira "+(characters.find(c=>c.id===selectedCharacter)?.name||"");
  showScreen("introScreen");speakWelcome();
@@ -475,27 +505,32 @@ function renderAreas(){
  `<button class="${i===currentArea?"":"secondary"}" onclick="travelTo(${i})">${a.emoji} ${a.name} ${areaUnlocked(i)?"":"🔒"}</button>`).join("");
 }
 function renderWorld(){
+ if(!requireLogin())return;
  document.getElementById("locationLabel").textContent=areas[currentArea].name.toUpperCase();
  const hero=document.getElementById("hero");
  hero.style.left=heroX+"%";hero.style.bottom=heroY+"%";
  hero.innerHTML=heroGraphic();renderAreas();
 }
 function travelTo(i){
+ if(!requireLogin())return;
  if(!areaUnlocked(i)){toast("Selesaikan lebih banyak misi untuk membuka kawasan ini.");return}
  currentArea=i;heroX=45;heroY=22;renderWorld();
 }
 function move(dx,dy){
- if(!isMaster&&!guest&&remainingSeconds<=0){toast("Masa permainan tamat.");return}
+ if(!requireLogin())return;
+ if(!isMaster&&remainingSeconds<=0){toast("Masa permainan tamat.");return}
  heroX=Math.max(5,Math.min(85,heroX+dx*5));
  heroY=Math.max(10,Math.min(45,heroY+dy*4));
  const hero=document.getElementById("hero");
  hero.style.left=heroX+"%";hero.style.bottom=heroY+"%";
 }
 function talkNPC(which){
+ if(!requireLogin())return;
  const msg=which===0?"Burung kenyalang: Teruskan membantu penduduk!":"Monyet: Setiap cabaran mengajar kita sesuatu!";
  toast(msg);speakText(msg);
 }
 function collectPearl(){
+ if(!requireLogin())return;
  if(pearlTaken){toast("Mutiara ini sudah dikutip.");return}
  pearlTaken=true;balance+=5;updateStats();saveLocal();
  toast("+5 Mutiara bonus!");speakText("Tahniah. Kamu mendapat lima Mutiara bonus.");
@@ -503,12 +538,13 @@ function collectPearl(){
 
 /* BUKU MISI */
 function showMissionBook(){
+ if(!requireLogin())return;
  const cards=missions.map((m,index)=>{
   const unlocked=areaUnlocked(Number(m.area)),done=attempted(m.id);
   const areaName=areas[Number(m.area)]?.name||"Kawasan";
   let status="",label="",disabled="";
   if(!unlocked){status="🔒 Kawasan belum dibuka";label="KAWASAN TERKUNCI";disabled="disabled"}
-  else if(done&&!isMaster&&!guest){status="✅ Sudah dijawab";label="SUDAH SELESAI";disabled="disabled"}
+  else if(done&&!isMaster){status="✅ Sudah dijawab";label="SUDAH SELESAI";disabled="disabled"}
   else{status=done?"🔁 Boleh dimainkan semula":"🟢 Misi tersedia";label=done?"ULANG MISI":"MULA MISI"}
   return `<div class="missionCard">
    <h3>${index+1}. ${escapeHTML(m.title)}</h3><p>${escapeHTML(m.question)}</p>
@@ -522,29 +558,32 @@ function showMissionBook(){
  <div class="stat" style="text-align:center;margin-bottom:12px">${missions.length} MISI · ${attemptedCount()} SELESAI</div>${cards}`);
 }
 function launchBookMission(id){
+ if(!requireLogin())return;
  const m=missions.find(x=>String(x.id)===String(id));if(!m)return;
  if(!areaUnlocked(Number(m.area))){toast("Kawasan ini belum dibuka.");return}
- if(attempted(id)&&!isMaster&&!guest){toast("Misi ini telah selesai.");return}
+ if(attempted(id)&&!isMaster){toast("Misi ini telah selesai.");return}
  currentArea=Number(m.area);heroX=45;heroY=22;renderWorld();openMission(m);
 }
 
 /* MISI DAN SUARA */
 function availableMissions(){
- return missions.filter(m=>Number(m.area)===currentArea&&(isMaster||guest||!attempted(m.id)));
+ return missions.filter(m=>Number(m.area)===currentArea&&(isMaster||!attempted(m.id)));
 }
 function interact(){
- if(!isMaster&&!guest&&remainingSeconds<=0){toast("Masa permainan tamat.");return}
+ if(!requireLogin())return;
+ if(!isMaster&&remainingSeconds<=0){toast("Masa permainan tamat.");return}
  const list=availableMissions();
  if(!list.length){showMissionBook();return}
  openMission(list[0]);
 }
 function readMission(){
- if(!currentMission)return;
+ if(!requireLogin()||!currentMission)return;
  const m=currentMission;
  speakText("Misi "+m.title+". "+m.pillar+". "+m.question+". "+
  "Pilihan A. "+m.a+". Pilihan B. "+m.b+". Pilihan C. "+m.c+".");
 }
 function openMission(m){
+ if(!requireLogin())return;
  currentMission=m;selectedAnswer=null;
  showModal(`
  <h2>📜 ${escapeHTML(m.title)}</h2>
@@ -559,11 +598,13 @@ function openMission(m){
  setTimeout(readMission,500);
 }
 function selectOption(k){
+ if(!requireLogin())return;
  selectedAnswer=k;
  ["A","B","C"].forEach(x=>document.getElementById("opt"+x)?.classList.toggle("selected",x===k));
  speakText("Kamu memilih jawapan "+k+". "+currentMission[k.toLowerCase()]);
 }
 async function submitAnswer(){
+ if(!requireLogin())return;
  if(!selectedAnswer){toast("Pilih jawapan dahulu.");return}
  stopVoice();
  const correct=selectedAnswer===String(currentMission.answer).toUpperCase();
@@ -583,15 +624,17 @@ async function submitAnswer(){
 
 /* PETA */
 function showMap(){
+ if(!requireLogin())return;
  showModal(`<h2>🗺️ PETA BORNEO</h2>${areas.map((a,i)=>
  `<button class="option" onclick="closeModal();travelTo(${i})">${a.emoji} ${a.name} ${areaUnlocked(i)?"🔓":"🔒"}</button>`).join("")}`);
 }
 
 /* MASA DAN MULA */
 function startGame(){
+ if(!requireLogin())return;
  showScreen("gameScreen");renderWorld();updateStats();
  startMusic();
- if(!isMaster&&!guest)startTimer();
+ if(!isMaster)startTimer();
  else document.getElementById("clock").textContent="∞";
 }
 function startTimer(){
@@ -604,15 +647,23 @@ function startTimer(){
   if(remainingSeconds<=0){clearInterval(timer);toast("Masa permainan tamat!")}
  },1000);
 }
-function backToIntro(){clearInterval(timer);showScreen("introScreen")}
-function backToMasterGame(){showScreen("introScreen")}
+function backToIntro(){
+ if(!requireLogin())return;
+ clearInterval(timer);showScreen("introScreen");
+}
+function backToMasterGame(){
+ if(!requireLogin())return;
+ showScreen("introScreen");
+}
 
 /* MASTER */
 function openMasterPanel(){
+ if(!requireLogin())return;
  if(!isMaster){toast("Akses Master sahaja.");return}
  showScreen("masterScreen");masterTab("missions");
 }
 async function masterTab(tab){
+ if(!requireLogin()||!isMaster)return;
  const box=document.getElementById("masterContent");
  box.innerHTML="Memuatkan...";
  if(tab==="missions"){
@@ -630,7 +681,7 @@ async function masterTab(tab){
  }
 }
 function masterReplay(id){
- if(!isMaster)return;
+ if(!requireLogin()||!isMaster)return;
  const m=missions.find(x=>String(x.id)===String(id));if(!m)return;
  currentArea=Number(m.area);heroX=45;heroY=22;renderWorld();
  showScreen("gameScreen");openMission(m);
@@ -638,53 +689,159 @@ function masterReplay(id){
 
 /* LEADERBOARD */
 async function loadLeaderboard(target){
+ if(!requireLogin())return;
  const {data,error}=await db.rpc("get_leaderboard");
  if(error){target.innerHTML+="<p>"+escapeHTML(error.message)+"</p>";return}
  target.innerHTML+=(data||[]).map((p,i)=>`<p>${i+1}. ${escapeHTML(p.full_name||p.username||"Pemain")} — 💎 ${p.xp??p.mutiara??0}</p>`).join("");
 }
 async function showLeaderboard(){
+ if(!requireLogin())return;
  showScreen("leaderScreen");
  const target=document.getElementById("leaderList");
  target.innerHTML="Memuatkan...";
  await loadLeaderboard(target);
 }
 
-/* AKAUN */
+/* AKAUN: LOG MASUK */
 async function login(){
+ if(authBusy)return;
  const email=document.getElementById("email").value.trim();
  const password=document.getElementById("password").value;
  const msg=document.getElementById("authMessage");
  if(!email||!password){msg.textContent="Masukkan emel dan kata laluan dahulu.";return}
+ authBusy=true;
  msg.textContent="Sedang log masuk...";
- const {data,error}=await db.auth.signInWithPassword({email,password});
- if(error){msg.textContent=error.message;return}
- user=data.user;guest=false;await loadUser();
-}
-async function register(){
- const email=document.getElementById("email").value.trim();
- const password=document.getElementById("password").value;
- if(!email||!password){document.getElementById("authMessage").textContent="Masukkan emel dan kata laluan dahulu.";return}
- const {data,error}=await db.auth.signUp({email,password});
- document.getElementById("authMessage").textContent=error?error.message:"Pendaftaran berjaya. Semak emel jika pengesahan diperlukan.";
+ try{
+  const {data,error}=await db.auth.signInWithPassword({email,password});
+  if(error){msg.textContent="Log masuk gagal: "+error.message;return}
+  if(!data.user){msg.textContent="Akaun tidak dapat disahkan.";return}
+  user=data.user;
+  await loadUser();
+ }catch(e){
+  msg.textContent="Ralat: "+(e.message||e);
+ }finally{
+  authBusy=false;
+ }
 }
 
-/* PROFIL */
+/* AKAUN: DAFTAR */
+async function register(){
+ if(authBusy)return;
+ const fullName=document.getElementById("fullName").value.trim();
+ const email=document.getElementById("email").value.trim();
+ const password=document.getElementById("password").value;
+ const msg=document.getElementById("authMessage");
+
+ if(!fullName){msg.textContent="Masukkan nama penuh murid.";return}
+ if(!email){msg.textContent="Masukkan emel murid.";return}
+ if(!password||password.length<6){msg.textContent="Kata laluan mestilah sekurang-kurangnya 6 aksara.";return}
+
+ authBusy=true;
+ msg.textContent="Sedang mendaftarkan akaun...";
+ try{
+  const {data,error}=await db.auth.signUp({
+   email,password,
+   options:{data:{full_name:fullName}}
+  });
+  if(error){msg.textContent="Pendaftaran gagal: "+error.message;return}
+
+  if(data.session&&data.user){
+   user=data.user;
+   const created=await ensureProfile(fullName);
+   if(!created){
+    msg.textContent="Akaun telah didaftarkan, tetapi profil murid gagal disimpan. Semak polisi Supabase profiles.";
+    return;
+   }
+   await loadUser();
+  }else{
+   msg.textContent="Pendaftaran berjaya. Semak emel untuk pengesahan akaun. Selepas disahkan, kembali ke sini dan log masuk.";
+  }
+ }catch(e){
+  msg.textContent="Ralat pendaftaran: "+(e.message||e);
+ }finally{
+  authBusy=false;
+ }
+}
+
+/* PROFIL MURID */
+async function ensureProfile(nameFromForm=""){
+ if(!user)return false;
+
+ const {data,error}=await db.from("profiles")
+  .select("*").eq("id",user.id).maybeSingle();
+
+ if(error){
+  console.error("Semakan profil:",error);
+  document.getElementById("authMessage").textContent="Gagal membaca profil: "+error.message;
+  return false;
+ }
+
+ if(data){
+  profile=data;
+  return true;
+ }
+
+ const fullName=nameFromForm||
+  user.user_metadata?.full_name||
+  user.email?.split("@")[0]||
+  "Murid";
+
+ const {data:created,error:createError}=await db.from("profiles")
+  .insert({
+   id:user.id,
+   full_name:fullName,
+   role:"student"
+  })
+  .select("*")
+  .single();
+
+ if(createError){
+  console.error("Cipta profil:",createError);
+  document.getElementById("authMessage").textContent=
+   "Profil belum dapat dicipta: "+createError.message+
+   ". Semak polisi INSERT pada jadual profiles.";
+  return false;
+ }
+
+ profile=created;
+ return true;
+}
+
 async function loadUser(){
  const msg=document.getElementById("authMessage");
+ if(!user){msg.textContent="Sila log masuk.";showScreen("authScreen");return}
+
  msg.textContent="Memuatkan profil pengembara...";
- const {data,error}=await db.from("profiles").select("*").eq("id",user.id).maybeSingle();
- if(error){msg.textContent=error.message;return}
- profile=data||{};
+ const ok=await ensureProfile();
+ if(!ok){
+  await db.auth.signOut();
+  user=null;profile=null;isMaster=false;
+  showScreen("authScreen");
+  return;
+ }
+
  isMaster=String(profile.role||"").toLowerCase()==="master";
  selectedCharacter=profile.character||"hamster";
+
  document.getElementById("masterPanelButton").classList.toggle("hidden",!isMaster);
- await loadMissions();await loadProgress();
- updateStats();renderCharacterPicker();
- document.getElementById("welcomeName").textContent="Selamat datang, "+(profile.full_name||user.email);
+
+ await loadMissions();
+ await loadProgress();
+ updateStats();
+ renderCharacterPicker();
+
+ document.getElementById("welcomeName").textContent=
+  "Selamat datang, "+(profile.full_name||user.email);
+
  document.getElementById("hero").innerHTML=heroGraphic();
  msg.textContent="";
- if(!profile.character)showScreen("characterScreen");
- else{showScreen("introScreen");speakWelcome()}
+
+ if(!profile.character){
+  showScreen("characterScreen");
+ }else{
+  showScreen("introScreen");
+  speakWelcome();
+ }
 }
 
 /* MISI SUPABASE */
@@ -719,9 +876,14 @@ async function loadMissions(){
 
 /* KEMAJUAN */
 async function loadProgress(){
+ if(!requireLogin())return;
  progress={};balance=0;
  const {data,error}=await db.from("student_progress").select("*").eq("user_id",user.id);
- if(error){console.warn("Progress Supabase:",error.message);loadLocal();return}
+ if(error){
+  console.warn("Progress Supabase:",error.message);
+  loadLocal();
+  return;
+ }
  (data||[]).forEach(p=>{
   const id=String(p.mission_id);
   progress[id]={attempted:true,correct:!!p.is_correct};
@@ -737,19 +899,28 @@ async function loadProgress(){
 
 /* SIMPANAN */
 async function saveCharacter(){
- if(!user||guest)return;
- const {error}=await db.from("profiles").update({character:selectedCharacter}).eq("id",user.id);
+ if(!user)return;
+ const {error}=await db.from("profiles")
+  .update({character:selectedCharacter}).eq("id",user.id);
  if(error)console.warn("Simpan watak:",error.message);
 }
 async function saveProgressToCloud(m,answer,correct,reward){
- if(!user||guest)return;
- const {error}=await db.rpc("submit_mission_answer",{p_mission_id:m.id,p_answer:answer});
- if(error){console.warn("Simpanan Supabase gagal:",error.message);toast("Jawapan disimpan pada peranti. Semakan Supabase diperlukan.")}
+ if(!user)return;
+ const {error}=await db.rpc("submit_mission_answer",{
+  p_mission_id:m.id,
+  p_answer:answer
+ });
+ if(error){
+  console.warn("Simpanan Supabase gagal:",error.message);
+  toast("Jawapan disimpan pada peranti. Semakan Supabase diperlukan.");
+ }
 }
 function saveLocal(){
+ if(!user)return;
  localStorage.setItem(localKey(),JSON.stringify({balance,progress,selectedCharacter}));
 }
 function loadLocal(){
+ if(!user)return;
  try{
   const saved=JSON.parse(localStorage.getItem(localKey())||"{}");
   balance=Number(saved.balance)||0;
@@ -758,30 +929,52 @@ function loadLocal(){
  }catch(e){balance=0;progress={}}
 }
 
-/* TETAMU DAN LOG KELUAR */
-function guestPlay(){
- guest=true;user=null;profile=null;isMaster=false;
- loadLocal();renderCharacterPicker();
- document.getElementById("masterPanelButton").classList.add("hidden");
- startMusic();
- showScreen("characterScreen");
-}
+/* LOG KELUAR */
 async function logout(){
- clearInterval(timer);stopVoice();closeModal();
+ clearInterval(timer);
+ stopVoice();
+ document.getElementById("modal").style.display="none";
  if(user)await db.auth.signOut();
- user=null;profile=null;isMaster=false;guest=false;
- showScreen("openingScreen");
+ user=null;profile=null;isMaster=false;
+ progress={};balance=0;
+ document.getElementById("email").value="";
+ document.getElementById("password").value="";
+ document.getElementById("fullName").value="";
+ document.getElementById("authMessage").textContent="";
+ showScreen("authScreen");
 }
 
 /* MULA APLIKASI */
 renderCharacterPicker();
 document.getElementById("hero").innerHTML=heroGraphic();
-renderAreas();updateStats();
+renderAreas();
+updateStats();
 bgMusic.load();
 
-db.auth.getSession().then(async({data})=>{
- if(data.session){
-  user=data.session.user;guest=false;await loadUser();
+/* PULIHKAN SESI AKAUN JIKA MASIH LOG MASUK */
+(async function restoreSession(){
+ try{
+  const {data,error}=await db.auth.getSession();
+  if(error)throw error;
+  if(data.session&&data.session.user){
+   user=data.session.user;
+   await loadUser();
+  }else{
+   showScreen("authScreen");
+  }
+ }catch(e){
+  console.error("Pemulihan sesi gagal:",e);
+  showScreen("authScreen");
+ }
+})();
+
+/* PASTIKAN LOG KELUAR DIKESAN */
+db.auth.onAuthStateChange((event,session)=>{
+ if(event==="SIGNED_OUT"){
+  user=null;profile=null;isMaster=false;
+  clearInterval(timer);
+  document.getElementById("modal").style.display="none";
+  showScreen("authScreen");
  }
 });
 </script>
