@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ms">
 <head>
@@ -14,10 +13,28 @@
  --gold:#ffd45e;--cream:#fff6df;--red:#d94b4b;
 }
 *{box-sizing:border-box}
-body{
- margin:0;background:#10251f;color:#fff;
- font-family:system-ui,Arial,sans-serif;overflow-x:hidden
+
+html{
+ min-height:100%;
+ height:auto;
+ overflow-x:hidden;
+ overflow-y:auto;
+ scroll-behavior:smooth;
 }
+
+body{
+ margin:0;
+ min-height:100vh;
+ min-height:100dvh;
+ height:auto;
+ background:#10251f;
+ color:#fff;
+ font-family:system-ui,Arial,sans-serif;
+ overflow-x:hidden;
+ overflow-y:auto;
+ -webkit-overflow-scrolling:touch;
+}
+
 button,input{font:inherit}
 button{
  border:0;border-radius:13px;padding:12px 16px;
@@ -28,22 +45,46 @@ button{
 button:active{transform:translateY(3px);box-shadow:none}
 button.secondary{background:#285c49;color:white;box-shadow:0 4px 0 #143b2d}
 button.danger{background:#d94b4b;color:white;box-shadow:0 4px 0 #862d2d}
-button:disabled{opacity:.4}
+button:disabled{opacity:.4;cursor:not-allowed}
+
 input{
  width:100%;padding:13px;border-radius:12px;
  border:2px solid #b6d9bd;background:#fff;color:#182b21;
  margin:6px 0 12px
 }
+
 .hidden{display:none!important}
-.screen{display:none;min-height:100vh;padding:18px}
-.screen.active{display:flex;flex-direction:column}
-.center{align-items:center;justify-content:center;text-align:center}
+
+.screen{
+ display:none;
+ min-height:100vh;
+ min-height:100dvh;
+ height:auto;
+ padding:18px;
+ overflow:visible;
+}
+
+.screen.active{
+ display:flex;
+ flex-direction:column;
+ overflow:visible;
+}
+
+.center{
+ align-items:center;
+ justify-content:center;
+ text-align:center;
+}
+
 .logo{
- font-size:clamp(35px,9vw,65px);font-weight:1000;
- color:#ffe17b;text-shadow:0 5px 0 #75451a,0 8px 18px #000;
+ font-size:clamp(35px,9vw,65px);
+ font-weight:1000;
+ color:#ffe17b;
+ text-shadow:0 5px 0 #75451a,0 8px 18px #000;
  line-height:1.05
 }
 .subtitle{color:#d8f4d8;letter-spacing:2px;font-weight:800}
+
 .panel{
  background:#fff8e7;color:#263b2c;border-radius:22px;
  padding:18px;width:100%;max-width:520px;
@@ -51,8 +92,10 @@ input{
 }
 .panel h2{margin-top:0;color:#176b48}
 .small{font-size:12px;opacity:.8}
+
 .row{display:flex;gap:9px;align-items:center}
 .row>*{flex:1}
+
 .topbar{
  display:flex;justify-content:space-between;gap:8px;
  flex-wrap:wrap;align-items:center;margin-bottom:12px
@@ -61,12 +104,26 @@ input{
  background:#fff4cf;color:#4b3815;border-radius:12px;
  padding:8px 12px;font-weight:900
 }
-#gameScreen{padding:12px;gap:8px}
+
+#gameScreen{
+ padding:12px;
+ gap:8px;
+ min-height:100vh;
+ min-height:100dvh;
+}
+
 #world{
- position:relative;flex:1;min-height:440px;
- border:5px solid #e6c77c;border-radius:23px;overflow:hidden;
+ position:relative;
+ flex:none;
+ width:100%;
+ height:min(62vh,600px);
+ min-height:440px;
+ border:5px solid #e6c77c;
+ border-radius:23px;
+ overflow:hidden;
  background:linear-gradient(#80d7ed 0 43%,#70b94f 43% 68%,#368447 68%)
 }
+
 .sun{
  position:absolute;right:9%;top:7%;width:65px;height:65px;
  border-radius:50%;background:#ffe77a;box-shadow:0 0 35px #ffe77a
@@ -81,12 +138,14 @@ input{
 }
 .cloud:before{left:18px}.cloud:after{right:15px;top:-10px}
 @keyframes cloud{from{left:-120px}to{left:110%}}
+
 .mountain{
  position:absolute;bottom:48%;width:0;height:0;
  border-left:100px solid transparent;border-right:100px solid transparent;
  border-bottom:150px solid #599c78
 }
 .mountain.m2{left:35%;border-bottom-color:#458b6d;transform:scale(1.3)}
+
 .tree{
  position:absolute;bottom:23%;width:18px;height:85px;
  background:#76502e;border-radius:5px
@@ -97,6 +156,7 @@ input{
  background:#176b48;box-shadow:20px 15px 0 #27824b,-18px 20px 0 #398f4e
 }
 .tree.t1{left:9%}.tree.t2{right:10%;transform:scale(1.2)}
+
 .path{
  position:absolute;bottom:-20%;left:32%;width:38%;height:55%;
  background:#c8a66c;transform:rotate(-8deg);border-radius:50%
@@ -106,33 +166,40 @@ input{
  background:linear-gradient(130deg,#5ad8e8,#1685ba);
  border-radius:60% 0 0 0
 }
+
 .locationLabel{
  position:absolute;top:12px;left:12px;
  background:#123c2dcc;padding:8px 12px;border-radius:12px;font-weight:900
 }
+
 #hero{
  position:absolute;left:45%;bottom:22%;width:90px;height:145px;
  transition:left .18s,bottom .18s;z-index:5
 }
 .heroSvg{width:100%;height:100%;overflow:visible}
+
 .npc{
  position:absolute;bottom:24%;font-size:47px;z-index:4;
  animation:bob 1.8s ease-in-out infinite
 }
 @keyframes bob{50%{transform:translateY(-7px)}}
 .npc.n1{left:20%}.npc.n2{right:20%}
+
 .collectible{
  position:absolute;font-size:30px;bottom:35%;left:68%;
  animation:bob 1s infinite;cursor:pointer
 }
+
 .controls{
  display:grid;grid-template-columns:repeat(3,1fr);
- gap:7px;max-width:290px;margin:auto
+ gap:7px;max-width:290px;margin:8px auto 15px
 }
 .controls button{padding:13px;font-size:20px}
 .controls .empty{visibility:hidden}
+
 .actionbar{display:flex;gap:8px;flex-wrap:wrap}
-.actionbar button{flex:1}
+.actionbar button{flex:1;min-width:130px}
+
 .characterGrid{
  display:grid;grid-template-columns:repeat(2,1fr);gap:10px
 }
@@ -142,31 +209,82 @@ input{
 }
 .character.selected{border-color:#e5a52d;background:#fff0b8}
 .animal{height:100px;display:flex;align-items:center;justify-content:center;font-size:75px}
+
 .option{
  display:block;width:100%;margin:9px 0;text-align:left;
  background:#e5f3e6;box-shadow:0 3px 0 #9ab99e;color:#183d2a
 }
 .option.selected{background:#ffe18b}
+
 #modal{
- position:fixed;inset:0;background:#000b;z-index:50;
- display:none;align-items:center;justify-content:center;padding:15px
+ position:fixed;
+ inset:0;
+ background:#000b;
+ z-index:50;
+ display:none;
+ align-items:flex-start;
+ justify-content:center;
+ padding:15px;
+ overflow-y:auto;
+ -webkit-overflow-scrolling:touch;
 }
-#modal .panel{max-height:90vh;overflow:auto}
-.areaButtons{display:flex;gap:7px;overflow:auto;padding:5px 0}
+#modal .panel{
+ max-height:calc(100dvh - 30px);
+ overflow-y:auto;
+ margin:auto;
+}
+
+.areaButtons{
+ display:flex;gap:7px;overflow-x:auto;overflow-y:hidden;
+ padding:5px 0;flex:none;
+ -webkit-overflow-scrolling:touch
+}
 .areaButtons button{white-space:nowrap}
+
 #toast{
  position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
  background:#122d24;color:white;padding:12px 20px;
  border-radius:20px;z-index:99;display:none;
  box-shadow:0 4px 20px #0008;text-align:center;max-width:90%
 }
+
 .progress{height:12px;background:#d5dfd1;border-radius:20px;overflow:hidden}
 .progress div{height:100%;background:#52a75d;width:0%}
+
 footer{text-align:center;color:#c4dfc9;font-size:11px;padding:10px}
+
 .adminList{
- background:#edf5e9;border-radius:12px;padding:12px;margin:8px 0
+ background:#edf5e9;color:#263b2c;
+ border-radius:12px;padding:12px;margin:8px 0
 }
 .adminList button{margin-top:7px}
+
+.missionCard{
+ background:#edf5e9;
+ border:2px solid #c9ddc5;
+ border-radius:14px;
+ padding:13px;
+ margin:10px 0;
+ color:#263b2c;
+}
+.missionCard h3{margin:0 0 6px;color:#176b48}
+.missionCard p{margin:5px 0;font-size:13px}
+.missionCard button{width:100%;margin-top:8px}
+.missionMeta{
+ display:flex;gap:6px;flex-wrap:wrap;
+ font-size:11px;margin-top:7px
+}
+.missionMeta span{
+ background:#dcebd8;padding:5px 8px;border-radius:8px
+}
+
+@media(max-width:420px){
+ .screen{padding:12px}
+ #gameScreen{padding:9px}
+ .topbar{gap:5px}
+ .stat{padding:7px 9px;font-size:12px}
+ .actionbar button{font-size:12px;padding:11px 8px}
+}
 </style>
 </head>
 
@@ -254,9 +372,11 @@ footer{text-align:center;color:#c4dfc9;font-size:11px;padding:10px}
 
  <div class="actionbar">
   <button onclick="interact()">🔎 AKSI / MISI</button>
+  <button class="secondary" onclick="showMissionBook()">📖 BUKU MISI</button>
   <button class="secondary" onclick="showMap()">🗺️ PETA</button>
   <button class="secondary" onclick="backToIntro()">🏠 MENU</button>
  </div>
+
  <div class="controls">
   <span class="empty"></span><button class="secondary" onclick="move(0,-1)">⬆️</button><span class="empty"></span>
   <button class="secondary" onclick="move(-1,0)">⬅️</button>
@@ -264,6 +384,7 @@ footer{text-align:center;color:#c4dfc9;font-size:11px;padding:10px}
   <button class="secondary" onclick="move(1,0)">➡️</button>
   <span class="empty"></span><button class="secondary" onclick="move(0,1)">⬇️</button><span class="empty"></span>
  </div>
+ <footer>MISI PAHLAWAN ALPHA · PENGEMBARAAN ILMU BORNEO</footer>
 </section>
 
 <!-- PAPAN KEDUDUKAN -->
@@ -405,39 +526,55 @@ let pearlTaken=false;
 /* ================= ASAS PAPARAN ================= */
 function showScreen(id){
  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
- document.getElementById(id).classList.add("active");
+ const target=document.getElementById(id);
+ if(!target)return;
+ target.classList.add("active");
+
+ // Kembali ke bahagian atas setiap kali bertukar skrin.
+ window.scrollTo({top:0,behavior:"instant"});
 }
+
 function toast(msg){
  const t=document.getElementById("toast");
- t.textContent=msg;t.style.display="block";
+ t.textContent=msg;
+ t.style.display="block";
  setTimeout(()=>t.style.display="none",2300);
 }
+
 function showModal(html){
  document.getElementById("modalContent").innerHTML=html;
  document.getElementById("modal").style.display="flex";
+ document.getElementById("modal").scrollTop=0;
 }
+
 function closeModal(){
  document.getElementById("modal").style.display="none";
 }
+
 function escapeHTML(s){
  return String(s??"").replace(/[&<>"']/g,c=>({
   "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
  }[c]));
 }
+
 function rankName(){
  if(balance>=500)return "Legenda Borneo";
  if(balance>=250)return "Pahlawan Hebat";
  if(balance>=100)return "Wira Berani";
  return "Wira Baharu";
 }
+
 function updateStats(){
  ["pearls","introPearls"].forEach(id=>{
-  document.getElementById(id).textContent=balance;
+  const el=document.getElementById(id);
+  if(el)el.textContent=balance;
  });
  ["rank","introRank"].forEach(id=>{
-  document.getElementById(id).textContent=rankName();
+  const el=document.getElementById(id);
+  if(el)el.textContent=rankName();
  });
 }
+
 function localKey(){
  return "mpa_"+(user?.id||"guest");
 }
@@ -446,6 +583,7 @@ function localKey(){
 function heroGraphic(){
  const c=characters.find(x=>x.id===selectedCharacter)||characters[0];
  let ears="";
+
  if(selectedCharacter==="arnab"){
   ears=`<ellipse cx="35" cy="15" rx="11" ry="27" fill="${c.color}"/>
   <ellipse cx="65" cy="15" rx="11" ry="27" fill="${c.color}"/>`;
@@ -453,10 +591,12 @@ function heroGraphic(){
   ears=`<path d="M20 35 L24 8 L45 28 M55 28 L76 8 L80 35"
   fill="${c.color}" stroke="#704a30" stroke-width="3"/>`;
  }
+
  if(selectedCharacter==="kijang"){
   ears+=`<path d="M40 24 L28 0 M60 24 L72 0"
   stroke="#80522e" stroke-width="5" fill="none"/>`;
  }
+
  return `<svg class="heroSvg" viewBox="0 0 100 150">
  <ellipse cx="50" cy="137" rx="29" ry="8" fill="#173d2a" opacity=".4"/>
  ${ears}
@@ -472,6 +612,7 @@ function heroGraphic(){
  fill="none" stroke-linecap="round"/>
  </svg>`;
 }
+
 function renderCharacterPicker(){
  const grid=document.getElementById("characterGrid");
  grid.innerHTML=characters.map(c=>`
@@ -481,15 +622,20 @@ function renderCharacterPicker(){
   </div>
  `).join("");
 }
+
 function chooseCharacter(id){
  selectedCharacter=id;
  renderCharacterPicker();
 }
+
 async function confirmCharacter(){
  if(user&&!guest)await saveCharacter();
+
  document.getElementById("hero").innerHTML=heroGraphic();
  document.getElementById("welcomeName").textContent=
   "Wira "+(characters.find(c=>c.id===selectedCharacter)?.name||"");
+
+ updateStats();
  showScreen("introScreen");
 }
 
@@ -497,12 +643,15 @@ async function confirmCharacter(){
 function attempted(id){
  return !!progress[id]?.attempted;
 }
+
 function attemptedCount(){
  return Object.keys(progress).filter(k=>progress[k]?.attempted).length;
 }
+
 function areaUnlocked(i){
  return isMaster||guest||attemptedCount()>=areas[i].unlock;
 }
+
 function renderAreas(){
  document.getElementById("areaButtons").innerHTML=areas.map((a,i)=>`
   <button class="${i===currentArea?"":"secondary"}"
@@ -511,50 +660,140 @@ function renderAreas(){
   </button>
  `).join("");
 }
+
 function renderWorld(){
  document.getElementById("locationLabel").textContent=
   areas[currentArea].name.toUpperCase();
+
  const hero=document.getElementById("hero");
  hero.style.left=heroX+"%";
  hero.style.bottom=heroY+"%";
  hero.innerHTML=heroGraphic();
+
  renderAreas();
 }
+
 function travelTo(i){
  if(!areaUnlocked(i)){
   toast("Selesaikan lebih banyak misi untuk membuka kawasan ini.");
   return;
  }
- currentArea=i;heroX=45;heroY=22;
+
+ currentArea=i;
+ heroX=45;
+ heroY=22;
  renderWorld();
 }
 
 /* ================= PERGERAKAN ================= */
 function move(dx,dy){
  if(!isMaster&&!guest&&remainingSeconds<=0){
-  toast("Masa permainan tamat.");return;
+  toast("Masa permainan tamat.");
+  return;
  }
+
  heroX=Math.max(5,Math.min(85,heroX+dx*5));
  heroY=Math.max(10,Math.min(45,heroY+dy*4));
+
  const hero=document.getElementById("hero");
  hero.style.left=heroX+"%";
  hero.style.bottom=heroY+"%";
 }
+
 function talkNPC(which){
  if(!isMaster&&!guest&&remainingSeconds<=0)return;
+
  toast(which===0?
   "Burung kenyalang: Teruskan membantu penduduk!":
   "Monyet: Setiap cabaran mengajar kita sesuatu!"
  );
 }
+
 function collectPearl(){
  if(pearlTaken){
-  toast("Mutiara ini sudah dikutip.");return;
+  toast("Mutiara ini sudah dikutip.");
+  return;
  }
+
  pearlTaken=true;
  balance+=5;
- updateStats();saveLocal();
+ updateStats();
+ saveLocal();
  toast("+5 Mutiara bonus!");
+}
+
+/* ================= BUKU MISI ================= */
+
+// Memaparkan semua 8 misi, termasuk misi di kawasan terkunci.
+function showMissionBook(){
+ const cards=missions.map((m,index)=>{
+  const unlocked=areaUnlocked(Number(m.area));
+  const done=attempted(m.id);
+  const areaName=areas[Number(m.area)]?.name||"Kawasan";
+
+  let status="";
+  let buttonText="";
+  let disabled="";
+
+  if(!unlocked){
+   status="🔒 Kawasan belum dibuka";
+   buttonText="KAWASAN TERKUNCI";
+   disabled="disabled";
+  }else if(done&&!isMaster&&!guest){
+   status="✅ Sudah dijawab";
+   buttonText="SUDAH SELESAI";
+   disabled="disabled";
+  }else{
+   status=done?"🔁 Boleh dimainkan semula":"🟢 Misi tersedia";
+   buttonText=done?"ULANG MISI":"MULA MISI";
+  }
+
+  return `
+   <div class="missionCard">
+    <h3>${index+1}. ${escapeHTML(m.title)}</h3>
+    <p>${escapeHTML(m.question)}</p>
+    <div class="missionMeta">
+     <span>${escapeHTML(m.pillar)}</span>
+     <span>${escapeHTML(areaName)}</span>
+    </div>
+    <p style="font-weight:800;margin-top:9px">${status}</p>
+    <button ${disabled}
+     onclick="launchBookMission('${escapeHTML(m.id)}')">
+     ${buttonText}
+    </button>
+   </div>
+  `;
+ }).join("");
+
+ showModal(`
+  <h2>📖 BUKU MISI PAHLAWAN</h2>
+  <p>Kesemua lapan cabaran pengembaraan kamu.</p>
+  <div class="stat" style="text-align:center;margin-bottom:12px">
+   ${missions.length} MISI · ${attemptedCount()} SELESAI
+  </div>
+  ${cards}
+ `);
+}
+
+function launchBookMission(id){
+ const m=missions.find(x=>String(x.id)===String(id));
+ if(!m)return;
+
+ if(!areaUnlocked(Number(m.area))){
+  toast("Kawasan ini belum dibuka. Selesaikan misi terdahulu dahulu.");
+  return;
+ }
+
+ if(attempted(id)&&!isMaster&&!guest){
+  toast("Misi ini telah selesai.");
+  return;
+ }
+
+ currentArea=Number(m.area);
+ heroX=45;
+ heroY=22;
+ renderWorld();
+ openMission(m);
 }
 
 /* ================= SISTEM MISI ================= */
@@ -564,20 +803,27 @@ function availableMissions(){
   (isMaster||guest||!attempted(m.id))
  );
 }
+
 function interact(){
  if(!isMaster&&!guest&&remainingSeconds<=0){
-  toast("Masa permainan tamat.");return;
- }
- const list=availableMissions();
- if(!list.length){
-  toast("Tiada misi baharu di kawasan ini.");
+  toast("Masa permainan tamat.");
   return;
  }
+
+ const list=availableMissions();
+
+ if(!list.length){
+  showMissionBook();
+  return;
+ }
+
  openMission(list[0]);
 }
+
 function openMission(m){
  currentMission=m;
  selectedAnswer=null;
+
  showModal(`
   <h2>📜 ${escapeHTML(m.title)}</h2>
   <p><b>${escapeHTML(m.pillar)}</b></p>
@@ -591,22 +837,30 @@ function openMission(m){
   onclick="submitAnswer()">HANTAR JAWAPAN</button>
  `);
 }
+
 function selectOption(k){
  selectedAnswer=k;
+
  ["A","B","C"].forEach(x=>{
   document.getElementById("opt"+x)?.classList.toggle("selected",x===k);
  });
 }
+
 async function submitAnswer(){
  if(!selectedAnswer){
-  toast("Pilih jawapan dahulu.");return;
+  toast("Pilih jawapan dahulu.");
+  return;
  }
+
  const correct=selectedAnswer===String(currentMission.answer).toUpperCase();
  const reward=correct?20:-3;
 
  balance=Math.max(0,balance+reward);
+
  progress[currentMission.id]={
-  attempted:true,correct,answer:selectedAnswer
+  attempted:true,
+  correct,
+  answer:selectedAnswer
  };
 
  updateStats();
@@ -646,27 +900,43 @@ function showMap(){
 /* ================= MASA PERMAINAN ================= */
 function startGame(){
  showScreen("gameScreen");
- renderWorld();updateStats();
- if(!isMaster&&!guest)startTimer();
- else document.getElementById("clock").textContent="∞";
+ renderWorld();
+ updateStats();
+
+ if(!isMaster&&!guest){
+  startTimer();
+ }else{
+  document.getElementById("clock").textContent="∞";
+ }
 }
+
 function startTimer(){
  clearInterval(timer);
+
+ const mm=String(Math.floor(remainingSeconds/60)).padStart(2,"0");
+ const ss=String(remainingSeconds%60).padStart(2,"0");
+ document.getElementById("clock").textContent=mm+":"+ss;
+
  timer=setInterval(()=>{
   if(remainingSeconds>0)remainingSeconds--;
-  const mm=String(Math.floor(remainingSeconds/60)).padStart(2,"0");
-  const ss=String(remainingSeconds%60).padStart(2,"0");
-  document.getElementById("clock").textContent=mm+":"+ss;
+
+  const m=String(Math.floor(remainingSeconds/60)).padStart(2,"0");
+  const s=String(remainingSeconds%60).padStart(2,"0");
+
+  document.getElementById("clock").textContent=m+":"+s;
+
   if(remainingSeconds<=0){
    clearInterval(timer);
    toast("Masa permainan tamat!");
   }
  },1000);
 }
+
 function backToIntro(){
  clearInterval(timer);
  showScreen("introScreen");
 }
+
 function backToMasterGame(){
  showScreen("introScreen");
 }
@@ -674,11 +944,14 @@ function backToMasterGame(){
 /* ================= PANEL MASTER ================= */
 function openMasterPanel(){
  if(!isMaster){
-  toast("Akses Master sahaja.");return;
+  toast("Akses Master sahaja.");
+  return;
  }
+
  showScreen("masterScreen");
  masterTab("missions");
 }
+
 async function masterTab(tab){
  const box=document.getElementById("masterContent");
  box.innerHTML="Memuatkan...";
@@ -699,7 +972,9 @@ async function masterTab(tab){
   `;
  }else if(tab==="players"){
   const {data,error}=await db.from("profiles").select("*").limit(100);
+
   box.innerHTML="<h3>👥 Pemain</h3>";
+
   if(error){
    box.innerHTML+="<p>"+escapeHTML(error.message)+"</p>";
   }else{
@@ -715,12 +990,17 @@ async function masterTab(tab){
   await loadLeaderboard(box);
  }
 }
+
 function masterReplay(id){
  if(!isMaster)return;
+
  const m=missions.find(x=>String(x.id)===String(id));
  if(!m)return;
+
  currentArea=Number(m.area);
- heroX=45;heroY=22;
+ heroX=45;
+ heroY=22;
+
  renderWorld();
  showScreen("gameScreen");
  openMission(m);
@@ -729,19 +1009,24 @@ function masterReplay(id){
 /* ================= PAPAN KEDUDUKAN ================= */
 async function loadLeaderboard(target){
  const {data,error}=await db.rpc("get_leaderboard");
+
  if(error){
   target.innerHTML+="<p>"+escapeHTML(error.message)+"</p>";
   return;
  }
+
  target.innerHTML+=(data||[]).map((p,i)=>`
   <p>${i+1}. ${escapeHTML(p.full_name||p.username||"Pemain")}
   — 💎 ${p.xp??p.mutiara??0}</p>
  `).join("");
 }
+
 async function showLeaderboard(){
  showScreen("leaderScreen");
+
  const target=document.getElementById("leaderList");
  target.innerHTML="Memuatkan...";
+
  await loadLeaderboard(target);
 }
 
@@ -751,20 +1036,38 @@ async function login(){
  const password=document.getElementById("password").value;
  const msg=document.getElementById("authMessage");
 
+ if(!email||!password){
+  msg.textContent="Masukkan emel dan kata laluan dahulu.";
+  return;
+ }
+
  msg.textContent="Sedang log masuk...";
+
  const {data,error}=await db.auth.signInWithPassword({email,password});
 
  if(error){
-  msg.textContent=error.message;return;
+  msg.textContent=error.message;
+  return;
  }
+
  user=data.user;
  guest=false;
+
  await loadUser();
 }
+
 async function register(){
  const email=document.getElementById("email").value.trim();
  const password=document.getElementById("password").value;
+
+ if(!email||!password){
+  document.getElementById("authMessage").textContent=
+   "Masukkan emel dan kata laluan dahulu.";
+  return;
+ }
+
  const {data,error}=await db.auth.signUp({email,password});
+
  document.getElementById("authMessage").textContent=
   error?error.message:
   "Pendaftaran berjaya. Semak emel jika pengesahan diperlukan.";
@@ -772,11 +1075,14 @@ async function register(){
 
 /* ================= MUAT PROFIL ================= */
 async function loadUser(){
+ const msg=document.getElementById("authMessage");
+ msg.textContent="Memuatkan profil pengembara...";
+
  const {data,error}=await db.from("profiles")
   .select("*").eq("id",user.id).maybeSingle();
 
  if(error){
-  document.getElementById("authMessage").textContent=error.message;
+  msg.textContent=error.message;
   return;
  }
 
@@ -793,23 +1099,27 @@ async function loadUser(){
  updateStats();
  renderCharacterPicker();
 
+ document.getElementById("welcomeName").textContent=
+  "Selamat datang, "+(profile.full_name||user.email);
+
+ document.getElementById("hero").innerHTML=heroGraphic();
+
+ msg.textContent="";
+
+ /*
+  Selepas login:
+  - Akaun belum memilih watak: masuk pemilihan watak.
+  - Akaun sudah ada watak: masuk INTRO.
+  - Tidak terus membuka misi atau soalan.
+ */
  if(!profile.character){
   showScreen("characterScreen");
  }else{
-  document.getElementById("hero").innerHTML=heroGraphic();
-  document.getElementById("welcomeName").textContent=
-   "Selamat datang, "+(profile.full_name||user.email);
   showScreen("introScreen");
  }
 }
 
 /* ================= PEMUATAN MISI ================= */
-/*
-  8 misi asal ialah data asas yang wajib dikekalkan.
-  Supabase hanya boleh mengemas kini misi yang mempunyai
-  ID sepadan. Data Supabase tidak boleh menggantikan
-  keseluruhan senarai misi.
-*/
 async function loadMissions(){
  const originalMissions=defaultMissions.map(m=>({...m}));
  missions=originalMissions.map(m=>({...m}));
@@ -830,7 +1140,6 @@ async function loadMissions(){
     String(m.id)===String(remote.id)
    );
 
-   // ID tidak sepadan? Kekalkan misi asal.
    if(index<0)return;
 
    const old=missions[index];
@@ -854,7 +1163,6 @@ async function loadMissions(){
   missions=originalMissions.map(m=>({...m}));
  }
 
- // Pemeriksaan akhir: lapan misi mesti sentiasa ada.
  if(missions.length!==8){
   missions=originalMissions.map(m=>({...m}));
  }
@@ -876,33 +1184,44 @@ async function loadProgress(){
 
  (data||[]).forEach(p=>{
   const id=String(p.mission_id);
+
   progress[id]={
    attempted:true,
    correct:!!p.is_correct
   };
+
   balance=Math.max(balance,Number(p.xp)||0);
  });
 
- const local=JSON.parse(localStorage.getItem(localKey())||"{}");
- balance=Math.max(balance,Number(local.balance)||0);
+ // Gabungkan rekod tempatan supaya kemajuan peranti tidak hilang.
+ try{
+  const local=JSON.parse(localStorage.getItem(localKey())||"{}");
+
+  balance=Math.max(balance,Number(local.balance)||0);
+  progress={...local.progress,...progress};
+
+  if(local.selectedCharacter&&!profile.character){
+   selectedCharacter=local.selectedCharacter;
+  }
+ }catch(e){
+  console.warn("Rekod tempatan tidak dapat dibaca.");
+ }
 }
 
 /* ================= SIMPANAN ================= */
 async function saveCharacter(){
  if(!user||guest)return;
+
  const {error}=await db.from("profiles")
   .update({character:selectedCharacter})
   .eq("id",user.id);
+
  if(error)console.warn("Simpan watak:",error.message);
 }
+
 async function saveProgressToCloud(m,answer,correct,reward){
  if(!user||guest)return;
 
- /*
-  RPC ini menggunakan nama parameter yang pernah digunakan
-  dalam projek. Jika fungsi Supabase mempunyai parameter
-  berlainan, simpanan awan perlu diselaraskan.
- */
  const {error}=await db.rpc("submit_mission_answer",{
   p_mission_id:m.id,
   p_answer:answer
@@ -913,29 +1232,52 @@ async function saveProgressToCloud(m,answer,correct,reward){
   toast("Jawapan disimpan pada peranti. Semakan Supabase diperlukan.");
  }
 }
+
 function saveLocal(){
  localStorage.setItem(localKey(),JSON.stringify({
   balance,progress,selectedCharacter
  }));
 }
+
 function loadLocal(){
- const saved=JSON.parse(localStorage.getItem(localKey())||"{}");
- balance=Number(saved.balance)||0;
- progress=saved.progress||{};
- selectedCharacter=saved.selectedCharacter||selectedCharacter;
+ try{
+  const saved=JSON.parse(localStorage.getItem(localKey())||"{}");
+
+  balance=Number(saved.balance)||0;
+  progress=saved.progress||{};
+  selectedCharacter=saved.selectedCharacter||selectedCharacter;
+ }catch(e){
+  balance=0;
+  progress={};
+ }
 }
 
 /* ================= MOD TETAMU ================= */
 function guestPlay(){
- guest=true;user=null;isMaster=false;
+ guest=true;
+ user=null;
+ profile=null;
+ isMaster=false;
+
  loadLocal();
  renderCharacterPicker();
+
+ document.getElementById("masterPanelButton").classList.add("hidden");
+
  showScreen("characterScreen");
 }
+
 async function logout(){
  clearInterval(timer);
+ closeModal();
+
  if(user)await db.auth.signOut();
- user=null;profile=null;isMaster=false;guest=false;
+
+ user=null;
+ profile=null;
+ isMaster=false;
+ guest=false;
+
  showScreen("openingScreen");
 }
 
@@ -948,6 +1290,7 @@ updateStats();
 db.auth.getSession().then(async({data})=>{
  if(data.session){
   user=data.session.user;
+  guest=false;
   await loadUser();
  }
 });
