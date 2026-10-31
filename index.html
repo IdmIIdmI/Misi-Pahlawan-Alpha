@@ -110,7 +110,6 @@ footer{text-align:center;color:#c4dfc9;font-size:11px;padding:10px}
 
 <audio id="bgMusic" src="https://idmiidmi.github.io/Misi-Pahlawan-Alpha/Naga%20Api%20Zabarjad.mp3" preload="auto" loop></audio>
 
-<!-- SKRIN PEMBUKAAN DIKEKALKAN, TETAPI BUKAN SKRIN PERTAMA -->
 <section id="openingScreen" class="screen center">
  <div style="font-size:65px">🌴 🦜 🌺</div>
  <div class="logo">MISI<br>PAHLAWAN<br>ALPHA</div>
@@ -146,7 +145,6 @@ footer{text-align:center;color:#c4dfc9;font-size:11px;padding:10px}
  </div>
 </section>
 
-<!-- SKRIN LOG MASUK MENJADI SKRIN PERTAMA -->
 <section id="authScreen" class="screen active center">
  <div class="panel">
   <div style="font-size:45px">🌴 🦜 🌺</div>
@@ -677,7 +675,8 @@ async function masterTab(tab){
   if(error)box.innerHTML+="<p>"+escapeHTML(error.message)+"</p>";
   else box.innerHTML+=(data||[]).map(p=>`<div class="adminList">${escapeHTML(p.full_name||p.username||p.email||p.id)}<br><small>${escapeHTML(p.role||"student")}</small></div>`).join("");
  }else{
-  box.innerHTML="<h3>🏆 Papan Kedudukan</h3>";await loadLeaderboard(box);
+  box.innerHTML="<h3>🏆 Papan Kedudukan</h3>";
+  await loadLeaderboard(box);
  }
 }
 function masterReplay(id){
@@ -687,13 +686,84 @@ function masterReplay(id){
  showScreen("gameScreen");openMission(m);
 }
 
-/* LEADERBOARD */
+/* PAPAN KEDUDUKAN - PEMBAIKAN */
 async function loadLeaderboard(target){
  if(!requireLogin())return;
- const {data,error}=await db.rpc("get_leaderboard");
- if(error){target.innerHTML+="<p>"+escapeHTML(error.message)+"</p>";return}
- target.innerHTML+=(data||[]).map((p,i)=>`<p>${i+1}. ${escapeHTML(p.full_name||p.username||"Pemain")} — 💎 ${p.xp??p.mutiara??0}</p>`).join("");
+
+ target.innerHTML="<p>Memuatkan nama dan skor murid...</p>";
+
+ try{
+  const [profilesResult,progressResult]=await Promise.all([
+   db.from("profiles").select("*").limit(500),
+   db.from("student_progress").select("*").limit(5000)
+  ]);
+
+  if(profilesResult.error){
+   target.innerHTML="<p>Gagal membaca profil murid: "+
+    escapeHTML(profilesResult.error.message)+"</p>";
+   return;
+  }
+
+  if(progressResult.error){
+   target.innerHTML="<p>Gagal membaca rekod Mutiara: "+
+    escapeHTML(progressResult.error.message)+
+    "</p><p>Semak kebenaran membaca jadual student_progress untuk akaun Master.</p>";
+   return;
+  }
+
+  const scoreMap={};
+
+  (progressResult.data||[]).forEach(row=>{
+   if(!row.user_id)return;
+
+   const id=String(row.user_id);
+   const xp=Number(row.xp)||0;
+
+   // Ikut kaedah loadProgress() murid:
+   // XP tertinggi menjadi baki Mutiara akaun.
+   if(!Object.prototype.hasOwnProperty.call(scoreMap,id)){
+    scoreMap[id]=xp;
+   }else{
+    scoreMap[id]=Math.max(scoreMap[id],xp);
+   }
+  });
+
+  const students=(profilesResult.data||[])
+   .filter(p=>String(p.role||"student").toLowerCase()==="student")
+   .map(p=>({
+    id:String(p.id),
+    name:p.full_name||p.username||p.email||"Murid",
+    score:scoreMap[String(p.id)]||0
+   }))
+   .sort((a,b)=>b.score-a.score);
+
+  if(!students.length){
+   target.innerHTML="<h3>🏆 Papan Kedudukan</h3><p>Belum ada rekod murid.</p>";
+   return;
+  }
+
+  target.innerHTML="<h3>🏆 Kedudukan Mutiara Murid</h3>";
+  target.innerHTML+=`<p>Jumlah murid: <b>${students.length}</b></p>`;
+
+  target.innerHTML+=students.map((p,i)=>`
+   <div class="adminList">
+    <div style="display:flex;justify-content:space-between;gap:8px;align-items:center">
+     <b>${i+1}. ${escapeHTML(p.name)}</b>
+     <span style="font-size:20px">💎</span>
+    </div>
+    <div style="font-size:21px;font-weight:900;color:#176b48;margin-top:5px">
+     ${p.score} Mutiara
+    </div>
+   </div>
+  `).join("");
+
+ }catch(error){
+  console.error("Ralat papan kedudukan:",error);
+  target.innerHTML="<p>Ralat memuatkan papan kedudukan: "+
+   escapeHTML(error.message||error)+"</p>";
+ }
 }
+
 async function showLeaderboard(){
  if(!requireLogin())return;
  showScreen("leaderScreen");
