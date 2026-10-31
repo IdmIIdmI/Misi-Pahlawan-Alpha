@@ -13,28 +13,15 @@
  --gold:#ffd45e;--cream:#fff6df;--red:#d94b4b;
 }
 *{box-sizing:border-box}
-
-html{
- min-height:100%;
- height:auto;
- overflow-x:hidden;
- overflow-y:auto;
- scroll-behavior:smooth;
+html,body{
+ margin:0;min-height:100%;height:auto;
+ overflow-x:hidden;overflow-y:auto;
 }
-
 body{
- margin:0;
- min-height:100vh;
- min-height:100dvh;
- height:auto;
- background:#10251f;
- color:#fff;
+ background:#10251f;color:#fff;
  font-family:system-ui,Arial,sans-serif;
- overflow-x:hidden;
- overflow-y:auto;
  -webkit-overflow-scrolling:touch;
 }
-
 button,input{font:inherit}
 button{
  border:0;border-radius:13px;padding:12px 16px;
@@ -46,45 +33,24 @@ button:active{transform:translateY(3px);box-shadow:none}
 button.secondary{background:#285c49;color:white;box-shadow:0 4px 0 #143b2d}
 button.danger{background:#d94b4b;color:white;box-shadow:0 4px 0 #862d2d}
 button:disabled{opacity:.4;cursor:not-allowed}
-
 input{
  width:100%;padding:13px;border-radius:12px;
  border:2px solid #b6d9bd;background:#fff;color:#182b21;
  margin:6px 0 12px
 }
-
 .hidden{display:none!important}
-
 .screen{
- display:none;
- min-height:100vh;
- min-height:100dvh;
- height:auto;
- padding:18px;
- overflow:visible;
+ display:none;min-height:100vh;min-height:100dvh;
+ height:auto;padding:18px;overflow:visible
 }
-
-.screen.active{
- display:flex;
- flex-direction:column;
- overflow:visible;
-}
-
-.center{
- align-items:center;
- justify-content:center;
- text-align:center;
-}
-
+.screen.active{display:flex;flex-direction:column;overflow:visible}
+.center{align-items:center;justify-content:center;text-align:center}
 .logo{
- font-size:clamp(35px,9vw,65px);
- font-weight:1000;
- color:#ffe17b;
- text-shadow:0 5px 0 #75451a,0 8px 18px #000;
+ font-size:clamp(35px,9vw,65px);font-weight:1000;
+ color:#ffe17b;text-shadow:0 5px 0 #75451a,0 8px 18px #000;
  line-height:1.05
 }
 .subtitle{color:#d8f4d8;letter-spacing:2px;font-weight:800}
-
 .panel{
  background:#fff8e7;color:#263b2c;border-radius:22px;
  padding:18px;width:100%;max-width:520px;
@@ -92,10 +58,8 @@ input{
 }
 .panel h2{margin-top:0;color:#176b48}
 .small{font-size:12px;opacity:.8}
-
 .row{display:flex;gap:9px;align-items:center}
 .row>*{flex:1}
-
 .topbar{
  display:flex;justify-content:space-between;gap:8px;
  flex-wrap:wrap;align-items:center;margin-bottom:12px
@@ -105,25 +69,76 @@ input{
  padding:8px 12px;font-weight:900
 }
 
-#gameScreen{
- padding:12px;
- gap:8px;
- min-height:100vh;
- min-height:100dvh;
+/* INTRO SINEMATIK */
+#storyScreen{
+ position:relative;overflow:hidden;
+ background:linear-gradient(#092e3c,#176c65 55%,#1c603b);
+ text-align:center;justify-content:center;align-items:center;
 }
+.storySky{
+ position:absolute;inset:0;
+ background:
+ radial-gradient(circle at 80% 15%,#ffe88c 0 35px,transparent 37px),
+ linear-gradient(#6ac3d4 0 45%,#398e54 45% 100%);
+}
+.storyMountain{
+ position:absolute;bottom:38%;width:0;height:0;
+ border-left:160px solid transparent;
+ border-right:160px solid transparent;
+ border-bottom:210px solid #4d9172;
+}
+.storyMountain.one{left:-70px}
+.storyMountain.two{
+ right:-100px;border-bottom-color:#33785a;
+ transform:scale(1.2)
+}
+.storyForest{
+ position:absolute;bottom:0;width:100%;height:40%;
+ background:linear-gradient(160deg,#1c663b,#103e2d);
+ clip-path:polygon(0 25%,8% 5%,16% 30%,24% 0,34% 30%,45% 5%,55% 35%,67% 0,78% 25%,90% 4%,100% 25%,100% 100%,0 100%);
+}
+.storyCloud{
+ position:absolute;top:16%;left:-150px;
+ width:110px;height:30px;border-radius:30px;background:#fff9;
+ animation:storyCloud 24s linear infinite;
+}
+.storyCloud:after,.storyCloud:before{
+ content:"";position:absolute;background:#fff9;border-radius:50%;
+ width:40px;height:40px;top:-15px
+}
+.storyCloud:before{left:15px}
+.storyCloud:after{right:15px;top:-10px}
+@keyframes storyCloud{to{left:110%}}
+.storyContent{
+ position:relative;z-index:3;width:100%;max-width:620px;
+ padding:18px;margin:auto
+}
+.storyBox{
+ background:#102d25df;border:2px solid #f5d17b;
+ border-radius:22px;padding:20px;margin-top:18px;
+ box-shadow:0 10px 30px #0006
+}
+.storyScene{
+ font-size:clamp(65px,16vw,110px);
+ animation:storyFloat 2.5s ease-in-out infinite;
+ filter:drop-shadow(0 8px 5px #0005)
+}
+@keyframes storyFloat{
+ 50%{transform:translateY(-12px)}
+}
+.storyText{font-size:16px;line-height:1.7;color:#fff5d8}
+.storyTitle{font-size:clamp(25px,7vw,42px);font-weight:1000;color:#ffe17b}
+.storyButtons{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+.storyButtons button{flex:1;min-width:130px}
 
+/* PERMAINAN */
+#gameScreen{padding:12px;gap:8px}
 #world{
- position:relative;
- flex:none;
- width:100%;
- height:min(62vh,600px);
- min-height:440px;
- border:5px solid #e6c77c;
- border-radius:23px;
- overflow:hidden;
+ position:relative;flex:none;width:100%;
+ height:min(62vh,600px);min-height:440px;
+ border:5px solid #e6c77c;border-radius:23px;overflow:hidden;
  background:linear-gradient(#80d7ed 0 43%,#70b94f 43% 68%,#368447 68%)
 }
-
 .sun{
  position:absolute;right:9%;top:7%;width:65px;height:65px;
  border-radius:50%;background:#ffe77a;box-shadow:0 0 35px #ffe77a
@@ -138,14 +153,12 @@ input{
 }
 .cloud:before{left:18px}.cloud:after{right:15px;top:-10px}
 @keyframes cloud{from{left:-120px}to{left:110%}}
-
 .mountain{
  position:absolute;bottom:48%;width:0;height:0;
  border-left:100px solid transparent;border-right:100px solid transparent;
  border-bottom:150px solid #599c78
 }
 .mountain.m2{left:35%;border-bottom-color:#458b6d;transform:scale(1.3)}
-
 .tree{
  position:absolute;bottom:23%;width:18px;height:85px;
  background:#76502e;border-radius:5px
@@ -156,7 +169,6 @@ input{
  background:#176b48;box-shadow:20px 15px 0 #27824b,-18px 20px 0 #398f4e
 }
 .tree.t1{left:9%}.tree.t2{right:10%;transform:scale(1.2)}
-
 .path{
  position:absolute;bottom:-20%;left:32%;width:38%;height:55%;
  background:#c8a66c;transform:rotate(-8deg);border-radius:50%
@@ -166,117 +178,77 @@ input{
  background:linear-gradient(130deg,#5ad8e8,#1685ba);
  border-radius:60% 0 0 0
 }
-
 .locationLabel{
  position:absolute;top:12px;left:12px;
  background:#123c2dcc;padding:8px 12px;border-radius:12px;font-weight:900
 }
-
 #hero{
  position:absolute;left:45%;bottom:22%;width:90px;height:145px;
  transition:left .18s,bottom .18s;z-index:5
 }
 .heroSvg{width:100%;height:100%;overflow:visible}
-
 .npc{
  position:absolute;bottom:24%;font-size:47px;z-index:4;
  animation:bob 1.8s ease-in-out infinite
 }
 @keyframes bob{50%{transform:translateY(-7px)}}
 .npc.n1{left:20%}.npc.n2{right:20%}
-
 .collectible{
  position:absolute;font-size:30px;bottom:35%;left:68%;
  animation:bob 1s infinite;cursor:pointer
 }
-
 .controls{
  display:grid;grid-template-columns:repeat(3,1fr);
  gap:7px;max-width:290px;margin:8px auto 15px
 }
 .controls button{padding:13px;font-size:20px}
 .controls .empty{visibility:hidden}
-
 .actionbar{display:flex;gap:8px;flex-wrap:wrap}
-.actionbar button{flex:1;min-width:130px}
-
-.characterGrid{
- display:grid;grid-template-columns:repeat(2,1fr);gap:10px
-}
+.actionbar button{flex:1;min-width:125px}
+.characterGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 .character{
  background:#e7f5df;border:3px solid transparent;border-radius:17px;
  padding:10px;color:#26452f;cursor:pointer;text-align:center
 }
 .character.selected{border-color:#e5a52d;background:#fff0b8}
 .animal{height:100px;display:flex;align-items:center;justify-content:center;font-size:75px}
-
 .option{
  display:block;width:100%;margin:9px 0;text-align:left;
  background:#e5f3e6;box-shadow:0 3px 0 #9ab99e;color:#183d2a
 }
 .option.selected{background:#ffe18b}
-
-#modal{
- position:fixed;
- inset:0;
- background:#000b;
- z-index:50;
- display:none;
- align-items:flex-start;
- justify-content:center;
- padding:15px;
- overflow-y:auto;
- -webkit-overflow-scrolling:touch;
-}
-#modal .panel{
- max-height:calc(100dvh - 30px);
- overflow-y:auto;
- margin:auto;
-}
-
 .areaButtons{
  display:flex;gap:7px;overflow-x:auto;overflow-y:hidden;
- padding:5px 0;flex:none;
- -webkit-overflow-scrolling:touch
+ padding:5px 0;flex:none;-webkit-overflow-scrolling:touch
 }
 .areaButtons button{white-space:nowrap}
-
+#modal{
+ position:fixed;inset:0;background:#000b;z-index:50;
+ display:none;align-items:flex-start;justify-content:center;
+ padding:15px;overflow-y:auto;-webkit-overflow-scrolling:touch
+}
+#modal .panel{max-height:calc(100dvh - 30px);overflow-y:auto;margin:auto}
 #toast{
  position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
  background:#122d24;color:white;padding:12px 20px;
  border-radius:20px;z-index:99;display:none;
  box-shadow:0 4px 20px #0008;text-align:center;max-width:90%
 }
-
-.progress{height:12px;background:#d5dfd1;border-radius:20px;overflow:hidden}
-.progress div{height:100%;background:#52a75d;width:0%}
-
-footer{text-align:center;color:#c4dfc9;font-size:11px;padding:10px}
-
 .adminList{
- background:#edf5e9;color:#263b2c;
- border-radius:12px;padding:12px;margin:8px 0
+ background:#edf5e9;color:#263b2c;border-radius:12px;
+ padding:12px;margin:8px 0
 }
 .adminList button{margin-top:7px}
-
 .missionCard{
- background:#edf5e9;
- border:2px solid #c9ddc5;
- border-radius:14px;
- padding:13px;
- margin:10px 0;
- color:#263b2c;
+ background:#edf5e9;border:2px solid #c9ddc5;
+ border-radius:14px;padding:13px;margin:10px 0;color:#263b2c
 }
 .missionCard h3{margin:0 0 6px;color:#176b48}
 .missionCard p{margin:5px 0;font-size:13px}
 .missionCard button{width:100%;margin-top:8px}
-.missionMeta{
- display:flex;gap:6px;flex-wrap:wrap;
- font-size:11px;margin-top:7px
-}
-.missionMeta span{
- background:#dcebd8;padding:5px 8px;border-radius:8px
-}
+.missionMeta{display:flex;gap:6px;flex-wrap:wrap;font-size:11px;margin-top:7px}
+.missionMeta span{background:#dcebd8;padding:5px 8px;border-radius:8px}
+footer{text-align:center;color:#c4dfc9;font-size:11px;padding:10px}
 
 @media(max-width:420px){
  .screen{padding:12px}
@@ -299,9 +271,35 @@ footer{text-align:center;color:#c4dfc9;font-size:11px;padding:10px}
   Satu pengembaraan. Lima wilayah. Lapan cabaran.
   Buktikan keberanian, kasih sayang dan kebijaksanaanmu!
  </p>
- <button style="width:220px;margin-top:20px" onclick="showScreen('authScreen')">MULA PENGEMBARAAN</button>
- <button class="secondary" style="width:220px;margin-top:15px" onclick="guestPlay()">CUBA TANPA LOG MASUK</button>
+ <button style="width:230px;margin-top:20px" onclick="beginStory()">🎬 TONTON INTRO</button>
+ <button class="secondary" style="width:230px;margin-top:15px" onclick="guestPlay()">CUBA TANPA LOG MASUK</button>
  <footer>© MISI PAHLAWAN ALPHA</footer>
+</section>
+
+<!-- INTRO SINEMATIK -->
+<section id="storyScreen" class="screen">
+ <div class="storySky"></div>
+ <div class="storyMountain one"></div>
+ <div class="storyMountain two"></div>
+ <div class="storyForest"></div>
+ <div class="storyCloud"></div>
+ <div class="storyContent">
+  <div class="storyScene" id="storyEmoji">🌴🦜</div>
+  <div class="storyBox">
+   <div class="storyTitle" id="storyHeading">PANGGILAN BORNEO</div>
+   <p class="storyText" id="storyText">
+    Sebuah pengembaraan baharu bermula di bumi Borneo...
+   </p>
+   <div class="storyButtons">
+    <button class="secondary" onclick="previousStory()">◀ KEMBALI</button>
+    <button onclick="nextStory()">SETERUSNYA ▶</button>
+   </div>
+   <button class="secondary" style="width:100%;margin-top:12px" onclick="toggleStoryVoice()">🔊 BACA / ULANG NARATOR</button>
+   <button class="secondary" style="width:100%;margin-top:10px" onclick="stopVoice()">🔇 HENTIKAN SUARA</button>
+   <button class="secondary" style="width:100%;margin-top:10px" onclick="goToLogin()">LANGKAU INTRO · LOG MASUK</button>
+  </div>
+  <p style="color:#fff;margin-top:12px;font-size:12px">MISI PAHLAWAN ALPHA · BORNEO</p>
+ </div>
 </section>
 
 <!-- LOGIN -->
@@ -314,12 +312,12 @@ footer{text-align:center;color:#c4dfc9;font-size:11px;padding:10px}
   <input id="password" type="password" placeholder="Kata laluan">
   <button style="width:100%" onclick="login()">LOG MASUK</button>
   <button class="secondary" style="width:100%;margin-top:12px" onclick="register()">DAFTAR AKAUN</button>
-  <button class="secondary" style="width:100%;margin-top:12px" onclick="showScreen('openingScreen')">KEMBALI</button>
+  <button class="secondary" style="width:100%;margin-top:12px" onclick="showScreen('storyScreen')">KEMBALI KE INTRO</button>
   <p id="authMessage" class="small"></p>
  </div>
 </section>
 
-<!-- PEMILIHAN WATAK -->
+<!-- PILIH WATAK -->
 <section id="characterScreen" class="screen center">
  <div class="panel">
   <h2>🐾 Pilih Wira Kamu</h2>
@@ -329,7 +327,7 @@ footer{text-align:center;color:#c4dfc9;font-size:11px;padding:10px}
  </div>
 </section>
 
-<!-- INTRO -->
+<!-- INTRO PEMAIN -->
 <section id="introScreen" class="screen center">
  <div style="font-size:60px">🏞️</div>
  <div class="logo" style="font-size:38px">SELAMAT DATANG, WIRA!</div>
@@ -340,7 +338,8 @@ footer{text-align:center;color:#c4dfc9;font-size:11px;padding:10px}
    <div class="stat">💎 <span id="introPearls">0</span></div>
    <div class="stat">🏅 <span id="introRank">Wira Baharu</span></div>
   </div>
-  <button style="width:100%;margin-top:16px" onclick="startGame()">🎮 MASUK DUNIA PERMAINAN</button>
+  <button style="width:100%;margin-top:16px" onclick="speakWelcome()">🔊 DENGAR PENGENALAN</button>
+  <button style="width:100%;margin-top:12px" onclick="startGame()">🎮 MASUK DUNIA PERMAINAN</button>
   <button class="secondary" style="width:100%;margin-top:12px" onclick="showScreen('characterScreen')">🐾 TUKAR WATAK</button>
   <button id="masterPanelButton" class="secondary hidden" style="width:100%;margin-top:12px" onclick="openMasterPanel()">👑 PANEL MASTER</button>
   <button class="secondary" style="width:100%;margin-top:12px" onclick="showLeaderboard()">🏆 PAPAN KEDUDUKAN</button>
@@ -355,9 +354,7 @@ footer{text-align:center;color:#c4dfc9;font-size:11px;padding:10px}
   <div class="stat">⏱️ <span id="clock">15:00</span></div>
   <div class="stat">🏅 <span id="rank">Wira Baharu</span></div>
  </div>
-
  <div class="areaButtons" id="areaButtons"></div>
-
  <div id="world">
   <div class="sun"></div><div class="cloud"></div>
   <div class="mountain"></div><div class="mountain m2"></div>
@@ -369,14 +366,12 @@ footer{text-align:center;color:#c4dfc9;font-size:11px;padding:10px}
   <div class="collectible" onclick="collectPearl()">💎</div>
   <div id="hero"></div>
  </div>
-
  <div class="actionbar">
   <button onclick="interact()">🔎 AKSI / MISI</button>
   <button class="secondary" onclick="showMissionBook()">📖 BUKU MISI</button>
   <button class="secondary" onclick="showMap()">🗺️ PETA</button>
   <button class="secondary" onclick="backToIntro()">🏠 MENU</button>
  </div>
-
  <div class="controls">
   <span class="empty"></span><button class="secondary" onclick="move(0,-1)">⬆️</button><span class="empty"></span>
   <button class="secondary" onclick="move(-1,0)">⬅️</button>
@@ -412,7 +407,6 @@ footer{text-align:center;color:#c4dfc9;font-size:11px;padding:10px}
  </div>
 </section>
 
-<!-- MODAL -->
 <div id="modal">
  <div class="panel">
   <div id="modalContent"></div>
@@ -422,12 +416,12 @@ footer{text-align:center;color:#c4dfc9;font-size:11px;padding:10px}
 <div id="toast"></div>
 
 <script>
-/* ================= SUPABASE ================= */
+/* SUPABASE */
 const SUPABASE_URL="https://krijvnbpbmqqyquzzrxu.supabase.co";
 const SUPABASE_KEY="sb_publishable_NRa91_nx4Xc2PSvUoiCWWw_zgf3xJha";
 const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-/* ================= WATAK ================= */
+/* WATAK */
 const characters=[
  {id:"hamster",name:"Hamster",emoji:"🐹",color:"#d99b55"},
  {id:"tupai",name:"Tupai",emoji:"🐿️",color:"#ad7040"},
@@ -436,7 +430,7 @@ const characters=[
  {id:"kijang",name:"Kijang",emoji:"🦌",color:"#c18a54"}
 ];
 
-/* ================= KAWASAN ================= */
+/* KAWASAN */
 const areas=[
  {name:"Kampung Damai",unlock:0,emoji:"🏡"},
  {name:"Hutan Rimba",unlock:2,emoji:"🌳"},
@@ -445,75 +439,70 @@ const areas=[
  {name:"Gua Misteri",unlock:7,emoji:"⛰️"}
 ];
 
-/* ================= 8 MISI TETAP ================= */
-const defaultMissions=[
+/* INTRO CERITA */
+const storyScenes=[
  {
-  id:"m1",title:"Jiran yang Memerlukan",area:0,pillar:"Penyayang",
-  question:"Kamu melihat jiran terjatuh ketika membawa barang. Apakah tindakan terbaik?",
-  a:"Membantu jiran mengangkat barang",
-  b:"Berpura-pura tidak nampak",
-  c:"Mentertawakan jiran",
-  answer:"A"
+  emoji:"🌴🦜",
+  title:"PANGGILAN BORNEO",
+  text:"Di sebuah bumi yang kaya dengan hutan, sungai dan kehidupan, terletaknya dunia pengembaraan Borneo. Di sinilah kisah seorang wira akan bermula.",
+  voice:"Di sebuah bumi yang kaya dengan hutan, sungai dan kehidupan, terletaknya dunia pengembaraan Borneo. Di sinilah kisah seorang wira akan bermula."
  },
  {
-  id:"m2",title:"Sahabat Baharu",area:0,pillar:"Penyayang",
-  question:"Seorang murid baharu duduk bersendirian. Apakah yang patut kamu lakukan?",
-  a:"Mengejeknya",
-  b:"Mengajaknya berkawan",
-  c:"Menyuruhnya pulang",
-  answer:"B"
+  emoji:"🏡🌳",
+  title:"LIMA WILAYAH",
+  text:"Kampung Damai, Hutan Rimba, Air Terjun, Rumah Panjang dan Gua Misteri menanti untuk diterokai. Setiap tempat mempunyai cabaran dan penduduk yang memerlukan bantuan.",
+  voice:"Lima wilayah menanti untuk diterokai. Kampung Damai, Hutan Rimba, Air Terjun, Rumah Panjang dan Gua Misteri. Setiap tempat mempunyai cabaran dan penduduk yang memerlukan bantuan."
  },
  {
-  id:"m3",title:"Jambatan Rosak",area:1,pillar:"Berdaya Tahan",
-  question:"Jambatan kecil rosak dan kamu perlu mencari jalan selamat. Apakah tindakan kamu?",
-  a:"Terus melompat tanpa berfikir",
-  b:"Berputus asa",
-  c:"Mencari laluan selamat dan meminta bantuan",
-  answer:"C"
+  emoji:"🐹🐿️🐱🐰🦌",
+  title:"PILIH SAHABAT WIRA",
+  text:"Kamu tidak mengembara bersendirian. Pilih sahabat haiwan yang akan menemani perjalananmu. Bersama-sama, kamu akan belajar dan membantu masyarakat.",
+  voice:"Kamu tidak mengembara bersendirian. Pilih sahabat haiwan yang akan menemani perjalananmu. Bersama-sama, kamu akan belajar dan membantu masyarakat."
  },
  {
-  id:"m4",title:"Cabaran Hujan",area:1,pillar:"Berdaya Tahan",
-  question:"Hujan lebat menyebabkan aktiviti tergendala. Apakah sikap terbaik?",
-  a:"Bertenang dan menyusun rancangan baharu",
-  b:"Marah kepada semua orang",
-  c:"Terus menyalahkan orang lain",
-  answer:"A"
+  emoji:"💎📜🏆",
+  title:"LAPAN CABARAN",
+  text:"Selesaikan lapan misi. Buktikan sifat penyayang, berdaya tahan, berupaya memimpin dan menjadi warganegara aktif. Jawapan yang betul memberi dua puluh Mutiara. Teruskan mencuba jika tersilap.",
+  voice:"Selesaikan lapan misi. Buktikan sifat penyayang, berdaya tahan, berupaya memimpin dan menjadi warganegara aktif. Jawapan yang betul memberi dua puluh Mutiara. Teruskan mencuba jika tersilap."
  },
  {
-  id:"m5",title:"Ketua Pasukan",area:2,pillar:"Berupaya Memimpin",
-  question:"Pasukan kamu tidak sependapat. Apakah tindakan seorang pemimpin yang baik?",
-  a:"Memaksa semua ikut kehendaknya",
-  b:"Mendengar pandangan dan mencari persetujuan",
-  c:"Meninggalkan pasukan",
-  answer:"B"
- },
- {
-  id:"m6",title:"Tugas Bersama",area:2,pillar:"Berupaya Memimpin",
-  question:"Rakan sepasukan tidak tahu tugasnya. Apakah tindakan kamu?",
-  a:"Memarahinya",
-  b:"Membiarkannya",
-  c:"Menerangkan tugas dan membimbingnya",
-  answer:"C"
- },
- {
-  id:"m7",title:"Sungai Bersih",area:3,pillar:"Warganegara Aktif",
-  question:"Kamu melihat sampah di tepi sungai. Apakah tindakan yang wajar?",
-  a:"Mengutip sampah dengan selamat dan mengajak orang menjaga kebersihan",
-  b:"Membuang lebih banyak sampah",
-  c:"Membiarkannya sahaja",
-  answer:"A"
- },
- {
-  id:"m8",title:"Warisan Borneo",area:4,pillar:"Warganegara Aktif",
-  question:"Bagaimanakah kamu menghargai masyarakat dan budaya di Borneo?",
-  a:"Memperlekeh adat orang lain",
-  b:"Menghormati kepelbagaian dan hidup bekerjasama",
-  c:"Enggan mengenali masyarakat lain",
-  answer:"B"
+  emoji:"🦸🌟",
+  title:"PENGEMBARAAN BERMULA",
+  text:"Wahai wira, dunia Borneo sedang menantimu. Gunakan kebijaksanaan, bekerjasama dengan sahabat dan bantu penduduk. Semoga pengembaraan ini menjadi pengalaman yang bermakna!",
+  voice:"Wahai wira, dunia Borneo sedang menantimu. Gunakan kebijaksanaan, bekerjasama dengan sahabat dan bantu penduduk. Semoga pengembaraan ini menjadi pengalaman yang bermakna!"
  }
 ];
+let storyIndex=0;
 
-/* ================= STATUS ================= */
+/* 8 MISI TETAP */
+const defaultMissions=[
+ {id:"m1",title:"Jiran yang Memerlukan",area:0,pillar:"Penyayang",
+  question:"Kamu melihat jiran terjatuh ketika membawa barang. Apakah tindakan terbaik?",
+  a:"Membantu jiran mengangkat barang",b:"Berpura-pura tidak nampak",c:"Mentertawakan jiran",answer:"A"},
+ {id:"m2",title:"Sahabat Baharu",area:0,pillar:"Penyayang",
+  question:"Seorang murid baharu duduk bersendirian. Apakah yang patut kamu lakukan?",
+  a:"Mengejeknya",b:"Mengajaknya berkawan",c:"Menyuruhnya pulang",answer:"B"},
+ {id:"m3",title:"Jambatan Rosak",area:1,pillar:"Berdaya Tahan",
+  question:"Jambatan kecil rosak dan kamu perlu mencari jalan selamat. Apakah tindakan kamu?",
+  a:"Terus melompat tanpa berfikir",b:"Berputus asa",c:"Mencari laluan selamat dan meminta bantuan",answer:"C"},
+ {id:"m4",title:"Cabaran Hujan",area:1,pillar:"Berdaya Tahan",
+  question:"Hujan lebat menyebabkan aktiviti tergendala. Apakah sikap terbaik?",
+  a:"Bertenang dan menyusun rancangan baharu",b:"Marah kepada semua orang",c:"Terus menyalahkan orang lain",answer:"A"},
+ {id:"m5",title:"Ketua Pasukan",area:2,pillar:"Berupaya Memimpin",
+  question:"Pasukan kamu tidak sependapat. Apakah tindakan seorang pemimpin yang baik?",
+  a:"Memaksa semua ikut kehendaknya",b:"Mendengar pandangan dan mencari persetujuan",c:"Meninggalkan pasukan",answer:"B"},
+ {id:"m6",title:"Tugas Bersama",area:2,pillar:"Berupaya Memimpin",
+  question:"Rakan sepasukan tidak tahu tugasnya. Apakah tindakan kamu?",
+  a:"Memarahinya",b:"Membiarkannya",c:"Menerangkan tugas dan membimbingnya",answer:"C"},
+ {id:"m7",title:"Sungai Bersih",area:3,pillar:"Warganegara Aktif",
+  question:"Kamu melihat sampah di tepi sungai. Apakah tindakan yang wajar?",
+  a:"Mengutip sampah dengan selamat dan mengajak orang menjaga kebersihan",b:"Membuang lebih banyak sampah",c:"Membiarkannya sahaja",answer:"A"},
+ {id:"m8",title:"Warisan Borneo",area:4,pillar:"Warganegara Aktif",
+  question:"Bagaimanakah kamu menghargai masyarakat dan budaya di Borneo?",
+  a:"Memperlekeh adat orang lain",b:"Menghormati kepelbagaian dan hidup bekerjasama",c:"Enggan mengenali masyarakat lain",answer:"B"}
+];
+
+/* STATUS */
 let user=null,profile=null,isMaster=false,guest=false;
 let selectedCharacter="hamster";
 let missions=defaultMissions.map(m=>({...m}));
@@ -523,47 +512,122 @@ let remainingSeconds=900,timer=null;
 let selectedAnswer=null,currentMission=null;
 let pearlTaken=false;
 
-/* ================= ASAS PAPARAN ================= */
+/* SUARA */
+let voiceEnabled=true;
+function stopVoice(){
+ if("speechSynthesis" in window)window.speechSynthesis.cancel();
+}
+function speakText(text){
+ if(!voiceEnabled||!("speechSynthesis" in window)){
+  toast("Fungsi suara tidak disokong oleh pelayar ini.");
+  return;
+ }
+ stopVoice();
+ const utterance=new SpeechSynthesisUtterance(String(text));
+ utterance.lang="ms-MY";
+ utterance.rate=0.88;
+ utterance.pitch=1;
+ utterance.volume=1;
+
+ const voices=window.speechSynthesis.getVoices();
+ const malay=voices.find(v=>v.lang.toLowerCase().startsWith("ms"));
+ const indonesia=voices.find(v=>v.lang.toLowerCase().startsWith("id"));
+ if(malay)utterance.voice=malay;
+ else if(indonesia)utterance.voice=indonesia;
+
+ window.speechSynthesis.speak(utterance);
+}
+function toggleStoryVoice(){
+ speakText(storyScenes[storyIndex].voice);
+}
+function speakWelcome(){
+ speakText("Selamat datang, wira. "+(profile?.full_name||"Pengembara")+
+ " . Dunia Borneo menanti untuk diterokai. Selesaikan lapan cabaran dan kumpulkan Mutiara.");
+}
+function readMission(){
+ if(!currentMission)return;
+ const m=currentMission;
+ speakText(
+  "Misi "+m.title+". "+
+  m.pillar+". "+
+  m.question+". "+
+  "Pilihan A. "+m.a+". "+
+  "Pilihan B. "+m.b+". "+
+  "Pilihan C. "+m.c+"."
+ );
+}
+
+/* INTRO */
+function beginStory(){
+ storyIndex=0;
+ renderStory();
+ showScreen("storyScreen");
+ speakText(storyScenes[0].voice);
+}
+function renderStory(){
+ const s=storyScenes[storyIndex];
+ document.getElementById("storyEmoji").textContent=s.emoji;
+ document.getElementById("storyHeading").textContent=s.title;
+ document.getElementById("storyText").textContent=s.text;
+}
+function nextStory(){
+ stopVoice();
+ if(storyIndex<storyScenes.length-1){
+  storyIndex++;
+  renderStory();
+  speakText(storyScenes[storyIndex].voice);
+ }else{
+  goToLogin();
+ }
+}
+function previousStory(){
+ stopVoice();
+ if(storyIndex>0){
+  storyIndex--;
+  renderStory();
+  speakText(storyScenes[storyIndex].voice);
+ }
+}
+function goToLogin(){
+ stopVoice();
+ showScreen("authScreen");
+}
+
+/* PAPARAN */
 function showScreen(id){
+ stopVoice();
  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
  const target=document.getElementById(id);
  if(!target)return;
  target.classList.add("active");
-
- // Kembali ke bahagian atas setiap kali bertukar skrin.
- window.scrollTo({top:0,behavior:"instant"});
+ window.scrollTo(0,0);
 }
-
 function toast(msg){
  const t=document.getElementById("toast");
- t.textContent=msg;
- t.style.display="block";
- setTimeout(()=>t.style.display="none",2300);
+ t.textContent=msg;t.style.display="block";
+ setTimeout(()=>t.style.display="none",2500);
 }
-
 function showModal(html){
+ stopVoice();
  document.getElementById("modalContent").innerHTML=html;
  document.getElementById("modal").style.display="flex";
  document.getElementById("modal").scrollTop=0;
 }
-
 function closeModal(){
+ stopVoice();
  document.getElementById("modal").style.display="none";
 }
-
 function escapeHTML(s){
  return String(s??"").replace(/[&<>"']/g,c=>({
   "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
  }[c]));
 }
-
 function rankName(){
  if(balance>=500)return "Legenda Borneo";
  if(balance>=250)return "Pahlawan Hebat";
  if(balance>=100)return "Wira Berani";
  return "Wira Baharu";
 }
-
 function updateStats(){
  ["pearls","introPearls"].forEach(id=>{
   const el=document.getElementById(id);
@@ -574,16 +638,12 @@ function updateStats(){
   if(el)el.textContent=rankName();
  });
 }
+function localKey(){return "mpa_"+(user?.id||"guest")}
 
-function localKey(){
- return "mpa_"+(user?.id||"guest");
-}
-
-/* ================= WATAK GRAFIK ================= */
+/* GRAFIK WATAK */
 function heroGraphic(){
  const c=characters.find(x=>x.id===selectedCharacter)||characters[0];
  let ears="";
-
  if(selectedCharacter==="arnab"){
   ears=`<ellipse cx="35" cy="15" rx="11" ry="27" fill="${c.color}"/>
   <ellipse cx="65" cy="15" rx="11" ry="27" fill="${c.color}"/>`;
@@ -591,12 +651,10 @@ function heroGraphic(){
   ears=`<path d="M20 35 L24 8 L45 28 M55 28 L76 8 L80 35"
   fill="${c.color}" stroke="#704a30" stroke-width="3"/>`;
  }
-
  if(selectedCharacter==="kijang"){
   ears+=`<path d="M40 24 L28 0 M60 24 L72 0"
   stroke="#80522e" stroke-width="5" fill="none"/>`;
  }
-
  return `<svg class="heroSvg" viewBox="0 0 100 150">
  <ellipse cx="50" cy="137" rx="29" ry="8" fill="#173d2a" opacity=".4"/>
  ${ears}
@@ -612,538 +670,284 @@ function heroGraphic(){
  fill="none" stroke-linecap="round"/>
  </svg>`;
 }
-
 function renderCharacterPicker(){
- const grid=document.getElementById("characterGrid");
- grid.innerHTML=characters.map(c=>`
+ document.getElementById("characterGrid").innerHTML=characters.map(c=>`
   <div class="character ${selectedCharacter===c.id?"selected":""}"
   onclick="chooseCharacter('${c.id}')">
    <div class="animal">${c.emoji}</div><b>${c.name}</b>
   </div>
  `).join("");
 }
-
 function chooseCharacter(id){
- selectedCharacter=id;
- renderCharacterPicker();
+ selectedCharacter=id;renderCharacterPicker();
 }
-
 async function confirmCharacter(){
  if(user&&!guest)await saveCharacter();
-
  document.getElementById("hero").innerHTML=heroGraphic();
  document.getElementById("welcomeName").textContent=
   "Wira "+(characters.find(c=>c.id===selectedCharacter)?.name||"");
-
- updateStats();
  showScreen("introScreen");
+ speakWelcome();
 }
 
-/* ================= KAWASAN ================= */
-function attempted(id){
- return !!progress[id]?.attempted;
-}
-
-function attemptedCount(){
- return Object.keys(progress).filter(k=>progress[k]?.attempted).length;
-}
-
-function areaUnlocked(i){
- return isMaster||guest||attemptedCount()>=areas[i].unlock;
-}
-
+/* KAWASAN */
+function attempted(id){return !!progress[id]?.attempted}
+function attemptedCount(){return Object.keys(progress).filter(k=>progress[k]?.attempted).length}
+function areaUnlocked(i){return isMaster||guest||attemptedCount()>=areas[i].unlock}
 function renderAreas(){
  document.getElementById("areaButtons").innerHTML=areas.map((a,i)=>`
   <button class="${i===currentArea?"":"secondary"}"
   onclick="travelTo(${i})">
   ${a.emoji} ${a.name} ${areaUnlocked(i)?"":"🔒"}
-  </button>
- `).join("");
+  </button>`).join("");
 }
-
 function renderWorld(){
- document.getElementById("locationLabel").textContent=
-  areas[currentArea].name.toUpperCase();
-
+ document.getElementById("locationLabel").textContent=areas[currentArea].name.toUpperCase();
  const hero=document.getElementById("hero");
- hero.style.left=heroX+"%";
- hero.style.bottom=heroY+"%";
- hero.innerHTML=heroGraphic();
-
- renderAreas();
+ hero.style.left=heroX+"%";hero.style.bottom=heroY+"%";
+ hero.innerHTML=heroGraphic();renderAreas();
 }
-
 function travelTo(i){
- if(!areaUnlocked(i)){
-  toast("Selesaikan lebih banyak misi untuk membuka kawasan ini.");
-  return;
- }
-
- currentArea=i;
- heroX=45;
- heroY=22;
- renderWorld();
+ if(!areaUnlocked(i)){toast("Selesaikan lebih banyak misi untuk membuka kawasan ini.");return}
+ currentArea=i;heroX=45;heroY=22;renderWorld();
 }
 
-/* ================= PERGERAKAN ================= */
+/* GERAKAN */
 function move(dx,dy){
- if(!isMaster&&!guest&&remainingSeconds<=0){
-  toast("Masa permainan tamat.");
-  return;
- }
-
+ if(!isMaster&&!guest&&remainingSeconds<=0){toast("Masa permainan tamat.");return}
  heroX=Math.max(5,Math.min(85,heroX+dx*5));
  heroY=Math.max(10,Math.min(45,heroY+dy*4));
-
  const hero=document.getElementById("hero");
- hero.style.left=heroX+"%";
- hero.style.bottom=heroY+"%";
+ hero.style.left=heroX+"%";hero.style.bottom=heroY+"%";
 }
-
 function talkNPC(which){
  if(!isMaster&&!guest&&remainingSeconds<=0)return;
-
- toast(which===0?
-  "Burung kenyalang: Teruskan membantu penduduk!":
-  "Monyet: Setiap cabaran mengajar kita sesuatu!"
- );
+ const msg=which===0?
+ "Burung kenyalang: Teruskan membantu penduduk!":
+ "Monyet: Setiap cabaran mengajar kita sesuatu!";
+ toast(msg);speakText(msg);
 }
-
 function collectPearl(){
- if(pearlTaken){
-  toast("Mutiara ini sudah dikutip.");
-  return;
- }
-
- pearlTaken=true;
- balance+=5;
- updateStats();
- saveLocal();
- toast("+5 Mutiara bonus!");
+ if(pearlTaken){toast("Mutiara ini sudah dikutip.");return}
+ pearlTaken=true;balance+=5;updateStats();saveLocal();
+ toast("+5 Mutiara bonus!");speakText("Tahniah. Kamu mendapat lima Mutiara bonus.");
 }
 
-/* ================= BUKU MISI ================= */
-
-// Memaparkan semua 8 misi, termasuk misi di kawasan terkunci.
+/* BUKU MISI */
 function showMissionBook(){
  const cards=missions.map((m,index)=>{
   const unlocked=areaUnlocked(Number(m.area));
   const done=attempted(m.id);
   const areaName=areas[Number(m.area)]?.name||"Kawasan";
-
-  let status="";
-  let buttonText="";
-  let disabled="";
-
-  if(!unlocked){
-   status="🔒 Kawasan belum dibuka";
-   buttonText="KAWASAN TERKUNCI";
-   disabled="disabled";
-  }else if(done&&!isMaster&&!guest){
-   status="✅ Sudah dijawab";
-   buttonText="SUDAH SELESAI";
-   disabled="disabled";
-  }else{
-   status=done?"🔁 Boleh dimainkan semula":"🟢 Misi tersedia";
-   buttonText=done?"ULANG MISI":"MULA MISI";
-  }
-
-  return `
-   <div class="missionCard">
-    <h3>${index+1}. ${escapeHTML(m.title)}</h3>
-    <p>${escapeHTML(m.question)}</p>
-    <div class="missionMeta">
-     <span>${escapeHTML(m.pillar)}</span>
-     <span>${escapeHTML(areaName)}</span>
-    </div>
-    <p style="font-weight:800;margin-top:9px">${status}</p>
-    <button ${disabled}
-     onclick="launchBookMission('${escapeHTML(m.id)}')">
-     ${buttonText}
-    </button>
-   </div>
-  `;
+  let status="",buttonText="",disabled="";
+  if(!unlocked){status="🔒 Kawasan belum dibuka";buttonText="KAWASAN TERKUNCI";disabled="disabled"}
+  else if(done&&!isMaster&&!guest){status="✅ Sudah dijawab";buttonText="SUDAH SELESAI";disabled="disabled"}
+  else{status=done?"🔁 Boleh dimainkan semula":"🟢 Misi tersedia";buttonText=done?"ULANG MISI":"MULA MISI"}
+  return `<div class="missionCard">
+   <h3>${index+1}. ${escapeHTML(m.title)}</h3>
+   <p>${escapeHTML(m.question)}</p>
+   <div class="missionMeta"><span>${escapeHTML(m.pillar)}</span><span>${escapeHTML(areaName)}</span></div>
+   <p style="font-weight:800;margin-top:9px">${status}</p>
+   <button ${disabled} onclick="launchBookMission('${escapeHTML(m.id)}')">${buttonText}</button>
+  </div>`;
  }).join("");
-
- showModal(`
-  <h2>📖 BUKU MISI PAHLAWAN</h2>
-  <p>Kesemua lapan cabaran pengembaraan kamu.</p>
-  <div class="stat" style="text-align:center;margin-bottom:12px">
-   ${missions.length} MISI · ${attemptedCount()} SELESAI
-  </div>
-  ${cards}
- `);
+ showModal(`<h2>📖 BUKU MISI PAHLAWAN</h2>
+ <p>Kesemua lapan cabaran pengembaraan kamu.</p>
+ <div class="stat" style="text-align:center;margin-bottom:12px">${missions.length} MISI · ${attemptedCount()} SELESAI</div>
+ ${cards}`);
 }
-
 function launchBookMission(id){
  const m=missions.find(x=>String(x.id)===String(id));
  if(!m)return;
-
- if(!areaUnlocked(Number(m.area))){
-  toast("Kawasan ini belum dibuka. Selesaikan misi terdahulu dahulu.");
-  return;
- }
-
- if(attempted(id)&&!isMaster&&!guest){
-  toast("Misi ini telah selesai.");
-  return;
- }
-
- currentArea=Number(m.area);
- heroX=45;
- heroY=22;
- renderWorld();
- openMission(m);
+ if(!areaUnlocked(Number(m.area))){toast("Kawasan ini belum dibuka.");return}
+ if(attempted(id)&&!isMaster&&!guest){toast("Misi ini telah selesai.");return}
+ currentArea=Number(m.area);heroX=45;heroY=22;renderWorld();openMission(m);
 }
 
-/* ================= SISTEM MISI ================= */
+/* MISI */
 function availableMissions(){
- return missions.filter(m=>
-  Number(m.area)===currentArea &&
-  (isMaster||guest||!attempted(m.id))
- );
+ return missions.filter(m=>Number(m.area)===currentArea&&
+ (isMaster||guest||!attempted(m.id)));
 }
-
 function interact(){
- if(!isMaster&&!guest&&remainingSeconds<=0){
-  toast("Masa permainan tamat.");
-  return;
- }
-
+ if(!isMaster&&!guest&&remainingSeconds<=0){toast("Masa permainan tamat.");return}
  const list=availableMissions();
-
- if(!list.length){
-  showMissionBook();
-  return;
- }
-
+ if(!list.length){showMissionBook();return}
  openMission(list[0]);
 }
-
 function openMission(m){
- currentMission=m;
- selectedAnswer=null;
-
+ currentMission=m;selectedAnswer=null;
  showModal(`
   <h2>📜 ${escapeHTML(m.title)}</h2>
   <p><b>${escapeHTML(m.pillar)}</b></p>
   <p>${escapeHTML(m.question)}</p>
+  <button class="secondary" style="width:100%" onclick="readMission()">🔊 DENGAR SOALAN DAN PILIHAN A, B, C</button>
   ${["A","B","C"].map(k=>`
    <button class="option" id="opt${k}" onclick="selectOption('${k}')">
     ${k}. ${escapeHTML(m[k.toLowerCase()])}
-   </button>
-  `).join("")}
-  <button style="width:100%;margin-top:10px"
-  onclick="submitAnswer()">HANTAR JAWAPAN</button>
+   </button>`).join("")}
+  <button class="secondary" style="width:100%;margin-top:5px" onclick="speakText('Pilihan A. '+currentMission.a)">🔊 DENGAR A</button>
+  <button class="secondary" style="width:100%;margin-top:5px" onclick="speakText('Pilihan B. '+currentMission.b)">🔊 DENGAR B</button>
+  <button class="secondary" style="width:100%;margin-top:5px" onclick="speakText('Pilihan C. '+currentMission.c)">🔊 DENGAR C</button>
+  <button style="width:100%;margin-top:12px" onclick="submitAnswer()">HANTAR JAWAPAN</button>
  `);
+ setTimeout(()=>readMission(),350);
 }
-
 function selectOption(k){
  selectedAnswer=k;
-
  ["A","B","C"].forEach(x=>{
   document.getElementById("opt"+x)?.classList.toggle("selected",x===k);
  });
+ speakText("Kamu memilih jawapan "+k+". "+currentMission[k.toLowerCase()]);
 }
-
 async function submitAnswer(){
- if(!selectedAnswer){
-  toast("Pilih jawapan dahulu.");
-  return;
- }
-
+ if(!selectedAnswer){toast("Pilih jawapan dahulu.");return}
+ stopVoice();
  const correct=selectedAnswer===String(currentMission.answer).toUpperCase();
  const reward=correct?20:-3;
-
  balance=Math.max(0,balance+reward);
-
- progress[currentMission.id]={
-  attempted:true,
-  correct,
-  answer:selectedAnswer
- };
-
- updateStats();
- saveLocal();
-
+ progress[currentMission.id]={attempted:true,correct,answer:selectedAnswer};
+ updateStats();saveLocal();
  const answeredMission=currentMission;
  const answerGiven=selectedAnswer;
-
  showModal(`
   <h2>${correct?"🎉 TAHNIAH!":"💪 CUBA LAGI!"}</h2>
   <p>${correct?"Jawapan kamu tepat.":"Jawapan belum tepat. Teruskan belajar."}</p>
-  <h2 style="text-align:center;color:${correct?"#23804a":"#c33"}">
-   ${correct?"+20":"−3"} Mutiara
-  </h2>
+  <h2 style="text-align:center;color:${correct?"#23804a":"#c33"}">${correct?"+20":"−3"} Mutiara</h2>
   <p>Jumlah Mutiara: <b>${balance}</b></p>
-  <button style="width:100%" onclick="closeModal();renderWorld()">
-   TERUSKAN
-  </button>
+  <button style="width:100%" onclick="closeModal();renderWorld()">TERUSKAN</button>
  `);
-
+ speakText(correct?"Tahniah. Jawapan kamu tepat. Kamu mendapat dua puluh Mutiara.":"Jawapan belum tepat. Tiga Mutiara ditolak. Teruskan berusaha.");
  await saveProgressToCloud(answeredMission,answerGiven,correct,reward);
 }
 
-/* ================= PETA ================= */
+/* PETA */
 function showMap(){
- showModal(`
-  <h2>🗺️ PETA BORNEO</h2>
-  ${areas.map((a,i)=>`
-   <button class="option"
-   onclick="closeModal();travelTo(${i})">
-    ${a.emoji} ${a.name} ${areaUnlocked(i)?"🔓":"🔒"}
-   </button>
-  `).join("")}
- `);
+ showModal(`<h2>🗺️ PETA BORNEO</h2>
+ ${areas.map((a,i)=>`<button class="option" onclick="closeModal();travelTo(${i})">${a.emoji} ${a.name} ${areaUnlocked(i)?"🔓":"🔒"}</button>`).join("")}`);
 }
 
-/* ================= MASA PERMAINAN ================= */
+/* MASA */
 function startGame(){
- showScreen("gameScreen");
- renderWorld();
- updateStats();
-
- if(!isMaster&&!guest){
-  startTimer();
- }else{
-  document.getElementById("clock").textContent="∞";
- }
+ showScreen("gameScreen");renderWorld();updateStats();
+ if(!isMaster&&!guest)startTimer();
+ else document.getElementById("clock").textContent="∞";
 }
-
 function startTimer(){
  clearInterval(timer);
-
- const mm=String(Math.floor(remainingSeconds/60)).padStart(2,"0");
- const ss=String(remainingSeconds%60).padStart(2,"0");
- document.getElementById("clock").textContent=mm+":"+ss;
-
  timer=setInterval(()=>{
   if(remainingSeconds>0)remainingSeconds--;
-
-  const m=String(Math.floor(remainingSeconds/60)).padStart(2,"0");
-  const s=String(remainingSeconds%60).padStart(2,"0");
-
-  document.getElementById("clock").textContent=m+":"+s;
-
-  if(remainingSeconds<=0){
-   clearInterval(timer);
-   toast("Masa permainan tamat!");
-  }
+  const mm=String(Math.floor(remainingSeconds/60)).padStart(2,"0");
+  const ss=String(remainingSeconds%60).padStart(2,"0");
+  document.getElementById("clock").textContent=mm+":"+ss;
+  if(remainingSeconds<=0){clearInterval(timer);toast("Masa permainan tamat!")}
  },1000);
 }
+function backToIntro(){clearInterval(timer);showScreen("introScreen")}
+function backToMasterGame(){showScreen("introScreen")}
 
-function backToIntro(){
- clearInterval(timer);
- showScreen("introScreen");
-}
-
-function backToMasterGame(){
- showScreen("introScreen");
-}
-
-/* ================= PANEL MASTER ================= */
+/* MASTER */
 function openMasterPanel(){
- if(!isMaster){
-  toast("Akses Master sahaja.");
-  return;
- }
-
- showScreen("masterScreen");
- masterTab("missions");
+ if(!isMaster){toast("Akses Master sahaja.");return}
+ showScreen("masterScreen");masterTab("missions");
 }
-
 async function masterTab(tab){
  const box=document.getElementById("masterContent");
  box.innerHTML="Memuatkan...";
-
  if(tab==="missions"){
-  box.innerHTML=`
-   <h3>📚 Lapan Misi Permainan</h3>
+  box.innerHTML=`<h3>📚 Lapan Misi Permainan</h3>
    <p>Jumlah misi tetap: <b>${missions.length}</b></p>
-   ${missions.map((m,i)=>`
-    <div class="adminList">
-     <b>${i+1}. ${escapeHTML(m.title)}</b>
-     <br><small>${escapeHTML(m.pillar)} · ${escapeHTML(areas[m.area]?.name||"")}</small>
-     <br><button onclick="masterReplay('${escapeHTML(m.id)}')">
-      ULANG MISI
-     </button>
-    </div>
-   `).join("")}
-  `;
+   ${missions.map((m,i)=>`<div class="adminList">
+    <b>${i+1}. ${escapeHTML(m.title)}</b><br>
+    <small>${escapeHTML(m.pillar)} · ${escapeHTML(areas[m.area]?.name||"")}</small><br>
+    <button onclick="masterReplay('${escapeHTML(m.id)}')">ULANG MISI</button>
+   </div>`).join("")}`;
  }else if(tab==="players"){
   const {data,error}=await db.from("profiles").select("*").limit(100);
-
   box.innerHTML="<h3>👥 Pemain</h3>";
-
-  if(error){
-   box.innerHTML+="<p>"+escapeHTML(error.message)+"</p>";
-  }else{
-   box.innerHTML+=(data||[]).map(p=>`
-    <div class="adminList">
-     ${escapeHTML(p.full_name||p.username||p.email||p.id)}
-     <br><small>${escapeHTML(p.role||"student")}</small>
-    </div>
-   `).join("");
-  }
+  if(error)box.innerHTML+="<p>"+escapeHTML(error.message)+"</p>";
+  else box.innerHTML+=(data||[]).map(p=>`<div class="adminList">${escapeHTML(p.full_name||p.username||p.email||p.id)}<br><small>${escapeHTML(p.role||"student")}</small></div>`).join("");
  }else{
   box.innerHTML="<h3>🏆 Papan Kedudukan</h3>";
   await loadLeaderboard(box);
  }
 }
-
 function masterReplay(id){
  if(!isMaster)return;
-
  const m=missions.find(x=>String(x.id)===String(id));
  if(!m)return;
-
- currentArea=Number(m.area);
- heroX=45;
- heroY=22;
-
- renderWorld();
- showScreen("gameScreen");
- openMission(m);
+ currentArea=Number(m.area);heroX=45;heroY=22;
+ renderWorld();showScreen("gameScreen");openMission(m);
 }
 
-/* ================= PAPAN KEDUDUKAN ================= */
+/* LEADERBOARD */
 async function loadLeaderboard(target){
  const {data,error}=await db.rpc("get_leaderboard");
-
- if(error){
-  target.innerHTML+="<p>"+escapeHTML(error.message)+"</p>";
-  return;
- }
-
- target.innerHTML+=(data||[]).map((p,i)=>`
-  <p>${i+1}. ${escapeHTML(p.full_name||p.username||"Pemain")}
-  — 💎 ${p.xp??p.mutiara??0}</p>
- `).join("");
+ if(error){target.innerHTML+="<p>"+escapeHTML(error.message)+"</p>";return}
+ target.innerHTML+=(data||[]).map((p,i)=>`<p>${i+1}. ${escapeHTML(p.full_name||p.username||"Pemain")} — 💎 ${p.xp??p.mutiara??0}</p>`).join("");
 }
-
 async function showLeaderboard(){
  showScreen("leaderScreen");
-
  const target=document.getElementById("leaderList");
  target.innerHTML="Memuatkan...";
-
  await loadLeaderboard(target);
 }
 
-/* ================= AKAUN ================= */
+/* AKAUN */
 async function login(){
  const email=document.getElementById("email").value.trim();
  const password=document.getElementById("password").value;
  const msg=document.getElementById("authMessage");
-
- if(!email||!password){
-  msg.textContent="Masukkan emel dan kata laluan dahulu.";
-  return;
- }
-
+ if(!email||!password){msg.textContent="Masukkan emel dan kata laluan dahulu.";return}
  msg.textContent="Sedang log masuk...";
-
  const {data,error}=await db.auth.signInWithPassword({email,password});
-
- if(error){
-  msg.textContent=error.message;
-  return;
- }
-
- user=data.user;
- guest=false;
-
+ if(error){msg.textContent=error.message;return}
+ user=data.user;guest=false;
  await loadUser();
 }
-
 async function register(){
  const email=document.getElementById("email").value.trim();
  const password=document.getElementById("password").value;
-
- if(!email||!password){
-  document.getElementById("authMessage").textContent=
-   "Masukkan emel dan kata laluan dahulu.";
-  return;
- }
-
+ if(!email||!password){document.getElementById("authMessage").textContent="Masukkan emel dan kata laluan dahulu.";return}
  const {data,error}=await db.auth.signUp({email,password});
-
  document.getElementById("authMessage").textContent=
-  error?error.message:
-  "Pendaftaran berjaya. Semak emel jika pengesahan diperlukan.";
+  error?error.message:"Pendaftaran berjaya. Semak emel jika pengesahan diperlukan.";
 }
 
-/* ================= MUAT PROFIL ================= */
+/* PROFIL */
 async function loadUser(){
  const msg=document.getElementById("authMessage");
  msg.textContent="Memuatkan profil pengembara...";
-
- const {data,error}=await db.from("profiles")
-  .select("*").eq("id",user.id).maybeSingle();
-
- if(error){
-  msg.textContent=error.message;
-  return;
- }
-
+ const {data,error}=await db.from("profiles").select("*").eq("id",user.id).maybeSingle();
+ if(error){msg.textContent=error.message;return}
  profile=data||{};
  isMaster=String(profile.role||"").toLowerCase()==="master";
  selectedCharacter=profile.character||"hamster";
-
- document.getElementById("masterPanelButton")
-  .classList.toggle("hidden",!isMaster);
-
+ document.getElementById("masterPanelButton").classList.toggle("hidden",!isMaster);
  await loadMissions();
  await loadProgress();
-
- updateStats();
- renderCharacterPicker();
-
+ updateStats();renderCharacterPicker();
  document.getElementById("welcomeName").textContent=
   "Selamat datang, "+(profile.full_name||user.email);
-
  document.getElementById("hero").innerHTML=heroGraphic();
-
  msg.textContent="";
-
- /*
-  Selepas login:
-  - Akaun belum memilih watak: masuk pemilihan watak.
-  - Akaun sudah ada watak: masuk INTRO.
-  - Tidak terus membuka misi atau soalan.
- */
- if(!profile.character){
-  showScreen("characterScreen");
- }else{
-  showScreen("introScreen");
- }
+ // Selepas login, pergi ke intro sambutan, bukan terus ke misi.
+ if(!profile.character)showScreen("characterScreen");
+ else{showScreen("introScreen");speakWelcome()}
 }
 
-/* ================= PEMUATAN MISI ================= */
+/* MISI SUPABASE */
 async function loadMissions(){
- const originalMissions=defaultMissions.map(m=>({...m}));
- missions=originalMissions.map(m=>({...m}));
-
+ const original=defaultMissions.map(m=>({...m}));
+ missions=original.map(m=>({...m}));
  try{
-  const {data,error}=await db.from("missions")
-   .select("*").order("week").order("day");
-
-  if(error){
-   console.warn("Supabase missions:",error.message);
-   return;
-  }
-
+  const {data,error}=await db.from("missions").select("*").order("week").order("day");
+  if(error){console.warn("Supabase missions:",error.message);return}
   if(!data||!data.length)return;
-
   data.forEach(remote=>{
-   const index=missions.findIndex(m=>
-    String(m.id)===String(remote.id)
-   );
-
+   const index=missions.findIndex(m=>String(m.id)===String(remote.id));
    if(index<0)return;
-
    const old=missions[index];
-
    missions[index]={
     ...old,
     title:remote.title||remote.name||old.title,
@@ -1152,140 +956,80 @@ async function loadMissions(){
     a:remote.option_a||remote.a||old.a,
     b:remote.option_b||remote.b||old.b,
     c:remote.option_c||remote.c||old.c,
-    answer:String(
-     remote.correct_answer||remote.answer||old.answer
-    ).toUpperCase()
+    answer:String(remote.correct_answer||remote.answer||old.answer).toUpperCase()
    };
   });
-
  }catch(err){
   console.warn("Misi menggunakan data asal:",err);
-  missions=originalMissions.map(m=>({...m}));
+  missions=original.map(m=>({...m}));
  }
-
- if(missions.length!==8){
-  missions=originalMissions.map(m=>({...m}));
- }
+ if(missions.length!==8)missions=original.map(m=>({...m}));
 }
 
-/* ================= KEMAJUAN PEMAIN ================= */
+/* KEMAJUAN */
 async function loadProgress(){
- progress={};
- balance=0;
-
- const {data,error}=await db.from("student_progress")
-  .select("*").eq("user_id",user.id);
-
- if(error){
-  console.warn("Progress Supabase:",error.message);
-  loadLocal();
-  return;
- }
-
+ progress={};balance=0;
+ const {data,error}=await db.from("student_progress").select("*").eq("user_id",user.id);
+ if(error){console.warn("Progress Supabase:",error.message);loadLocal();return}
  (data||[]).forEach(p=>{
   const id=String(p.mission_id);
-
-  progress[id]={
-   attempted:true,
-   correct:!!p.is_correct
-  };
-
+  progress[id]={attempted:true,correct:!!p.is_correct};
   balance=Math.max(balance,Number(p.xp)||0);
  });
-
- // Gabungkan rekod tempatan supaya kemajuan peranti tidak hilang.
  try{
   const local=JSON.parse(localStorage.getItem(localKey())||"{}");
-
   balance=Math.max(balance,Number(local.balance)||0);
   progress={...local.progress,...progress};
-
-  if(local.selectedCharacter&&!profile.character){
-   selectedCharacter=local.selectedCharacter;
-  }
- }catch(e){
-  console.warn("Rekod tempatan tidak dapat dibaca.");
- }
+  if(local.selectedCharacter&&!profile.character)selectedCharacter=local.selectedCharacter;
+ }catch(e){}
 }
 
-/* ================= SIMPANAN ================= */
+/* SIMPANAN */
 async function saveCharacter(){
  if(!user||guest)return;
-
- const {error}=await db.from("profiles")
-  .update({character:selectedCharacter})
-  .eq("id",user.id);
-
+ const {error}=await db.from("profiles").update({character:selectedCharacter}).eq("id",user.id);
  if(error)console.warn("Simpan watak:",error.message);
 }
-
 async function saveProgressToCloud(m,answer,correct,reward){
  if(!user||guest)return;
-
  const {error}=await db.rpc("submit_mission_answer",{
-  p_mission_id:m.id,
-  p_answer:answer
+  p_mission_id:m.id,p_answer:answer
  });
-
  if(error){
   console.warn("Simpanan Supabase gagal:",error.message);
   toast("Jawapan disimpan pada peranti. Semakan Supabase diperlukan.");
  }
 }
-
 function saveLocal(){
- localStorage.setItem(localKey(),JSON.stringify({
-  balance,progress,selectedCharacter
- }));
+ localStorage.setItem(localKey(),JSON.stringify({balance,progress,selectedCharacter}));
 }
-
 function loadLocal(){
  try{
   const saved=JSON.parse(localStorage.getItem(localKey())||"{}");
-
   balance=Number(saved.balance)||0;
   progress=saved.progress||{};
   selectedCharacter=saved.selectedCharacter||selectedCharacter;
- }catch(e){
-  balance=0;
-  progress={};
- }
+ }catch(e){balance=0;progress={}}
 }
 
-/* ================= MOD TETAMU ================= */
+/* TETAMU */
 function guestPlay(){
- guest=true;
- user=null;
- profile=null;
- isMaster=false;
-
- loadLocal();
- renderCharacterPicker();
-
+ guest=true;user=null;profile=null;isMaster=false;
+ loadLocal();renderCharacterPicker();
  document.getElementById("masterPanelButton").classList.add("hidden");
-
  showScreen("characterScreen");
 }
-
 async function logout(){
- clearInterval(timer);
- closeModal();
-
+ clearInterval(timer);stopVoice();closeModal();
  if(user)await db.auth.signOut();
-
- user=null;
- profile=null;
- isMaster=false;
- guest=false;
-
+ user=null;profile=null;isMaster=false;guest=false;
  showScreen("openingScreen");
 }
 
-/* ================= MULAKAN ================= */
+/* MULA */
 renderCharacterPicker();
 document.getElementById("hero").innerHTML=heroGraphic();
-renderAreas();
-updateStats();
+renderAreas();updateStats();
 
 db.auth.getSession().then(async({data})=>{
  if(data.session){
