@@ -4,635 +4,648 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#102b25">
+<meta name="theme-color" content="#102b26">
 <title>Misi Pahlawan Alpha</title>
 <style>
 :root{
- --gold:#f5cc72;--cream:#fff4d9;--green:#163d31;
- --panel:rgba(10,31,28,.91);--line:rgba(255,226,163,.32)
+ --deep:#102b26;--forest:#174438;--leaf:#39785a;--lime:#b9d88b;
+ --gold:#f3c86c;--cream:#fff8e9;--paper:#f5efdf;--ink:#233b31;
+ --muted:#718477;--line:#d9dfce;--red:#b85b4b;
 }
 *{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#102b25;color:var(--cream);font-family:Georgia,serif}
-button{font:inherit;color:inherit;border:1px solid var(--line);background:linear-gradient(145deg,#315b43,#173b30);border-radius:13px;padding:12px 16px;cursor:pointer;box-shadow:0 4px 0 #0b241d}
-button:active{transform:translateY(3px);box-shadow:0 1px 0 #0b241d}
-button:disabled{opacity:.4}
-#world{position:absolute;inset:0;width:100%;height:100%;display:block}
-.screen{position:absolute;inset:0;display:none;overflow:auto;background:linear-gradient(180deg,rgba(5,23,21,.15),rgba(5,23,21,.8))}
-.screen.active{display:flex}
-#intro{align-items:center;justify-content:center;text-align:center}
-.intro-card{width:min(92%,540px);padding:25px 20px;border:1px solid #d7b66d88;border-radius:25px;background:linear-gradient(150deg,#163d32eF,#10251feF);box-shadow:0 20px 70px #0009}
-.logo{font-size:clamp(34px,8vw,65px);font-weight:bold;line-height:1.02;color:#ffe3a0;text-shadow:0 4px 0 #68451c,0 8px 25px #000}
-.subtitle{letter-spacing:4px;color:#c8d9b3;font:12px Arial;margin:14px 0 22px}
-.intro-art{height:170px;margin:10px auto 20px;max-width:430px}
-.gold{color:var(--gold)}
-.small{font:12px Arial;color:#d3d9c7;line-height:1.5}
-#select{align-items:center;justify-content:center;padding:15px}
-.panel{width:min(94%,760px);max-height:94%;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:19px;box-shadow:0 15px 60px #0009}
-.panel h2{text-align:center;color:var(--gold);margin:4px 0 8px}
-.heroes{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:17px 0}
-.hero{min-width:0;text-align:center;padding:7px 3px;border-radius:13px;background:#254738;border:1px solid #ffffff22;cursor:pointer}
-.hero.chosen{border:2px solid var(--gold);background:#496344}
-.hero canvas{width:100%;height:76px;display:block}
-.hero b{font-size:12px;display:block}
-.hero small{font:10px Arial;color:#d4d9c9}
-#game{display:none;position:absolute;inset:0}
-#game.active{display:block}
-#hud{position:absolute;top:9px;left:9px;right:9px;display:flex;align-items:center;gap:7px;pointer-events:none}
-.hudbox{background:#102c26eF;border:1px solid var(--line);border-radius:12px;padding:7px 10px;font:12px Arial;box-shadow:0 3px 10px #0005}
-#hud button{pointer-events:auto;padding:8px 10px;font:12px Arial}
-#stats{flex:1;min-width:0}
-#stats strong{color:var(--gold)}
-#controls{position:absolute;bottom:16px;left:14px;right:14px;display:flex;justify-content:space-between;align-items:end;pointer-events:none}
-.pad{display:grid;grid-template-columns:45px 45px 45px;grid-template-rows:42px 42px 42px;gap:3px;pointer-events:auto}
-.pad button,.action-buttons button{padding:0;font:bold 20px Arial;background:#102c26c9;border:1px solid #e8d49a88;box-shadow:0 3px 0 #071c17}
-.pad .up{grid-column:2}.pad .left{grid-column:1;grid-row:2}.pad .down{grid-column:2;grid-row:2}.pad .right{grid-column:3;grid-row:2}
-.action-buttons{display:flex;gap:8px;pointer-events:auto}
-.action-buttons button{width:62px;height:58px;font-size:12px}
-#notice{position:absolute;top:75px;left:50%;transform:translateX(-50%);padding:8px 13px;border-radius:10px;background:#102c26df;font:12px Arial;text-align:center;max-width:85%;display:none}
-#modal{position:absolute;inset:0;background:#061713d9;display:none;align-items:center;justify-content:center;padding:14px;z-index:5}
-#modal.show{display:flex}
-#modal .panel{width:min(96%,540px);max-height:90%;text-align:center}
-#answers{display:grid;gap:9px;margin:17px 0}
-#answers button{text-align:left;background:#284c3b}
-#maplist{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:15px 0}
-.mapcell{padding:9px 3px;font:11px Arial;border-radius:9px;background:#244437;border:1px solid #ffffff20}
-.mapcell.done{background:#45613d;color:#ffe6a1}
-.mapcell.lock{opacity:.45}
-#toast{position:absolute;bottom:120px;left:50%;transform:translateX(-50%);background:#142f27ed;padding:10px 15px;border-radius:12px;display:none;font:13px Arial;text-align:center;z-index:4}
-@media(max-width:520px){
- .heroes{gap:4px}.hero canvas{height:59px}.hero b{font-size:10px}.hero small{font-size:9px}
- #hud{gap:4px}.hudbox{padding:6px;font-size:10px}#hud button{padding:7px;font-size:10px}
- #maplist{grid-template-columns:repeat(3,1fr)}
+body{margin:0;background:#102b26;color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+button{font:inherit;cursor:pointer}
+button:focus-visible{outline:3px solid #f3c86c;outline-offset:3px}
+#app{max-width:1100px;min-height:100vh;margin:auto;background:var(--paper);overflow:hidden;position:relative}
+header{height:65px;background:var(--deep);color:white;display:flex;align-items:center;justify-content:space-between;padding:0 18px;position:sticky;top:0;z-index:10;border-bottom:1px solid #ffffff20}
+.brand{font-weight:950;letter-spacing:1px;font-size:17px}
+.brand span{color:var(--gold)}
+.headerstats{display:flex;gap:15px;font-size:11px;text-align:center;color:#dce9d8}
+.headerstats b{display:block;color:var(--gold);font-size:16px}
+main{padding:15px;max-width:1000px;margin:auto}
+.screen{display:none}.screen.active{display:block}
+.heroScene{height:300px;border-radius:22px;overflow:hidden;position:relative;background:#9cc8a1;box-shadow:0 8px 22px #173b3022}
+.heroScene svg{width:100%;height:100%;display:block}
+.sceneTitle{position:absolute;left:20px;top:18px;color:white;text-shadow:0 2px 8px #16372c;font-weight:900;font-size:clamp(22px,5vw,38px);line-height:1.05;max-width:70%}
+.sceneSub{font-size:12px;letter-spacing:2px;color:#f8e9b7;margin-top:8px}
+.sceneHero{position:absolute;bottom:12px;right:11%;font-size:78px;filter:drop-shadow(0 7px 4px #23452b55);animation:bob 2s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-8px)}}
+.intro{background:#fffdf5;padding:19px;border-radius:19px;margin-top:14px;box-shadow:0 5px 18px #1a493012}
+h1,h2,h3,p{margin-top:0}
+h1{font-size:25px;margin-bottom:7px}
+h2{font-size:20px;margin-bottom:10px}
+p{line-height:1.55}
+.muted{color:var(--muted);font-size:13px}
+.btn{border:0;border-radius:13px;padding:13px 17px;font-weight:850;background:var(--forest);color:white;box-shadow:0 3px 0 #0e3028}
+.btn.gold{background:var(--gold);color:#493816;box-shadow:0 3px 0 #c99c43}
+.btn.light{background:#e8efdf;color:#244a37;box-shadow:none;border:1px solid #d4dfcf}
+.btn.small{padding:9px 12px;font-size:12px}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.wide{width:100%}
+.row{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0}
+.stat{background:#f0f3e8;border:1px solid #e0e7d9;border-radius:13px;text-align:center;padding:10px 4px}
+.stat b{display:block;font-size:19px;color:#24523d}
+.stat small{font-size:9px;letter-spacing:.5px;color:#758578;font-weight:800}
+.sectionHead{display:flex;justify-content:space-between;align-items:center;margin:20px 0 10px}
+.pill{border-radius:99px;padding:6px 10px;background:#e8efdf;color:#315b41;font-size:11px;font-weight:850}
+.heroGrid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.heroPick{border:2px solid #e1e6d9;border-radius:15px;background:#fffdf5;padding:10px 4px;text-align:center;color:var(--ink)}
+.heroPick.selected{border-color:#d5a949;background:#fff4d5;box-shadow:0 0 0 2px #f3d98e}
+.heroPick .animal{font-size:34px;display:block}
+.heroPick b{font-size:11px;display:block;margin-top:4px}
+.heroPick small{font-size:9px;color:#758578}
+.valueGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.value{background:#edf2e6;border-radius:12px;padding:11px;font-size:12px;font-weight:800;color:#31553e}
+.value span{font-size:19px;margin-right:7px}
+.panel{background:#fffdf5;border-radius:18px;padding:16px;margin-top:13px;border:1px solid #e5e6d9}
+.progressTrack{height:9px;border-radius:20px;background:#e3e8dc;overflow:hidden}
+.progressFill{height:100%;background:linear-gradient(90deg,#4f9567,#c5d985);width:0%;transition:width .3s}
+.weekList{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.weekCard{border:1px solid #dfe5d8;background:#fff;border-radius:13px;padding:11px 8px;text-align:left;color:var(--ink);min-height:78px}
+.weekCard b{display:block;font-size:12px}
+.weekCard small{font-size:10px;color:#758578}
+.weekCard.current{border:2px solid #c69b3e;background:#fff8e7}
+.weekCard.locked{opacity:.48}
+.weekCard.done{background:#e8f1e5;border-color:#b9d1b6}
+.dayList{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
+.dayCard{border:1px solid var(--line);border-radius:13px;background:#fff;padding:11px 4px;text-align:center;color:var(--ink)}
+.dayCard b{display:block;font-size:11px}
+.dayCard span{font-size:20px;display:block;margin-bottom:5px}
+.dayCard small{font-size:9px;color:#748276}
+.dayCard.current{background:#fff1c9;border:2px solid #c89c43}
+.dayCard.done{background:#e8f2e5;border-color:#9fc49f}
+.dayCard:disabled{opacity:.4}
+.missionCard{background:#fffdf5;border-radius:20px;padding:18px;border:1px solid #e5e6d9;box-shadow:0 8px 24px #193d3010}
+.missionTag{font-size:11px;font-weight:900;letter-spacing:1.2px;color:#64806a}
+.missionStory{font-size:16px;line-height:1.65;margin:15px 0}
+.choice{display:flex;width:100%;text-align:left;align-items:center;gap:12px;background:#f5f4eb;border:1.5px solid #e1e4d9;border-radius:14px;padding:13px;margin:8px 0;color:#294234;font-weight:750}
+.choice .letter{width:29px;height:29px;border-radius:9px;background:#dfe9d9;display:grid;place-items:center;flex:none}
+.choice.correct{background:#e5f3df;border-color:#7cae79}
+.choice.wrong{background:#f8e9e4;border-color:#d18b7d}
+.choice:disabled{cursor:default}
+.feedback{padding:14px;border-radius:13px;background:#edf3e8;margin-top:12px;line-height:1.5;font-size:14px}
+.rewardRow{display:flex;justify-content:space-between;gap:10px;align-items:center;background:#f3f0df;border-radius:12px;padding:11px;margin-top:12px;font-size:12px}
+.traitLine{margin:12px 0}
+.traitLine div:first-child{display:flex;justify-content:space-between;font-size:12px;font-weight:800;margin-bottom:6px}
+.bottomNav{position:sticky;bottom:0;background:#fffdf5;border-top:1px solid #e1e5d9;display:grid;grid-template-columns:repeat(4,1fr);padding:7px 5px calc(7px + env(safe-area-inset-bottom));z-index:9}
+.navBtn{border:0;background:transparent;color:#718174;font-size:10px;font-weight:800;padding:5px}
+.navBtn span{display:block;font-size:21px;margin-bottom:2px}
+.navBtn.active{color:#24583e}
+.collectionGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.collect{background:#f1f2e8;border:1px solid #e0e4d8;border-radius:13px;padding:12px;text-align:center}
+.collect span{font-size:27px;display:block}
+.collect small{font-size:10px;font-weight:800}
+.lock{filter:grayscale(1);opacity:.35}
+.toast{position:fixed;bottom:85px;left:50%;transform:translateX(-50%);background:#102b26;color:white;padding:12px 18px;border-radius:12px;font-size:13px;z-index:30;display:none;max-width:90%;text-align:center}
+footer{text-align:center;color:#879285;font-size:10px;padding:15px}
+@media(min-width:760px){
+ main{padding:22px}
+ .heroScene{height:370px}
+ .intro{padding:24px}
+ .weekList{grid-template-columns:repeat(6,1fr)}
+ .panel{padding:20px}
+}
+@media(max-width:430px){
+ main{padding:10px}
+ .heroScene{height:245px}
+ .heroGrid{gap:4px}
+ .heroPick{padding:8px 2px}
+ .heroPick .animal{font-size:27px}
+ .heroPick b{font-size:9px}
+ .heroPick small{font-size:8px}
+ .stats{gap:5px}
+ .stat small{font-size:8px}
+ .weekList{grid-template-columns:repeat(2,1fr)}
+ .sceneHero{right:6%;font-size:66px}
 }
 </style>
 </head>
 <body>
-
-<canvas id="world"></canvas>
-
-<section id="intro" class="screen active">
- <div class="intro-card">
-  <div class="subtitle">SEBUAH PENGEMBARAAN • DUNIA BORNEO</div>
-  <div class="logo">MISI<br>PAHLAWAN<br><span class="gold">ALPHA</span></div>
-  <canvas id="introArt" class="intro-art"></canvas>
-  <p class="small">Satu pengembaraan membina hati, keberanian dan kepimpinan.</p>
-  <button onclick="showSelect()" style="width:85%;margin:8px 0">MULA PENGEMBARAAN</button>
-  <div><button onclick="openHelp()" style="background:#263d34">CARA BERMAIN</button></div>
-  <p class="small">Dunia Borneo menanti langkah pertamamu.</p>
+<div id="app">
+<header>
+ <div class="brand">🌿 MISI PAHLAWAN <span>ALPHA</span></div>
+ <div class="headerstats">
+  <div>TAHAP<b id="headLevel">1</b></div>
+  <div>XP<b id="headXP">0</b></div>
+  <div>SYILING<b id="headCoins">0</b></div>
  </div>
-</section>
+</header>
 
-<section id="select" class="screen">
+<main>
+<section id="home" class="screen active">
+ <div class="heroScene">
+  <svg viewBox="0 0 900 420" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Lukisan hutan Borneo, sungai dan rumah panjang">
+   <defs>
+    <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#83b9ae"/><stop offset="1" stop-color="#d4dfae"/></linearGradient>
+    <linearGradient id="hill" x2="0" y2="1"><stop stop-color="#5b9870"/><stop offset="1" stop-color="#245c49"/></linearGradient>
+    <linearGradient id="water" x2="0" y2="1"><stop stop-color="#8dc9bd"/><stop offset="1" stop-color="#337d79"/></linearGradient>
+    <linearGradient id="wood" x2="0" y2="1"><stop stop-color="#b88755"/><stop offset="1" stop-color="#704a37"/></linearGradient>
+   </defs>
+   <rect width="900" height="420" fill="url(#sky)"/>
+   <circle cx="720" cy="75" r="43" fill="#f7dfa0" opacity=".9"/>
+   <path d="M0 230 Q140 105 290 205 T580 175 T900 190 V420 H0Z" fill="#77a77a"/>
+   <path d="M0 270 Q150 165 310 250 T620 225 T900 245 V420 H0Z" fill="url(#hill)"/>
+   <path d="M0 315 Q190 265 360 310 Q530 350 680 290 Q810 240 900 300 V420 H0Z" fill="#397452"/>
+   <path d="M0 345 Q160 300 320 355 Q500 415 670 330 Q800 280 900 340 V420 H0Z" fill="url(#water)"/>
+   <path d="M0 367 Q170 330 320 375 T650 355 T900 368" fill="none" stroke="#d4eee0" stroke-width="5" opacity=".7"/>
+   <path d="M0 390 Q170 355 330 397 T670 382 T900 392" fill="none" stroke="#d4eee0" stroke-width="3" opacity=".5"/>
+   <!-- rumah panjang -->
+   <g transform="translate(515 190)">
+    <path d="M0 50 L22 4 L210 4 L240 50Z" fill="#594333"/>
+    <path d="M10 45 L30 14 L204 14 L228 45Z" fill="#b47c4e"/>
+    <rect x="22" y="48" width="195" height="57" rx="3" fill="url(#wood)"/>
+    <path d="M22 48 H217 M22 72 H217 M22 94 H217" stroke="#593e30" stroke-width="4"/>
+    <g fill="#e6c18a"><rect x="43" y="60" width="22" height="25"/><rect x="85" y="60" width="22" height="25"/><rect x="127" y="60" width="22" height="25"/><rect x="169" y="60" width="22" height="25"/></g>
+    <g stroke="#6b4b36" stroke-width="5"><path d="M42 105 V158 M195 105 V158 M82 105 V158 M155 105 V158"/></g>
+    <path d="M0 50 L120 -8 L240 50" fill="#694b37" stroke="#e0b77b" stroke-width="5"/>
+    <path d="M15 48 L120 0 L225 48" fill="none" stroke="#d3a36b" stroke-width="3"/>
+   </g>
+   <!-- pokok kiri -->
+   <g>
+    <path d="M90 330 Q110 220 92 105" stroke="#654d36" stroke-width="23" fill="none"/>
+    <path d="M94 175 Q45 120 22 130 M96 205 Q145 150 173 154" stroke="#654d36" stroke-width="10" fill="none"/>
+    <g fill="#286448"><circle cx="50" cy="105" r="58"/><circle cx="112" cy="92" r="62"/><circle cx="155" cy="133" r="48"/><circle cx="27" cy="157" r="37"/></g>
+    <g fill="#5c9b64"><circle cx="53" cy="86" r="24"/><circle cx="112" cy="63" r="27"/><circle cx="155" cy="118" r="22"/></g>
+   </g>
+   <!-- pokok kanan -->
+   <g>
+    <path d="M820 340 Q790 215 830 105" stroke="#634c38" stroke-width="24" fill="none"/>
+    <path d="M815 190 Q760 145 738 157 M822 220 Q870 160 895 170" stroke="#634c38" stroke-width="10" fill="none"/>
+    <g fill="#245a43"><circle cx="780" cy="105" r="60"/><circle cx="840" cy="85" r="65"/><circle cx="890" cy="135" r="48"/></g>
+    <g fill="#6aa66d"><circle cx="780" cy="85" r="25"/><circle cx="840" cy="62" r="28"/></g>
+   </g>
+   <!-- paku pakis -->
+   <g stroke="#b4d18b" stroke-width="5" fill="none"><path d="M330 355 Q300 300 270 292 M330 355 Q320 295 330 270 M330 355 Q350 305 385 294"/><path d="M430 360 Q410 320 390 310 M430 360 Q430 310 450 290 M430 360 Q455 320 480 316"/></g>
+   <g fill="#b4d18b"><ellipse cx="278" cy="290" rx="20" ry="8" transform="rotate(30 278 290)"/><ellipse cx="330" cy="278" rx="18" ry="8" transform="rotate(-75 330 278)"/><ellipse cx="378" cy="294" rx="20" ry="8" transform="rotate(-25 378 294)"/></g>
+   <g fill="#fff1c4" opacity=".8"><circle cx="245" cy="220" r="3"/><circle cx="275" cy="195" r="2"/><circle cx="460" cy="175" r="3"/><circle cx="470" cy="210" r="2"/></g>
+  </svg>
+  <div class="sceneTitle">PENGEMBARAAN<br>BERMULA DI BORNEO<div class="sceneSub">BERANI • PRIHATIN • BERBAKTI</div></div>
+  <div class="sceneHero" id="homeHero">🐰</div>
+ </div>
+
+ <div class="intro">
+  <div class="pill">DUNIA RPG PENDIDIKAN</div>
+  <h1>Salam, Wira!</h1>
+  <p class="muted">Terokai kampung, hutan dan sungai Borneo. Setiap hari membawa satu cabaran untuk membina peribadi yang hebat.</p>
+  <div class="stats">
+   <div class="stat"><b>46</b><small>MINGGU</small></div>
+   <div class="stat"><b>230</b><small>MISI</small></div>
+   <div class="stat"><b>5</b><small>HARI / MINGGU</small></div>
+   <div class="stat"><b id="homeDone">0/230</b><small>SELESAI</small></div>
+  </div>
+  <button class="btn gold wide" onclick="showScreen('heroes')">MULAKAN PENGEMBARAAN →</button>
+ </div>
+
  <div class="panel">
-  <h2>PILIH PAHLAWAN</h2>
-  <p class="small" style="text-align:center">Pilih teman pengembaraanmu. Setiap pahlawan mempunyai keistimewaan tersendiri.</p>
-  <div class="heroes" id="heroChoices"></div>
-  <div id="heroDesc" class="small" style="text-align:center;min-height:35px"></div>
-  <button style="width:100%;margin-top:12px" onclick="startGame()">MULAKAN PERJALANAN</button>
-  <button style="width:100%;margin-top:10px;background:#263d34" onclick="showScreen('intro')">KEMBALI</button>
+  <div class="sectionHead"><h2>Empat Nilai Wira</h2><span class="pill">ASAS KARAKTER</span></div>
+  <div class="valueGrid">
+   <div class="value"><span>💚</span>Penyayang</div>
+   <div class="value"><span>🛡️</span>Berdaya Tahan</div>
+   <div class="value"><span>🧭</span>Berupaya Memimpin</div>
+   <div class="value"><span>🌏</span>Warganegara Aktif</div>
+  </div>
  </div>
 </section>
 
-<div id="game">
- <div id="hud">
-  <div class="hudbox" id="stats">⭐ <strong>Lv 1</strong> · XP 0</div>
-  <div class="hudbox">🪙 <span id="coins">0</span></div>
-  <button onclick="openMap()">PETA</button>
-  <button onclick="openBag()">BEG</button>
-  <button onclick="toggleMusic()" id="musicBtn">♫</button>
+<section id="heroes" class="screen">
+ <div class="sectionHead"><div><div class="missionTag">PILIH WIRA</div><h1>Siapakah temanmu?</h1></div><span class="pill">5 WIRA ASAL</span></div>
+ <p class="muted">Setiap wira mempunyai kelebihan tersendiri. Pilihan ini boleh ditukar kemudian.</p>
+ <div class="heroGrid" id="heroGrid"></div>
+ <div class="panel" id="heroDetail">
+  <div style="font-size:48px" id="heroBig">🐰</div>
+  <h2 id="heroName">Arnab — Wira Lincah</h2>
+  <p class="muted" id="heroDesc">Pantas bertindak dan cekap mencari jalan.</p>
+  <button class="btn gold wide" onclick="confirmHero()">PILIH WIRA INI</button>
  </div>
- <div id="notice"></div>
- <div id="controls">
-  <div class="pad">
-   <button class="up" data-dir="up">▲</button>
-   <button class="left" data-dir="left">◀</button>
-   <button class="down" data-dir="down">▼</button>
-   <button class="right" data-dir="right">▶</button>
-  </div>
-  <div class="action-buttons">
-   <button onclick="interact()">JELAJAH</button>
-   <button onclick="jump()">LOMPAT</button>
-  </div>
- </div>
-</div>
+</section>
 
-<div id="modal">
- <div class="panel" id="modalContent"></div>
+<section id="world" class="screen">
+ <div class="sectionHead">
+  <div><div class="missionTag">PETA PENGEMBARAAN</div><h1>Jejak Wira Borneo</h1></div>
+  <span class="pill" id="worldLevel">TAHAP 1</span>
+ </div>
+ <div class="heroScene" style="height:190px">
+  <svg viewBox="0 0 900 420" preserveAspectRatio="xMidYMid slice">
+   <rect width="900" height="420" fill="#a9cbb0"/>
+   <path d="M0 230 Q200 80 400 220 T900 180 V420 H0Z" fill="#659b70"/>
+   <path d="M0 280 Q180 180 390 260 T900 250 V420 H0Z" fill="#286449"/>
+   <path d="M0 350 Q240 290 420 350 T900 320 V420 H0Z" fill="#397f78"/>
+   <path d="M0 365 Q220 320 450 375 T900 350" fill="none" stroke="#c5e7d4" stroke-width="7"/>
+   <g fill="#22583e"><circle cx="100" cy="130" r="75"/><circle cx="180" cy="110" r="65"/><circle cx="770" cy="100" r="80"/><circle cx="850" cy="150" r="65"/></g>
+   <g fill="#6b4c38"><path d="M80 205 L95 80 L112 205Z"/><path d="M770 210 L790 65 L810 210Z"/></g>
+   <g transform="translate(370 180)"><path d="M0 50 L30 0 H210 L245 50Z" fill="#694a37"/><rect x="20" y="50" width="205" height="80" fill="#b47c4e"/><path d="M20 50 H225 M20 85 H225" stroke="#65432f" stroke-width="5"/><g fill="#e8c28b"><rect x="48" y="65" width="25" height="25"/><rect x="105" y="65" width="25" height="25"/><rect x="162" y="65" width="25" height="25"/></g><path d="M35 130 V175 M205 130 V175" stroke="#674a36" stroke-width="8"/></g>
+  </svg>
+  <div class="sceneTitle" style="font-size:24px">TANAH PENGEMBARAAN</div>
+  <div class="sceneHero" id="worldHero">🐰</div>
+ </div>
+ <div class="panel">
+  <div class="row" style="justify-content:space-between"><b>Kemajuan keseluruhan</b><b id="worldProgressText">0 / 230</b></div>
+  <div class="progressTrack" style="margin-top:9px"><div class="progressFill" id="worldProgress"></div></div>
+  <div class="sectionHead"><h2>Pilih minggu</h2><span class="pill">46 MINGGU</span></div>
+  <div class="weekList" id="weekList"></div>
+ </div>
+ <div class="panel">
+  <div class="sectionHead"><h2 id="weekHeading">Minggu 1</h2><span class="pill" id="weekStatus">5 HARI</span></div>
+  <p class="muted" id="weekDescription">Lima cabaran menanti.</p>
+  <div class="dayList" id="dayList"></div>
+ </div>
+</section>
+
+<section id="mission" class="screen">
+ <div class="row" style="justify-content:space-between;margin-bottom:12px">
+  <button class="btn light small" onclick="showScreen('world')">← PETA</button>
+  <span class="pill" id="missionCounter">MINGGU 1 • HARI 1</span>
+ </div>
+ <div class="heroScene" style="height:165px;margin-bottom:13px">
+  <svg viewBox="0 0 900 420" preserveAspectRatio="xMidYMid slice">
+   <rect width="900" height="420" fill="#a9cdb1"/>
+   <path d="M0 200 Q200 80 450 210 T900 190 V420 H0Z" fill="#659c71"/>
+   <path d="M0 285 Q220 190 430 270 T900 245 V420 H0Z" fill="#286449"/>
+   <path d="M0 360 Q250 300 460 360 T900 330 V420 H0Z" fill="#4d8e78"/>
+   <g fill="#24573e"><circle cx="95" cy="115" r="76"/><circle cx="170" cy="100" r="65"/><circle cx="780" cy="95" r="80"/><circle cx="860" cy="135" r="60"/></g>
+   <g stroke="#674b36" stroke-width="22"><path d="M110 320 L110 115"/><path d="M800 320 L800 110"/></g>
+  </svg>
+  <div class="sceneTitle" style="font-size:23px" id="missionSceneTitle">CABARAN WIRA</div>
+  <div class="sceneHero" id="missionHero">🐰</div>
+ </div>
+ <div class="missionCard">
+  <div class="missionTag" id="missionTag">MISI HARI 1</div>
+  <h1 id="missionTitle">Cabaran pertama</h1>
+  <div class="missionStory" id="missionStory"></div>
+  <b>Apakah tindakan kamu?</b>
+  <div id="choices"></div>
+  <div class="feedback" id="feedback" style="display:none"></div>
+  <div class="rewardRow" id="rewardRow" style="display:none">
+   <span id="rewardText">Ganjaran diperoleh</span><b id="rewardAmount">+10 XP</b>
+  </div>
+  <button class="btn gold wide" id="nextMissionBtn" style="display:none;margin-top:14px" onclick="goNext()">TERUSKAN →</button>
+ </div>
+</section>
+
+<section id="rewards" class="screen">
+ <div class="sectionHead"><div><div class="missionTag">KEMAJUAN WIRA</div><h1>Beg Pengembaraan</h1></div><span class="pill">KOLEKSI</span></div>
+ <div class="stats">
+  <div class="stat"><b id="rewardXP">0</b><small>XP</small></div>
+  <div class="stat"><b id="rewardCoins">0</b><small>SYILING</small></div>
+  <div class="stat"><b id="rewardLevel">1</b><small>TAHAP</small></div>
+  <div class="stat"><b id="rewardDone">0</b><small>MISI</small></div>
+ </div>
+ <div class="panel">
+  <h2>Empat nilai karakter</h2>
+  <div id="traits"></div>
+ </div>
+ <div class="panel">
+  <div class="sectionHead"><h2>Koleksi wira</h2><span class="pill" id="collectionCount">0 / 6</span></div>
+  <div class="collectionGrid" id="collectionGrid"></div>
+ </div>
+ <div class="panel">
+  <h2>Pencapaian</h2>
+  <div id="achievements" class="muted">Selesaikan misi untuk membuka pencapaian.</div>
+ </div>
+ <div class="panel">
+  <h2>Simpanan permainan</h2>
+  <p class="muted">Kemajuan disimpan secara automatik pada peranti ini.</p>
+  <button class="btn light wide" onclick="exportSave()">SIMPAN SALINAN KEMAJUAN</button>
+  <button class="btn light wide" style="margin-top:8px" onclick="resetAsk()">RESET PERMAINAN</button>
+ </div>
+</section>
+</main>
+
+<nav class="bottomNav">
+ <button class="navBtn active" data-screen="home" onclick="showScreen('home')"><span>🏡</span>Utama</button>
+ <button class="navBtn" data-screen="world" onclick="showScreen('world')"><span>🗺️</span>Peta</button>
+ <button class="navBtn" data-screen="rewards" onclick="showScreen('rewards')"><span>🎒</span>Beg</button>
+ <button class="navBtn" data-screen="heroes" onclick="showScreen('heroes')"><span>🐾</span>Wira</button>
+</nav>
+<footer>MISI PAHLAWAN ALPHA · PENGEMBARAAN NILAI DAN KARAKTER</footer>
 </div>
-<div id="toast"></div>
+<div class="toast" id="toast"></div>
 
 <script>
 "use strict";
 
-/* =========================
-   DATA PAHLAWAN
-========================= */
+/* WIRA ASAL — kategori dan nama dikekalkan */
 const heroes=[
- {name:"Arnab",role:"Wira Lincah",desc:"Pantas bergerak dan cekap mencari jalan.",color:"#e8d8b9",type:0},
- {name:"Hamster",role:"Wira Ketahanan",desc:"Tabah menghadapi cabaran dan tidak mudah mengalah.",color:"#d9a66c",type:1},
- {name:"Kucing",role:"Wira Ketangkasan",desc:"Peka terhadap keadaan dan tangkas bertindak.",color:"#c4c5bd",type:2},
- {name:"Cenderawasih",role:"Wira Udara",desc:"Bijak melihat keadaan dari sudut yang lebih luas.",color:"#e6a83f",type:3},
- {name:"Kijang",role:"Wira Kepantasan",desc:"Cekap bergerak dan berani meneroka.",color:"#b9824c",type:4}
+ {id:"arnab",name:"Arnab",title:"Wira Lincah",emoji:"🐰",desc:"Pantas bertindak, cermat dan cekap mencari jalan."},
+ {id:"hamster",name:"Hamster",title:"Wira Ketahanan",emoji:"🐹",desc:"Tabah menghadapi kesukaran dan tidak mudah berputus asa."},
+ {id:"kucing",name:"Kucing",title:"Wira Ketangkasan",emoji:"🐱",desc:"Peka terhadap keadaan dan tangkas membantu."},
+ {id:"cenderawasih",name:"Cenderawasih",title:"Wira Udara",emoji:"🦜",desc:"Berpandangan luas, berani menyampaikan kebaikan."},
+ {id:"kijang",name:"Kijang",title:"Wira Kepantasan",emoji:"🦌",desc:"Cekap bergerak dan pantas mengambil tindakan yang betul."}
 ];
 
-/* Tajuk, nilai, situasi, pilihan salah, jawapan betul, huraian */
-const rawMissions=[
-["Jejak Pertama","Penyayang","Seorang penduduk terjatuh di laluan kampung. Apakah tindakanmu?","Berlalu tanpa peduli|Mentertawakannya","Membantu dengan ikhlas","Sikap penyayang bermula dengan mengambil berat."],
-["Sahabat Baharu","Penyayang","Kamu melihat seorang rakan baharu duduk bersendirian. Apakah tindakanmu?","Membiarkannya|Mengejeknya","Menyapanya dan mengajaknya berkawan","Persahabatan tumbuh melalui keramahan."],
-["Jambatan Usang","Berdaya Tahan","Jambatan kayu rosak selepas hujan. Apakah tindakan terbaik?","Melintas tanpa berfikir|Berputus asa","Mencari laluan selamat dan meminta bantuan","Berdaya tahan bermaksud berusaha dengan bijaksana."],
-["Suara Kampung","Berupaya Memimpin","Penduduk kampung mempunyai pandangan berbeza. Apakah tindakan seorang pemimpin?","Memaksa semua bersetuju|Mendengar seorang sahaja","Mendengar pandangan semua pihak","Pemimpin yang baik menghormati suara bersama."],
-["Sungai Bersih","Warganegara Aktif","Kamu melihat sampah berhampiran sungai. Apakah tindakanmu?","Membuang sampah ke air|Berpura-pura tidak nampak","Menjaga kebersihan dan mengajak orang lain","Alam sekitar ialah amanah yang perlu dijaga."],
-["Amanah Kecil","Penyayang","Kamu menjumpai barang milik orang lain. Apakah tindakanmu?","Menyimpannya|Membiarkannya di situ","Memulangkannya kepada pemilik","Amanah menunjukkan kejujuran hati."],
-["Hujan Lebat","Berdaya Tahan","Hujan lebat menghalang perjalanan pasukan. Apakah tindakanmu?","Terus meredah bahaya|Menyalahkan rakan","Berteduh, menilai keadaan dan merancang semula","Keselamatan dan kebijaksanaan perlu diutamakan."],
-["Ketua Pasukan","Berupaya Memimpin","Apakah ciri utama seorang ketua pasukan?","Mahu menang sendiri|Suka memerintah","Berlaku adil dan mendengar ahli","Kepimpinan ialah amanah, bukan kelebihan untuk diri."],
-["Hutan Warisan","Warganegara Aktif","Bagaimanakah kita menjaga kawasan hutan?","Merosakkan tumbuhan|Mengganggu haiwan","Memelihara habitat dan tidak mencemarkan kawasan","Warisan alam perlu dipelihara."],
-["Hati yang Lembut","Penyayang","Rakanmu melakukan kesilapan. Apakah tindakanmu?","Memalukannya|Memarahinya di hadapan orang","Menegur dengan baik dan berhemah","Teguran yang baik menjaga maruah."],
-["Bukit Tinggi","Berdaya Tahan","Kamu gagal dalam percubaan pertama. Apakah tindakanmu?","Berhenti mencuba|Menyalahkan orang lain","Belajar daripada kesilapan dan mencuba lagi","Kegagalan boleh menjadi guru."],
-["Mesyuarat Desa","Berupaya Memimpin","Penduduk perlu membuat keputusan bersama. Apakah caranya?","Membuat keputusan sendiri|Mengikut orang paling kuat","Berbincang dan bermesyuarat","Keputusan bersama lebih dihormati."],
-["Warisan Borneo","Warganegara Aktif","Kamu bertemu masyarakat yang mempunyai budaya berbeza. Apakah sikapmu?","Memperlekeh budaya mereka|Menjauhkan diri","Menghormati perbezaan dan hidup harmoni","Kepelbagaian perlu diraikan dengan hormat."],
-["Rakan Cedera","Penyayang","Seorang rakan tercedera ketika bermain. Apakah tindakanmu?","Meninggalkannya|Menyuruhnya bangun sendiri","Mendapatkan bantuan dan menenangkannya","Keprihatinan perlu disertai tindakan."],
-["Batu Penghalang","Berdaya Tahan","Laluan di hadapan terhalang. Apakah tindakanmu?","Marah dan mengalah|Memaksa diri melalui bahaya","Bertenang dan mencari jalan yang selamat","Cabaran perlu dihadapi dengan akal."],
-["Pemimpin Muda","Berupaya Memimpin","Kamu diberi satu tanggungjawab. Apakah tindakanmu?","Mengabaikannya|Menyerahkannya kepada orang lain","Melaksanakannya dengan amanah","Tanggungjawab perlu ditunaikan."],
-["Kampung Harmoni","Warganegara Aktif","Apakah yang menguatkan kehidupan masyarakat?","Mementingkan diri|Berselisih tanpa sebab","Saling menghormati dan bekerjasama","Keharmonian dibina bersama."],
-["Hadiah Persahabatan","Penyayang","Rakanmu memerlukan bantuan dan kamu mempunyai lebihan bekalan. Apakah tindakanmu?","Menyembunyikan semuanya|Meminta balasan dahulu","Berkongsi dengan ikhlas mengikut kemampuan","Memberi dengan ikhlas mengeratkan persaudaraan."],
-["Jalan Berliku","Berdaya Tahan","Masalah datang berturut-turut. Apakah tindakanmu?","Panik dan berhenti|Menyalahkan keadaan","Menyelesaikan masalah satu demi satu","Kesabaran membantu kita terus melangkah."],
-["Pasukan Bersatu","Berupaya Memimpin","Ahli pasukan tidak sependapat. Apakah tindakanmu?","Memilih pihak sendiri|Membubarkan pasukan","Mencari titik persamaan dan menyatukan pandangan","Pemimpin membina kerjasama."],
-["Pantai Indah","Warganegara Aktif","Kamu melihat kawasan pantai dipenuhi sampah. Apakah tindakanmu?","Meninggalkan sampah sendiri|Menyalahkan pengunjung","Membersihkan kawasan dan menjaga kebersihan","Tempat awam tanggungjawab bersama."],
-["Air untuk Semua","Penyayang","Jiran kekurangan air bersih. Apakah tindakanmu?","Tidak menghiraukannya|Mengambil kesempatan","Berkongsi bantuan mengikut kemampuan","Bantuan kecil boleh meringankan beban."],
-["Malam Gelap","Berdaya Tahan","Kamu berasa takut menghadapi cabaran baharu. Apakah tindakanmu?","Terus melarikan diri|Menyembunyikan masalah","Bertenang, meminta panduan dan terus berusaha","Keberanian bukan bererti tiada rasa takut."],
-["Ketua yang Adil","Berupaya Memimpin","Dua ahli pasukan berselisih faham. Apakah tindakanmu?","Terus menghukum seorang|Menyebelahi kawan rapat","Mendengar kedua-dua pihak dengan adil","Keadilan memerlukan penelitian."],
-["Hidupan Liar","Warganegara Aktif","Bagaimanakah kita melindungi hidupan liar?","Mengganggu sarangnya|Menangkap untuk suka-suka","Memelihara habitat dan tidak mengganggunya","Hidupan liar mempunyai peranan dalam alam."],
-["Senyuman Ikhlas","Penyayang","Seseorang membantu kamu. Apakah tindakanmu?","Menganggapnya biasa|Meminta lebih banyak","Mengucapkan terima kasih dengan ikhlas","Menghargai kebaikan ialah akhlak mulia."],
-["Ujian Kesabaran","Berdaya Tahan","Kamu perlu menunggu giliran. Apakah tindakanmu?","Memotong barisan|Marah kepada orang lain","Menunggu dengan sabar","Kesabaran menjaga hak semua orang."],
-["Amanah Pemimpin","Berupaya Memimpin","Kamu diberi tugas mewakili kumpulan. Apakah tindakanmu?","Menggunakan kuasa untuk diri|Mengabaikan tugas","Menunaikan amanah dengan jujur","Pemimpin bertanggungjawab terhadap amanah."],
-["Sumber Alam","Warganegara Aktif","Bagaimanakah menggunakan sumber alam?","Membazirkannya|Mengambil tanpa had","Menggunakannya secara bertanggungjawab","Sumber perlu dijaga untuk masa depan."],
-["Kawan Kesusahan","Penyayang","Rakanmu gagal dalam sesuatu tugasan. Apakah tindakanmu?","Mengejeknya|Menjauhinya","Memberi semangat dan membantu belajar","Sokongan membina keyakinan."],
-["Laluan Sukar","Berdaya Tahan","Kamu perlu mempelajari kemahiran baharu. Apakah tindakanmu?","Mengelak latihan|Mengaku tidak mampu","Berlatih dengan tekun dan meminta tunjuk ajar","Kemahiran berkembang melalui usaha."],
-["Suara Rakyat","Berupaya Memimpin","Penduduk menyampaikan masalah kepada ketua. Apakah tindakanmu?","Tidak mahu mendengar|Menganggapnya remeh","Memberi perhatian dan mencari penyelesaian","Pemimpin perlu dekat dengan masyarakat."],
-["Desa Sejahtera","Warganegara Aktif","Kampung memerlukan bantuan membersihkan kawasan. Apakah tindakanmu?","Menunggu orang lain sahaja|Mengotorkan lagi kawasan","Menyertai gotong-royong","Sumbangan setiap orang membawa perubahan."],
-["Kasih Sesama","Penyayang","Kamu bertemu orang yang memerlukan bantuan. Apakah tindakanmu?","Menghina keadaannya|Membantu untuk dipuji","Membantu dengan hormat dan ikhlas","Bantuan tidak boleh merendahkan maruah."],
-["Badai Melanda","Berdaya Tahan","Pasukan menghadapi kesukaran besar. Apakah tindakanmu?","Berpecah dan menyalahkan|Berhenti berusaha","Bersabar, bekerjasama dan mencari ikhtiar","Ketabahan menguatkan pasukan."],
-["Keputusan Besar","Berupaya Memimpin","Sebelum membuat keputusan penting, apakah yang perlu dilakukan?","Terus membuat keputusan|Mengikut khabar angin","Menilai maklumat dan kesan keputusan","Keputusan baik memerlukan pertimbangan."],
-["Bumi Amanah","Warganegara Aktif","Apakah tanggungjawab kita terhadap bumi?","Merosakkan persekitaran|Membazir sumber","Memelihara alam dan mengelakkan pencemaran","Bumi ialah amanah untuk generasi seterusnya."],
-["Pengorbanan","Penyayang","Kamu membantu seseorang tanpa mengharapkan balasan. Apakah nilai itu?","Mencari pujian|Mengungkit bantuan","Keikhlasan dalam membantu","Kebaikan tidak perlu dijadikan alat menunjuk-nunjuk."],
-["Puncak Harapan","Berdaya Tahan","Kamu telah mencapai kejayaan. Apakah tindakan seterusnya?","Berhenti berusaha|Memandang rendah orang lain","Terus istiqamah dan memperbaiki diri","Kejayaan perlu disertai kerendahan hati."],
-["Pemimpin Berjiwa","Berupaya Memimpin","Apakah keutamaan seorang pemimpin?","Kepentingan dirinya|Kemasyhuran sendiri","Kebajikan dan kepentingan bersama","Pemimpin berkhidmat untuk masyarakat."],
-["Borneo Lestari","Warganegara Aktif","Bagaimanakah warisan Borneo dapat dipelihara?","Melupakan budaya dan alam|Merosakkan kawasan warisan","Menjaga alam, budaya dan pengetahuan","Warisan perlu dipelihara dengan bijaksana."],
-["Sahabat Sejati","Penyayang","Apakah ciri persahabatan yang baik?","Saling menjatuhkan|Berkawan ketika senang sahaja","Saling menasihati dan membantu","Sahabat yang baik membawa kepada kebaikan."],
-["Ujian Terakhir","Berdaya Tahan","Kamu sekali lagi menemui kegagalan. Apakah tindakanmu?","Berputus asa|Menyalahkan semua orang","Mengambil pengajaran dan bangkit semula","Bangkit dengan ilmu dan usaha."],
-["Majlis Perpaduan","Berupaya Memimpin","Apakah asas perpaduan masyarakat?","Memaksa semua menjadi sama|Menghina perbezaan","Keadilan dan saling menghormati","Perpaduan tumbuh melalui keadilan."],
-["Warisan Masa Depan","Warganegara Aktif","Apakah warisan terbaik untuk generasi akan datang?","Harta tanpa nilai|Kawasan yang rosak","Masyarakat berilmu, berakhlak dan bertanggungjawab","Generasi baik dibina melalui usaha hari ini."]
+const values=[
+ {id:"penyayang",name:"Penyayang",icon:"💚"},
+ {id:"tahan",name:"Berdaya Tahan",icon:"🛡️"},
+ {id:"pimpin",name:"Berupaya Memimpin",icon:"🧭"},
+ {id:"aktif",name:"Warganegara Aktif",icon:"🌏"}
 ];
 
-const missions=rawMissions.map((m,i)=>({
- id:i+1,title:m[0],value:m[1],question:m[2],
- wrong:m[3].split("|"),correct:m[4],explain:m[5]
-}));
+/* 46 tema mingguan. Setiap minggu mempunyai lima cabaran harian. */
+const weeks=[
+["Jejak Kampung","Kampung Borneo","Mengenali jiran, menjaga adab dan mengambil berat tentang masyarakat."],
+["Sahabat Baharu","Sekolah","Menerima perbezaan dan membina persahabatan yang baik."],
+["Sungai Bersih","Tebing sungai","Menjaga kebersihan sungai dan menggunakan sumber dengan bertanggungjawab."],
+["Amanah Kecil","Rumah panjang","Melaksanakan tugas walaupun tiada orang melihat."],
+["Hati Penyayang","Kampung","Membantu orang lain dengan ikhlas dan berhemah."],
+["Berani Mencuba","Laluan hutan","Menghadapi cabaran dengan usaha dan pertimbangan."],
+["Bekerja Bersama","Dewan kampung","Menghormati peranan setiap ahli kumpulan."],
+["Pemimpin Muda","Sekolah","Memimpin melalui teladan dan mendengar pandangan orang lain."],
+["Jiran Prihatin","Kejiranan","Mengenali keperluan jiran dan menawarkan bantuan."],
+["Bijak Memilih","Pasar tamu","Membuat pilihan yang selamat, jujur dan bertanggungjawab."],
+["Warisan Borneo","Rumah panjang","Menghormati budaya, adat baik dan warisan masyarakat."],
+["Ilmu dan Usaha","Pusat bacaan","Menghargai ilmu dan terus berusaha memperbaiki diri."],
+["Keselamatan Jalan","Jalan kampung","Mengutamakan keselamatan diri dan orang sekeliling."],
+["Menjaga Haiwan","Kebun kampung","Bersikap ihsan terhadap haiwan dan tidak menyakitinya."],
+["Tanggungjawab Diri","Rumah","Mengurus masa, kebersihan dan keperluan diri."],
+["Bersikap Jujur","Sekolah","Bercakap benar dan mengakui kesilapan."],
+["Mengurus Emosi","Padang permainan","Mengawal perasaan dan menyelesaikan perselisihan dengan baik."],
+["Saling Menghormati","Kampung","Menghormati orang tua, rakan dan masyarakat."],
+["Bijak Berkomunikasi","Balai komuniti","Bercakap sopan, mendengar dan menyampaikan maklumat dengan betul."],
+["Semangat Kesukarelawanan","Kawasan kampung","Menyumbang tenaga untuk kebaikan bersama."],
+["Alam dan Kehidupan","Hutan Borneo","Menghargai alam sebagai amanah yang perlu dijaga."],
+["Cermat Menggunakan","Kedai kampung","Mengelakkan pembaziran dan menggunakan barang secara berhemah."],
+["Menyelesaikan Masalah","Sekolah","Berfikir sebelum bertindak dan mencari penyelesaian."],
+["Berdisiplin","Pusat aktiviti","Menepati masa dan mematuhi peraturan yang baik."],
+["Berkongsi Rezeki","Kampung","Berkongsi dan membantu mengikut kemampuan."],
+["Menjaga Kemudahan","Kemudahan awam","Memelihara kemudahan yang digunakan bersama."],
+["Kesihatan Diri","Padang kampung","Mengamalkan kebersihan dan gaya hidup sihat."],
+["Berfikiran Terbuka","Sekolah","Menerima teguran dan belajar daripada pandangan lain."],
+["Menghargai Pekerja","Pasar tamu","Menghormati usaha orang yang menyumbang kepada masyarakat."],
+["Bertindak Selamat","Laluan sungai","Mengenal risiko dan meminta bantuan apabila perlu."],
+["Membina Keyakinan","Dewan sekolah","Berani mencuba dan menyampaikan pendapat dengan sopan."],
+["Mengurus Wang","Pasar kampung","Menggunakan wang secara bijak dan tidak membazir."],
+["Saling Membantu","Rumah panjang","Bekerjasama ketika masyarakat memerlukan bantuan."],
+["Menjaga Kebersihan","Kawasan awam","Memastikan persekitaran bersih dan selesa."],
+["Menghormati Perbezaan","Kampung","Berbuat baik kepada semua tanpa menghina perbezaan."],
+["Mencari Ilmu","Perpustakaan","Bertanya, membaca dan menyemak maklumat."],
+["Berjiwa Pemimpin","Aktiviti kumpulan","Menggalakkan rakan dan berlaku adil."],
+["Menghargai Masa","Rumah","Merancang masa dan menyelesaikan tanggungjawab."],
+["Bersedia Membantu","Kampung","Peka terhadap keadaan dan mendapatkan bantuan yang sesuai."],
+["Bijak Menggunakan Teknologi","Pusat pembelajaran","Menggunakan teknologi secara selamat dan beretika."],
+["Menjaga Kepercayaan","Sekolah","Menunaikan janji dan menjaga rahsia yang wajar."],
+["Bersatu Hati","Kampung","Mengutamakan kerjasama demi kebaikan bersama."],
+["Cinta Negara","Komuniti","Menjadi anggota masyarakat yang bertanggungjawab."],
+["Menghargai Pengorbanan","Rumah panjang","Menghargai jasa keluarga, guru dan masyarakat."],
+["Menyebarkan Kebaikan","Kampung","Mengajak kepada perkara baik dengan hikmah."],
+["Ujian Ketabahan","Laluan pengembaraan","Bangkit selepas kegagalan dan terus berusaha."],
+["Wira Berbakti","Borneo","Mengamalkan nilai baik dalam kehidupan seharian."]
+];
 
-/* =========================
-   SIMPANAN PERMAINAN
-========================= */
-const SAVE_KEY="misiPahlawanAlphaSaveV1";
-let save=null,heroIndex=0,player={x:410,y:450,dir:1};
-let gameRunning=false,keys={},lastTime=0,jumpTime=0;
-let audioCtx=null,musicOn=false,musicTimer=null;
-let missionMarkers=[];
-let camera={x:0,y:0};
-const canvas=document.getElementById("world");
-const ctx=canvas.getContext("2d");
+const dailyTasks=[
+ {title:"Membantu seseorang",story:"Di {place}, kamu melihat seseorang memerlukan bantuan. Rakan-rakan lain sedang sibuk dengan urusan masing-masing. Apakah tindakan terbaik?",good:"Tawarkan bantuan dengan sopan dan ikut kemampuan.",bad:"Berpura-pura tidak nampak dan terus berlalu.",mid:"Menunggu orang lain bertindak dahulu.",trait:"penyayang",lesson:"Keprihatinan bermula apabila kita peka terhadap keperluan orang lain."},
+ {title:"Menunaikan amanah",story:"Kamu diberikan satu tanggungjawab berkaitan tema {theme} di {place}. Tiada sesiapa memeriksa tugas kamu. Apakah pilihan terbaik?",good:"Laksanakan tugas dengan jujur dan bersungguh-sungguh.",bad:"Abaikan tugas kerana tiada orang memerhati.",mid:"Buat sekadar melepaskan tanggungjawab.",trait:"tahan",lesson:"Amanah tetap perlu ditunaikan walaupun tanpa pujian atau pengawasan."},
+ {title:"Memimpin dengan baik",story:"Dalam aktiviti {theme} di {place}, kumpulan kamu mempunyai pandangan yang berbeza. Apakah tindakan seorang pemimpin yang baik?",good:"Dengar pandangan semua dan bantu kumpulan membuat keputusan yang adil.",bad:"Paksa semua orang ikut kehendak sendiri.",mid:"Serahkan semua keputusan kepada seorang rakan sahaja.",trait:"pimpin",lesson:"Pemimpin yang baik mendengar, berlaku adil dan menunjukkan teladan."},
+ {title:"Menjaga kepentingan bersama",story:"Kamu menyedari satu perkara di {place} yang boleh menjejaskan orang ramai berkaitan {theme}. Apakah tindakan terbaik?",good:"Ambil tindakan yang selamat atau laporkan kepada pihak yang bertanggungjawab.",bad:"Biarkan kerana menganggap itu bukan urusan sendiri.",mid:"Menyalahkan orang lain tanpa membantu menyelesaikannya.",trait:"aktif",lesson:"Warganegara aktif mengambil berat tentang kesejahteraan masyarakat."},
+ {title:"Menghadapi kesukaran",story:"Ketika menjalankan aktiviti {theme} di {place}, rancangan kamu tidak menjadi. Kamu berasa kecewa. Apakah tindakan terbaik?",good:"Tenangkan diri, kenal pasti kesilapan dan cuba lagi dengan cara lebih baik.",bad:"Berhenti terus dan menyalahkan orang lain.",mid:"Terus mencuba tanpa memikirkan cara yang lebih sesuai.",trait:"tahan",lesson:"Ketabahan bukan bermaksud tidak pernah gagal, tetapi sanggup belajar dan bangkit semula."}
+];
 
-function freshSave(){
- return {hero:0,xp:0,coins:0,completed:[],startedAt:Date.now(),items:[],achievements:[],lastReward:new Date().toDateString()};
-}
-function loadSave(){
+const stateKey="misi_pahlawan_alpha_v1";
+const freshState=()=>({
+ hero:0,xp:0,coins:0,score:0,done:[],traits:{penyayang:0,tahan:0,pimpin:0,aktif:0},
+ collections:[],achievements:[],selectedWeek:0
+});
+let state=loadState();
+let chosenHero=state.hero||0;
+let currentMission=0;
+let answered=false;
+let selectedAnswer=-1;
+
+function loadState(){
  try{
-  const s=JSON.parse(localStorage.getItem(SAVE_KEY));
-  if(s && Array.isArray(s.completed)){
-   save={...freshSave(),...s};
-   if(!save.startedAt)save.startedAt=Date.now();
-  }else save=freshSave();
- }catch(e){save=freshSave()}
+  const s=JSON.parse(localStorage.getItem(stateKey)||"null");
+  if(s&&Array.isArray(s.done))return {...freshState(),...s,traits:{...freshState().traits,...(s.traits||{})}};
+ }catch(e){}
+ return freshState();
 }
-function persist(){
- try{localStorage.setItem(SAVE_KEY,JSON.stringify(save))}catch(e){}
+function save(){
+ try{localStorage.setItem(stateKey,JSON.stringify(state));}catch(e){}
 }
-function unlockedCount(){
- const weeks=Math.floor((Date.now()-save.startedAt)/(7*24*60*60*1000));
- return Math.min(46,Math.max(1,weeks+1));
-}
-function showScreen(id){
- document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
- document.getElementById(id).classList.add("active");
- document.getElementById("game").classList.remove("active");
- gameRunning=false;
-}
-function showSelect(){
- buildHeroChoices();
- showScreen("select");
-}
-function buildHeroChoices(){
- const box=document.getElementById("heroChoices");box.innerHTML="";
- heroes.forEach((h,i)=>{
-  const d=document.createElement("div");
-  d.className="hero"+(heroIndex===i?" chosen":"");
-  d.innerHTML=`<canvas width="120" height="90"></canvas><b>${h.name}</b><small>${h.role}</small>`;
-  drawHero(d.querySelector("canvas").getContext("2d"),h,60,57,.72);
-  d.onclick=()=>{heroIndex=i;buildHeroChoices()};
-  box.appendChild(d);
- });
- document.getElementById("heroDesc").textContent=heroes[heroIndex].desc;
-}
-
-/* =========================
-   GRAFIK WATAK
-========================= */
-function drawHero(c,h,x,y,scale=1){
- c.save();c.translate(x,y);c.scale(scale,scale);
- const col=h.color;
- c.lineCap="round";c.lineJoin="round";
- // bayang
- c.fillStyle="#071b16";c.globalAlpha=.3;
- c.beginPath();c.ellipse(0,27,28,7,0,0,Math.PI*2);c.fill();c.globalAlpha=1;
- if(h.type===3){
-  c.fillStyle="#d64d31";c.beginPath();c.ellipse(0,0,17,21,0,0,Math.PI*2);c.fill();
-  c.fillStyle="#f2b83e";c.beginPath();c.moveTo(-7,-9);c.quadraticCurveTo(-40,-48,-25,-55);c.quadraticCurveTo(-6,-40,0,-15);c.fill();
-  c.fillStyle="#267c64";c.beginPath();c.moveTo(4,-9);c.quadraticCurveTo(30,-51,38,-43);c.quadraticCurveTo(28,-17,9,1);c.fill();
-  c.fillStyle="#e8bd51";c.beginPath();c.ellipse(0,17,12,16,0,0,Math.PI*2);c.fill();
-  c.fillStyle="#f5d77a";c.beginPath();c.moveTo(7,-2);c.lineTo(29,3);c.lineTo(7,7);c.fill();
- }else if(h.type===4){
-  c.strokeStyle="#b88b51";c.lineWidth=5;
-  c.beginPath();c.moveTo(-8,-19);c.lineTo(-18,-47);c.moveTo(8,-19);c.lineTo(18,-47);c.stroke();
-  c.strokeStyle="#e5c08a";c.lineWidth=3;
-  c.beginPath();c.moveTo(-18,-47);c.lineTo(-27,-57);c.moveTo(18,-47);c.lineTo(27,-57);c.stroke();
-  c.fillStyle=col;c.beginPath();c.ellipse(0,0,21,26,0,0,Math.PI*2);c.fill();
- }else{
-  c.fillStyle=col;c.beginPath();c.ellipse(0,3,22,25,0,0,Math.PI*2);c.fill();
-  if(h.type===0){
-   c.beginPath();c.moveTo(-15,-15);c.quadraticCurveTo(-25,-62,-8,-54);c.quadraticCurveTo(0,-42,-4,-14);c.fill();
-   c.beginPath();c.moveTo(7,-14);c.quadraticCurveTo(9,-61,22,-48);c.quadraticCurveTo(27,-28,15,-10);c.fill();
-  }else if(h.type===1){
-   c.fillStyle="#f2c28c";c.beginPath();c.arc(-16,-16,10,0,Math.PI*2);c.arc(16,-16,10,0,Math.PI*2);c.fill();
-  }else{
-   c.fillStyle=col;c.beginPath();c.moveTo(-18,-12);c.lineTo(-23,-38);c.lineTo(-2,-22);c.fill();
-   c.beginPath();c.moveTo(18,-12);c.lineTo(23,-38);c.lineTo(2,-22);c.fill();
-  }
- }
- // muka
- c.fillStyle="#fff4dd";c.beginPath();c.ellipse(-8,-1,4,6,0,0,Math.PI*2);c.ellipse(8,-1,4,6,0,0,Math.PI*2);c.fill();
- c.fillStyle="#18251e";c.beginPath();c.arc(-7,0,2,0,Math.PI*2);c.arc(9,0,2,0,Math.PI*2);c.fill();
- c.strokeStyle="#654b3b";c.lineWidth=2;c.beginPath();c.arc(1,9,5,.15,Math.PI-.15);c.stroke();
- c.fillStyle="#f0c65d";c.beginPath();c.arc(0,-26,4,0,Math.PI*2);c.fill();
- c.restore();
-}
-
-/* =========================
-   DUNIA BORNEO
-========================= */
-const W=2400,H=1700;
-function resize(){
- const dpr=Math.min(devicePixelRatio||1,2);
- canvas.width=Math.floor(innerWidth*dpr);canvas.height=Math.floor(innerHeight*dpr);
- canvas.style.width=innerWidth+"px";canvas.style.height=innerHeight+"px";
- ctx.setTransform(dpr,0,0,dpr,0,0);
-}
-addEventListener("resize",resize);resize();
-
-function roundedRect(c,x,y,w,h,r){
- c.beginPath();c.roundRect(x,y,w,h,r);c.fill();
-}
-function tree(c,x,y,s=1){
- c.save();c.translate(x,y);c.scale(s,s);
- c.fillStyle="#684b30";c.fillRect(-7,0,14,40);
- const greens=["#245a3d","#2f7046","#397d4b"];
- for(let i=0;i<4;i++){
-  c.fillStyle=greens[i%3];c.beginPath();c.arc((i%2?13:-13),-9-i*12,25-i*2,0,Math.PI*2);c.fill();
- }
- c.restore();
-}
-function drawWorld(){
- const vw=innerWidth,vh=innerHeight;
- camera.x=Math.max(0,Math.min(W-vw,player.x-vw/2));
- camera.y=Math.max(0,Math.min(H-vh,player.y-vh/2));
- ctx.clearRect(0,0,vw,vh);
- ctx.save();ctx.translate(-camera.x,-camera.y);
- // tanah
- const grad=ctx.createLinearGradient(0,0,0,H);
- grad.addColorStop(0,"#4d8a52");grad.addColorStop(1,"#285c3e");
- ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);
- // corak rumput
- for(let i=0;i<250;i++){
-  const x=(i*173)%W,y=(i*251)%H;
-  ctx.strokeStyle=i%2?"#79a95c44":"#173f3044";ctx.lineWidth=2;
-  ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+5,y-7);ctx.stroke();
- }
- // sungai berliku
- ctx.fillStyle="#267e91";
- ctx.beginPath();ctx.moveTo(1100,-50);
- ctx.bezierCurveTo(900,300,1400,420,1110,700);
- ctx.bezierCurveTo(850,1000,1300,1250,1050,1750);
- ctx.lineTo(1330,1750);ctx.bezierCurveTo(1510,1250,1090,1000,1340,730);
- ctx.bezierCurveTo(1630,430,1160,270,1370,-50);ctx.closePath();ctx.fill();
- ctx.strokeStyle="#a5e2d6";ctx.lineWidth=5;ctx.globalAlpha=.25;ctx.stroke();ctx.globalAlpha=1;
- // jalan
- ctx.strokeStyle="#bca16b";ctx.lineWidth=74;ctx.lineCap="round";
- ctx.beginPath();ctx.moveTo(200,900);ctx.bezierCurveTo(550,700,780,930,1080,790);
- ctx.bezierCurveTo(1430,620,1600,900,2200,650);ctx.stroke();
- ctx.strokeStyle="#e5cb91";ctx.lineWidth=3;ctx.setLineDash([18,20]);ctx.stroke();ctx.setLineDash([]);
- // kawasan rumah panjang
- for(let i=0;i<5;i++)tree(ctx,160+i*125,350+(i%2)*40,.9);
- drawLonghouse(ctx,390,390);
- // pondok
- drawHouse(ctx,1750,420);
- // pokok hutan
- for(let i=0;i<45;i++){
-  let x=(i*317+80)%W,y=(i*197+80)%H;
-  if((x>280&&x<1000&&y>280&&y<650)||(x>1650&&x<2050&&y>300&&y<600))continue;
-  if(x>980&&x<1450)continue;
-  tree(ctx,x,y,.65+(i%4)*.16);
- }
- // jambatan
- ctx.fillStyle="#9b7447";ctx.fillRect(1090,790,220,28);
- ctx.fillStyle="#d7b57a";ctx.fillRect(1090,780,220,8);ctx.fillRect(1090,820,220,8);
- for(let i=0;i<7;i++){ctx.fillStyle="#765333";ctx.fillRect(1100+i*32,777,5,50)}
- // batu dan bunga
- for(let i=0;i<20;i++){
-  let x=(i*271+300)%W,y=(i*193+150)%H;
-  ctx.fillStyle="#d8d1a1";ctx.beginPath();ctx.arc(x,y,3+i%4,0,7);ctx.fill();
- }
- // tanda misi
- missionMarkers.forEach((m,i)=>{
-  const done=save.completed.includes(i+1),unlocked=i<unlockedCount();
-  ctx.save();ctx.translate(m.x,m.y);
-  ctx.fillStyle="#0005";ctx.beginPath();ctx.ellipse(0,17,20,7,0,0,7);ctx.fill();
-  ctx.fillStyle=done?"#e9c86b":unlocked?"#fff1bd":"#65716a";
-  ctx.beginPath();ctx.arc(0,0,15,0,7);ctx.fill();
-  ctx.fillStyle="#263c2b";ctx.font="bold 12px Arial";ctx.textAlign="center";ctx.fillText(done?"✓":String(i+1),0,4);
-  ctx.restore();
- });
- // player
- drawHero(ctx,heroes[save.hero],player.x,player.y+(jumpTime>0?-Math.sin(jumpTime*12)*28:0),1.12);
- ctx.restore();
-}
-function drawLonghouse(c,x,y){
- c.save();c.translate(x,y);
- c.fillStyle="#765239";c.fillRect(0,45,390,90);
- c.fillStyle="#9c6c42";c.beginPath();c.moveTo(-25,48);c.lineTo(45,-12);c.lineTo(350,-12);c.lineTo(410,48);c.closePath();c.fill();
- c.fillStyle="#c48a4d";c.fillRect(35,65,45,70);
- for(let i=0;i<6;i++){c.fillStyle="#4d3828";c.fillRect(100+i*43,70,25,35)}
- c.fillStyle="#d8b77c";c.fillRect(0,135,390,10);
- c.fillStyle="#593f2b";for(let i=0;i<9;i++)c.fillRect(20+i*43,145,7,38);
- c.restore();
-}
-function drawHouse(c,x,y){
- c.save();c.translate(x,y);
- c.fillStyle="#9b6940";c.fillRect(0,35,160,95);
- c.fillStyle="#593c2c";c.beginPath();c.moveTo(-15,40);c.lineTo(80,-25);c.lineTo(175,40);c.fill();
- c.fillStyle="#d6b87c";c.fillRect(25,65,30,35);c.fillRect(100,65,30,35);
- c.restore();
-}
-
-/* =========================
-   INTRO ART
-========================= */
-function drawIntroArt(){
- const c=document.getElementById("introArt").getContext("2d");
- const w=c.canvas.width=430,h=c.canvas.height=170;
- const g=c.createLinearGradient(0,0,0,h);g.addColorStop(0,"#183f43");g.addColorStop(1,"#75a66b");
- c.fillStyle=g;c.fillRect(0,0,w,h);
- c.fillStyle="#e8c77d";c.beginPath();c.arc(340,38,22,0,7);c.fill();
- for(let i=0;i<8;i++){
-  c.fillStyle=i%2?"#285a3e":"#1d4936";
-  c.beginPath();c.moveTo(i*65-25,125);c.lineTo(i*65+15,20+(i%3)*15);c.lineTo(i*65+60,125);c.fill();
- }
- c.fillStyle="#276e83";c.beginPath();c.moveTo(0,140);c.quadraticCurveTo(130,105,230,140);c.quadraticCurveTo(320,170,430,125);c.lineTo(430,170);c.lineTo(0,170);c.fill();
- drawHero(c,heroes[0],130,111,.8);drawHero(c,heroes[2],220,116,.75);drawHero(c,heroes[4],305,112,.78);
-}
-drawIntroArt();
-
-/* =========================
-   MULA / GERAKAN
-========================= */
-function startGame(){
- if(!save)loadSave();
- save.hero=heroIndex;
- if(!save.startedAt)save.startedAt=Date.now();
- player.x=save.x||410;player.y=save.y||900;
- makeMarkers();persist();
- document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
- document.getElementById("game").classList.add("active");
- gameRunning=true;updateHud();lastTime=performance.now();
- requestAnimationFrame(loop);
-}
-function makeMarkers(){
- missionMarkers=[];
- for(let i=0;i<46;i++){
-  let t=i/45;
-  let x=250+t*1900;
-  let y=900+Math.sin(t*Math.PI*3)*280+Math.cos(t*Math.PI*7)*90;
-  if(x>980&&x<1450)y+=350;
-  missionMarkers.push({x,y});
- }
-}
-function loop(time){
- if(!gameRunning)return;
- const dt=Math.min((time-lastTime)/1000,.04);lastTime=time;
- updatePlayer(dt);drawWorld();
- requestAnimationFrame(loop);
-}
-function updatePlayer(dt){
- let dx=0,dy=0;
- if(keys.left||keys.ArrowLeft)dx--;
- if(keys.right||keys.ArrowRight)dx++;
- if(keys.up||keys.ArrowUp)dy--;
- if(keys.down||keys.ArrowDown)dy++;
- const len=Math.hypot(dx,dy)||1;
- player.x+=dx/len*190*dt;player.y+=dy/len*190*dt;
- player.x=Math.max(50,Math.min(W-50,player.x));
- player.y=Math.max(80,Math.min(H-50,player.y));
- if(dx)player.dir=dx;
- if(jumpTime>0)jumpTime-=dt;
- save.x=player.x;save.y=player.y;
-}
-function jump(){if(gameRunning)jumpTime=.55}
-document.querySelectorAll("[data-dir]").forEach(b=>{
- const d=b.dataset.dir;
- b.addEventListener("pointerdown",e=>{e.preventDefault();keys[d]=true});
- ["pointerup","pointerleave","pointercancel"].forEach(ev=>b.addEventListener(ev,()=>keys[d]=false));
-});
-addEventListener("keydown",e=>{
- if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].includes(e.key))e.preventDefault();
- keys[e.key]=true;
-});
-addEventListener("keyup",e=>keys[e.key]=false);
-
-/* =========================
-   MISI
-========================= */
-function nearestMission(){
- let best=-1,dist=Infinity;
- missionMarkers.forEach((m,i)=>{
-  if(i>=unlockedCount()||save.completed.includes(i+1))return;
-  const d=Math.hypot(player.x-m.x,player.y-m.y);
-  if(d<dist){dist=d;best=i}
- });
- return {index:best,distance:dist};
-}
-function interact(){
- if(!gameRunning)return;
- const n=nearestMission();
- if(n.index<0){toast("Tiada misi baharu yang boleh dilakukan sekarang.");return}
- if(n.distance>145){toast("Bergerak ke penanda misi yang bercahaya.");return}
- openMission(n.index);
-}
-function openMission(index){
- const m=missions[index];
- if(!m)return;
- const unlocked=index<unlockedCount();
- if(!unlocked){toast("Misi ini belum tiba waktunya.");return}
- if(save.completed.includes(index+1)){toast("Misi ini sudah diselesaikan.");return}
- const options=[...m.wrong.map(t=>({text:t,correct:false})),{text:m.correct,correct:true}];
- // Susun pilihan secara rawak
- options.sort(()=>Math.random()-.5);
- document.getElementById("modalContent").innerHTML=`
-  <div class="small gold">MISI ${String(index+1).padStart(2,"0")} / 46</div>
-  <h2>${m.title}</h2>
-  <div class="small">${m.value}</div>
-  <p style="font-size:17px;line-height:1.5">${m.question}</p>
-  <div id="answers"></div>
-  <button onclick="closeModal()" style="width:100%;background:#263d34">KEMBALI</button>`;
- const a=document.getElementById("answers");
- options.forEach(o=>{
-  const b=document.createElement("button");b.textContent=o.text;
-  b.onclick=()=>answerMission(index,o.correct);
-  a.appendChild(b);
- });
- showModal();
-}
-function answerMission(index,correct){
- const m=missions[index];
- if(!correct){
-  document.getElementById("modalContent").innerHTML=`
-   <h2>CUBA LAGI</h2><p>Belum tepat. Fikirkan tindakan yang paling baik dan adil.</p>
-   <button onclick="openMission(${index})" style="width:100%">CUBA SEKALI LAGI</button>
-   <button onclick="closeModal()" style="width:100%;margin-top:9px">KEMBALI</button>`;
-  return;
- }
- if(!save.completed.includes(index+1)){
-  save.completed.push(index+1);save.xp+=100;save.coins+=20;
-  save.items.push("Lencana Misi "+(index+1));
-  if(save.completed.length===1)save.achievements.push("Pahlawan Baharu");
-  if(save.completed.length===46)save.achievements.push("Pahlawan Alpha");
-  persist();
- }
- document.getElementById("modalContent").innerHTML=`
-  <div style="font-size:42px">🏅</div><h2>TAHNIAH, PAHLAWAN!</h2>
-  <p class="gold">Misi ${index+1}: ${m.title}</p>
-  <p>${m.explain}</p>
-  <p>⭐ +100 XP &nbsp; 🪙 +20 syiling</p>
-  <button onclick="closeModal();updateHud()" style="width:100%">TERUSKAN PENGEMBARAAN</button>`;
- updateHud();persist();
-}
-function showModal(){document.getElementById("modal").classList.add("show")}
-function closeModal(){document.getElementById("modal").classList.remove("show")}
-function toast(t){
- const el=document.getElementById("toast");el.textContent=t;el.style.display="block";
+function toast(msg){
+ const el=document.getElementById("toast");
+ el.textContent=msg;el.style.display="block";
  clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.style.display="none",2300);
 }
-
-/* =========================
-   PETA, BEG, BANTUAN
-========================= */
-function openMap(){
- let html=`<div class="small gold">PETA PENGEMBARAAN</div><h2>46 JEJAK PAHLAWAN</h2>
- <p class="small">Misi dibuka mengikut perjalanan minggu. Misi yang selesai akan ditandakan.</p>
- <div id="maplist">`;
- missions.forEach((m,i)=>{
-  const done=save.completed.includes(i+1),locked=i>=unlockedCount();
-  html+=`<button class="mapcell ${done?"done":locked?"lock":""}" ${locked?"disabled":`onclick="closeModal();goToMission(${i})"`}>
-  ${done?"✓":locked?"🔒":"◆"} ${String(i+1).padStart(2,"0")}<br>${m.title}</button>`;
+function level(){return Math.floor(state.xp/100)+1}
+function hero(){return heroes[state.hero]||heroes[0]}
+function missionId(w,d){return w*5+d}
+function isDone(id){return state.done.includes(id)}
+function firstOpen(){
+ for(let i=0;i<230;i++)if(!isDone(i))return i;
+ return 229;
+}
+function progress(){return state.done.length/230*100}
+function showScreen(id){
+ document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+ const target=document.getElementById(id);
+ if(target)target.classList.add("active");
+ document.querySelectorAll(".navBtn").forEach(b=>b.classList.toggle("active",b.dataset.screen===id));
+ if(id==="world")renderWorld();
+ if(id==="rewards")renderRewards();
+ if(id==="home")renderHome();
+ if(id==="heroes")renderHeroes();
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+function renderHeader(){
+ document.getElementById("headLevel").textContent=level();
+ document.getElementById("headXP").textContent=state.xp;
+ document.getElementById("headCoins").textContent=state.coins;
+}
+function renderHome(){
+ document.getElementById("homeHero").textContent=hero().emoji;
+ document.getElementById("homeDone").textContent=state.done.length+"/230";
+ renderHeader();
+}
+function renderHeroes(){
+ const grid=document.getElementById("heroGrid");
+ grid.innerHTML=heroes.map((h,i)=>`
+ <button class="heroPick ${chosenHero===i?"selected":""}" onclick="chooseHero(${i})">
+ <span class="animal">${h.emoji}</span><b>${h.name}</b><small>${h.title}</small>
+ </button>`).join("");
+ const h=heroes[chosenHero];
+ document.getElementById("heroBig").textContent=h.emoji;
+ document.getElementById("heroName").textContent=h.name+" — "+h.title;
+ document.getElementById("heroDesc").textContent=h.desc;
+}
+function chooseHero(i){chosenHero=i;renderHeroes()}
+function confirmHero(){
+ state.hero=chosenHero;save();
+ document.getElementById("worldHero").textContent=hero().emoji;
+ toast(hero().name+" dipilih sebagai wira kamu!");
+ renderHome();showScreen("world");
+}
+function renderWorld(){
+ renderHeader();
+ document.getElementById("worldHero").textContent=hero().emoji;
+ document.getElementById("worldLevel").textContent="TAHAP "+level();
+ document.getElementById("worldProgressText").textContent=state.done.length+" / 230";
+ document.getElementById("worldProgress").style.width=progress()+"%";
+ const open=firstOpen(),openWeek=Math.floor(open/5);
+ const list=document.getElementById("weekList");
+ list.innerHTML=weeks.map((w,i)=>{
+  const count=[0,1,2,3,4].filter(d=>isDone(missionId(i,d))).length;
+  const locked=i>openWeek;
+  return `<button class="weekCard ${i===openWeek?"current":""} ${count===5?"done":""} ${locked?"locked":""}" ${locked?"disabled":""} onclick="selectWeek(${i})">
+   <b>${count===5?"✓ ":""}Minggu ${i+1}</b><small>${w[0]}</small><small>${count}/5 hari</small>
+  </button>`;
+ }).join("");
+ const w=state.selectedWeek;
+ document.getElementById("weekHeading").textContent="Minggu "+(w+1)+" — "+weeks[w][0];
+ document.getElementById("weekDescription").textContent=weeks[w][1]+". "+weeks[w][2];
+ const days=document.getElementById("dayList");
+ days.innerHTML=[0,1,2,3,4].map(d=>{
+  const id=missionId(w,d),done=isDone(id),next=firstOpen(),locked=id>next;
+  const icons=["🌱","🤝","🧭","🌿","🏆"];
+  return `<button class="dayCard ${done?"done":""} ${id===next?"current":""}" ${locked?"disabled":""} onclick="openMission(${id})">
+   <span>${done?"✅":icons[d]}</span><b>Hari ${d+1}</b><small>${done?"Selesai":locked?"Terkunci":id===next?"Misi seterusnya":"Buka misi"}</small>
+  </button>`;
+ }).join("");
+ document.getElementById("weekStatus").textContent=[0,1,2,3,4].filter(d=>isDone(missionId(w,d))).length+"/5 SELESAI";
+}
+function selectWeek(i){
+ const nextWeek=Math.floor(firstOpen()/5);
+ if(i>nextWeek){toast("Selesaikan minggu sebelumnya dahulu.");return}
+ state.selectedWeek=i;save();renderWorld();
+}
+function getMission(id){
+ const w=Math.floor(id/5),d=id%5,task=dailyTasks[d],week=weeks[w];
+ return {
+  id,w,d,task,
+  title:task.title,
+  story:task.story.replaceAll("{place}",week[1]).replaceAll("{theme}",week[0]),
+  good:task.good,bad:task.bad,mid:task.mid,trait:task.trait,lesson:task.lesson,
+  week:week[0],place:week[1]
+ };
+}
+function openMission(id){
+ if(id>firstOpen()&&!isDone(id)){toast("Selesaikan misi terdahulu dahulu.");return}
+ currentMission=id;answered=false;selectedAnswer=-1;
+ const m=getMission(id),h=hero();
+ document.getElementById("missionHero").textContent=h.emoji;
+ document.getElementById("missionSceneTitle").textContent=m.place.toUpperCase();
+ document.getElementById("missionCounter").textContent="MINGGU "+(m.w+1)+" • HARI "+(m.d+1);
+ document.getElementById("missionTag").textContent="MISI "+(id+1)+" / 230";
+ document.getElementById("missionTitle").textContent=m.title;
+ document.getElementById("missionStory").textContent=m.story;
+ document.getElementById("feedback").style.display="none";
+ document.getElementById("rewardRow").style.display="none";
+ document.getElementById("nextMissionBtn").style.display="none";
+ const correctPosition=(id*7+2)%3;
+ const options=[m.bad,m.mid,m.good];
+ const shuffled=[...options];
+ const correctIndex=shuffled.indexOf(m.good);
+ const rotated=[shuffled[(correctPosition+0)%3],shuffled[(correctPosition+1)%3],shuffled[(correctPosition+2)%3]];
+ const answer=rotated.indexOf(m.good);
+ document.getElementById("choices").innerHTML=rotated.map((c,i)=>`
+  <button class="choice" onclick="answerMission(${i},${answer})">
+   <span class="letter">${String.fromCharCode(65+i)}</span><span>${c}</span>
+  </button>`).join("");
+ showScreen("mission");
+}
+function answerMission(choice,correct){
+ if(answered)return;
+ answered=true;
+ const m=getMission(currentMission);
+ const good=choice===correct;
+ const points=good?10:choice===correct?10:choice===((correct+1)%3)?4:0;
+ const earned=good?10:points;
+ const buttons=[...document.querySelectorAll("#choices .choice")];
+ buttons.forEach((b,i)=>{
+  b.disabled=true;
+  if(i===correct)b.classList.add("correct");
+  else if(i===choice)b.classList.add("wrong");
  });
- html+=`</div><p class="small">Kemajuan: ${save.completed.length} / 46 misi</p>
- <button onclick="closeModal()" style="width:100%">TUTUP PETA</button>`;
- document.getElementById("modalContent").innerHTML=html;showModal();
+ const firstTime=!isDone(currentMission);
+ if(firstTime){
+  state.done.push(currentMission);
+  state.xp+=earned;
+  state.score+=earned;
+  state.coins+=good?5:2;
+  if(good)state.traits[m.trait]+=2;
+  else state.traits[m.trait]+=1;
+  if(state.done.length%5===0)state.collections.push("token-"+state.done.length);
+  updateAchievements();
+  save();
+ }
+ const feedback=document.getElementById("feedback");
+ feedback.style.display="block";
+ feedback.innerHTML=good
+  ?"<b>🌟 Cemerlang, Wira!</b><br>"+m.lesson
+  :"<b>🌱 Terus belajar, Wira.</b><br>"+m.lesson+"<br><br>Tindakan yang paling sesuai: <b>"+m.good+"</b>";
+ document.getElementById("rewardRow").style.display="flex";
+ document.getElementById("rewardText").textContent=firstTime?"Ganjaran misi":"Misi ini sudah pernah diselesaikan";
+ document.getElementById("rewardAmount").textContent=firstTime?"+"+earned+" XP · "+(good?5:2)+" syiling":"Telah direkod";
+ document.getElementById("nextMissionBtn").style.display="block";
+ document.getElementById("nextMissionBtn").textContent=currentMission===229?"LIHAT PENCAPAIAN →":"MISI SETERUSNYA →";
+ renderHeader();
 }
-function goToMission(i){
- const m=missionMarkers[i];if(!m)return;
- player.x=m.x-70;player.y=m.y+30;
- toast("Penanda misi ditunjukkan pada peta dunia.");
+function goNext(){
+ if(currentMission===229&&state.done.length===230){showScreen("rewards");toast("Tahniah! Semua 230 misi selesai.");return}
+ const next=firstOpen();
+ if(next===currentMission&&!isDone(next)){showScreen("world");return}
+ if(state.done.length===230){showScreen("rewards");return}
+ state.selectedWeek=Math.floor(next/5);save();openMission(next);
 }
-function openBag(){
- document.getElementById("modalContent").innerHTML=`
- <div class="small gold">BEG PAHLAWAN</div><h2>KOLEKSI</h2>
- <p>🪙 Syiling: <b>${save.coins}</b></p>
- <p>⭐ XP: <b>${save.xp}</b></p>
- <p>Misi selesai: <b>${save.completed.length}/46</b></p>
- <p class="small">${save.items.length?save.items.map(x=>"🏅 "+x).join("<br>"):"Belum ada koleksi. Selesaikan misi untuk mendapatkannya."}</p>
- <h3 class="gold">PENCAPAIAN</h3>
- <p class="small">${save.achievements.length?save.achievements.join("<br>"):"Teruskan usaha untuk membuka pencapaian."}</p>
- <button onclick="closeModal()" style="width:100%">TUTUP BEG</button>`;
- showModal();
+function updateAchievements(){
+ const tests=[
+  ["first","Langkah Pertama","Selesaikan misi pertama","🌱",state.done.length>=1],
+  ["five","Satu Minggu","Selesaikan lima misi","🗓️",state.done.length>=5],
+  ["twentyfive","Pengembara","Selesaikan 25 misi","🧭",state.done.length>=25],
+  ["fifty","Wira Borneo","Selesaikan 50 misi","🌳",state.done.length>=50],
+  ["hundred","Wira Berpengalaman","Selesaikan 100 misi","🏅",state.done.length>=100],
+  ["twohundred","Wira Cemerlang","Selesaikan 200 misi","🏆",state.done.length>=200],
+  ["all","Pahlawan Alpha","Selesaikan kesemua 230 misi","👑",state.done.length>=230]
+ ];
+ tests.forEach(a=>{if(a[4]&&!state.achievements.includes(a[0]))state.achievements.push(a[0])});
 }
-function openHelp(){
- document.getElementById("modalContent").innerHTML=`
- <h2>CARA BERMAIN</h2>
- <p>🌿 Teroka dunia Borneo menggunakan butang arah.</p>
- <p>◆ Dekati penanda misi dan tekan JELAJAH.</p>
- <p>🏅 Jawab soalan untuk memperoleh XP dan syiling.</p>
- <p>🗺️ Gunakan PETA untuk melihat semua 46 misi.</p>
- <p>🎒 BEG menyimpan koleksi dan pencapaian.</p>
- <p class="small">Misi dibuka berperingkat mengikut minggu. Kemajuan disimpan pada peranti ini.</p>
- <button onclick="closeModal()" style="width:100%">FAHAM</button>`;
- showModal();
+function renderRewards(){
+ renderHeader();
+ document.getElementById("rewardXP").textContent=state.xp;
+ document.getElementById("rewardCoins").textContent=state.coins;
+ document.getElementById("rewardLevel").textContent=level();
+ document.getElementById("rewardDone").textContent=state.done.length;
+ const traits=document.getElementById("traits");
+ traits.innerHTML=values.map(v=>{
+  const n=state.traits[v.id],pct=Math.min(100,n*5);
+  return `<div class="traitLine"><div><span>${v.icon} ${v.name}</span><span>${n} mata</span></div><div class="progressTrack"><div class="progressFill" style="width:${pct}%"></div></div></div>`;
+ }).join("");
+ const collectionNames=["Lencana Permulaan","Jejak Sahabat","Penjaga Sungai","Wira Amanah","Hati Penyayang","Pemimpin Muda"];
+ const collectionIcons=["🌱","🤝","💧","🛡️","💚","🧭"];
+ const unlocked=Math.min(collectionNames.length,Math.floor(state.done.length/5));
+ document.getElementById("collectionCount").textContent=unlocked+" / "+collectionNames.length;
+ document.getElementById("collectionGrid").innerHTML=collectionNames.map((n,i)=>`
+  <div class="collect ${i>=unlocked?"lock":""}"><span>${collectionIcons[i]}</span><small>${n}</small></div>`).join("");
+ const ach=[
+  ["Langkah Pertama","🌱",1],["Satu Minggu","🗓️",5],["Pengembara","🧭",25],
+  ["Wira Borneo","🌳",50],["Wira Berpengalaman","🏅",100],["Wira Cemerlang","🏆",200],["Pahlawan Alpha","👑",230]
+ ];
+ document.getElementById("achievements").innerHTML=ach.map(a=>{
+  const ok=state.done.length>=a[2];
+  return `<div class="row" style="padding:8px 0;border-bottom:1px solid #e7e9df;opacity:${ok?1:.4}">
+   <span style="font-size:23px">${a[1]}</span><div><b>${a[0]}</b><div class="muted">${ok?"Dibuka":"Selesaikan "+a[2]+" misi"}</div></div><span style="margin-left:auto">${ok?"✓":"🔒"}</span>
+  </div>`;
+ }).join("");
+}
+function resetAsk(){
+ if(confirm("Padam semua kemajuan Misi Pahlawan Alpha dan mula semula?")){
+  state=freshState();chosenHero=0;save();renderHome();showScreen("home");toast("Permainan dimulakan semula.");
+ }
+}
+function exportSave(){
+ const data=JSON.stringify(state,null,2);
+ const blob=new Blob([data],{type:"application/json"});
+ const url=URL.createObjectURL(blob);
+ const a=document.createElement("a");a.href=url;a.download="Misi-Pahlawan-Alpha-Simpanan.json";a.click();
+ URL.revokeObjectURL(url);
+ toast("Salinan kemajuan disediakan.");
 }
 
-/* =========================
-   HUD & MUZIK ASLI
-========================= */
-function updateHud(){
- if(!save)return;
- const level=Math.floor(save.xp/300)+1;
- document.getElementById("stats").innerHTML=`⭐ <strong>Lv ${level}</strong> · XP ${save.xp} · ${save.completed.length}/46`;
- document.getElementById("coins").textContent=save.coins;
-}
-function toggleMusic(){
- if(musicOn){stopMusic();return}
- startMusic();
-}
-function startMusic(){
- try{
-  audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();
-  audioCtx.resume();musicOn=true;
-  document.getElementById("musicBtn").textContent="♫ ON";
-  const notes=[196,246.94,293.66,246.94,220,261.63,329.63,261.63];
-  let n=0;
-  function beat(){
-   if(!musicOn||!audioCtx)return;
-   const osc=audioCtx.createOscillator(),gain=audioCtx.createGain();
-   osc.type="sine";osc.frequency.value=notes[n%notes.length];
-   gain.gain.setValueAtTime(.0001,audioCtx.currentTime);
-   gain.gain.exponentialRampToValueAtTime(.035,audioCtx.currentTime+.12);
-   gain.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+1.2);
-   osc.connect(gain);gain.connect(audioCtx.destination);
-   osc.start();osc.stop(audioCtx.currentTime+1.25);n++;
-   musicTimer=setTimeout(beat,850);
-  }
-  beat();
- }catch(e){toast("Audio tidak dapat dimainkan pada peranti ini.")}
-}
-function stopMusic(){
- musicOn=false;clearTimeout(musicTimer);
- document.getElementById("musicBtn").textContent="♫ OFF";
-}
-
-/* =========================
-   MULA
-========================= */
-loadSave();
-heroIndex=save.hero||0;
-buildHeroChoices();
-makeMarkers();
-updateHud();
+/* Mula permainan */
+renderHeader();
+renderHome();
+renderHeroes();
+state.selectedWeek=Math.floor(firstOpen()/5);
+renderWorld();
 </script>
 </body>
 </html>
-
