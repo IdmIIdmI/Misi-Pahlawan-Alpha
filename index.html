@@ -1,816 +1,568 @@
-
 <!DOCTYPE html>
 <html lang="ms">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#102c27">
-<title>Misi Pahlawan Alpha</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#102b35">
+<title>KARAKTER QUEST 2027</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#10251f;color:white;font-family:Arial;overflow:hidden}
-button{border:0;border-radius:12px;padding:12px 15px;font-weight:bold;background:#dfa13d;color:white}
-button:active{transform:scale(.94)}
-button:disabled{opacity:.4}
-.hidden{display:none!important}
-#game{height:100dvh;display:flex;flex-direction:column}
-header{height:48px;background:#15342c;display:flex;align-items:center;justify-content:space-around;font-size:12px}
-.stat{background:#315444;padding:8px;border-radius:9px}
-#world{flex:1;position:relative;overflow:hidden}
-canvas{width:100%;height:100%;display:block}
-#missionbar{position:absolute;top:9px;left:9px;right:9px;display:flex;justify-content:space-between;pointer-events:none}
-.tag{background:#102b24dd;padding:8px 11px;border-radius:9px;font-size:12px}
-#sound{position:absolute;right:10px;bottom:10px;z-index:3;background:#173c30dd;font-size:11px}
-#controls{height:125px;background:#102c27;display:flex;justify-content:space-between;align-items:center;padding:8px 15px}
-.pad{display:grid;grid-template-columns:42px 42px 42px;grid-template-rows:36px 36px 36px;gap:3px}
-.pad button{padding:0;background:#35594b;font-size:19px}
-.up{grid-column:2}.left{grid-column:1;grid-row:2}
-.down{grid-column:2;grid-row:2}.right{grid-column:3;grid-row:2}
-.actions{display:flex;gap:9px}
-.actions button{width:57px;height:57px;border-radius:50%;padding:3px;font-size:11px}
-.overlay{position:fixed;inset:0;z-index:10;background:linear-gradient(150deg,#102b24,#315d49);display:flex;align-items:center;justify-content:center;padding:15px}
-.box{width:min(460px,100%);max-height:92dvh;overflow:auto;text-align:center;background:#193d31;border:1px solid #789779;border-radius:22px;padding:20px;box-shadow:0 15px 50px #0008}
-h1{color:#ffda83;font-size:27px}
-h2{color:#ffe3a9}
-p{line-height:1.6;color:#e5eee4}
-.big{font-size:60px}
-.heroes{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
-.hero{background:#315b49;border:2px solid transparent;border-radius:13px;padding:10px}
-.hero.selected{border-color:#ffdb80}
-.hero .face{font-size:38px}
-.choice{display:block;width:100%;text-align:left;margin:9px 0;background:#315d49;border:1px solid #86a48a}
-#readStatus{color:#ffdf94;font-size:13px;margin:12px}
-.small{font-size:12px;color:#bcd5c6}
+:root{
+ --ink:#17343b;--gold:#ffd66b;--cream:#fff7df;
+ --green:#40c98a;--blue:#51c8ed;--pink:#ff83ad;
+ --purple:#9d83f6;--orange:#ffae55;
+}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;
+ font-family:system-ui,Arial,sans-serif;background:#102b35;color:white}
+button{font:inherit;cursor:pointer;border:0}
+#game{position:relative;width:100%;height:100%;overflow:hidden;background:#153b43}
+canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+#topbar{position:absolute;z-index:5;top:0;left:0;right:0;
+ display:flex;align-items:center;justify-content:space-between;padding:10px 13px;
+ background:linear-gradient(180deg,rgba(8,35,42,.82),transparent)}
+.brand{font-size:13px;font-weight:1000;letter-spacing:1.5px;color:#ffe18a}
+.brand small{display:block;font-size:9px;letter-spacing:2px;color:#c9f5df}
+.pill{background:#102e38cc;border:1px solid #ffffff35;border-radius:30px;
+ padding:7px 12px;font-size:11px;font-weight:800}
+#sceneTitle{position:absolute;z-index:3;top:65px;left:50%;transform:translateX(-50%);
+ background:#102e38b8;border:1px solid #ffffff45;border-radius:20px;
+ padding:7px 16px;font-weight:900;font-size:12px;white-space:nowrap}
+#bottom{position:absolute;z-index:5;left:0;right:0;bottom:0;
+ padding:12px 13px max(13px,env(safe-area-inset-bottom));
+ background:linear-gradient(0deg,rgba(7,30,37,.96),rgba(7,30,37,.82),transparent)}
+#message{min-height:48px;text-align:center;font-size:13px;line-height:1.4;
+ font-weight:650;padding:5px 10px;color:#fff7df}
+.actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+.action{background:linear-gradient(135deg,#ffe58c,#ffb64e);color:#533819;
+ padding:10px 15px;border-radius:14px;font-weight:950;font-size:12px;
+ box-shadow:0 4px 0 #9a632d}
+.action.secondary{background:linear-gradient(135deg,#8ce9d1,#44bda9);color:#103c3a;box-shadow:0 4px 0 #247e75}
+.action.purple{background:linear-gradient(135deg,#d0b5ff,#9b7af0);color:#30205c;box-shadow:0 4px 0 #6044a6}
+#pad{position:absolute;z-index:5;bottom:125px;left:16px;display:grid;
+ grid-template-columns:42px 42px 42px;grid-template-rows:42px 42px 42px;gap:4px}
+.padbtn{border-radius:13px;background:#123d4ccc;border:1px solid #ffffff55;
+ color:white;font-size:20px;font-weight:900;touch-action:none}
+.padbtn:active{background:#ffcf68;color:#473019}
+#panel{position:absolute;z-index:10;inset:0;display:flex;align-items:center;
+ justify-content:center;padding:17px;background:linear-gradient(135deg,#103d49eF,#142c48ed)}
+#panel.hidden{display:none}
+.panelbox{width:min(520px,100%);max-height:92%;overflow:auto;
+ background:linear-gradient(145deg,#fff9e8,#d9f6e9);
+ color:#18383e;border-radius:25px;padding:23px 19px;
+ box-shadow:0 18px 60px #061c26a8;border:3px solid #ffffff}
+h1{font-size:clamp(25px,6vw,39px);line-height:1.04;margin:0 0 9px;
+ color:#154b50;font-weight:1000;letter-spacing:-1px}
+h2{margin:0 0 10px;color:#15505a;font-size:23px}
+.sub{font-size:12px;color:#527477;font-weight:800;letter-spacing:1.5px}
+.desc{font-size:14px;line-height:1.55;color:#34565a}
+.bigicon{font-size:58px;text-align:center;margin:8px}
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin:14px 0}
+.charcard{border-radius:16px;padding:13px 8px;background:white;
+ border:2px solid #c4e8dc;text-align:center;color:#21484b}
+.charcard b{display:block;font-size:13px;margin-top:5px}
+.charcard span{font-size:35px}
+.charcard.selected{border:3px solid #f2a944;background:#fff2c8}
+.charcard small{font-size:10px;color:#668181}
+.line{height:1px;background:#b8d9cf;margin:15px 0}
+.choice{display:block;width:100%;text-align:left;margin:8px 0;padding:13px;
+ border-radius:14px;background:#fff;border:2px solid #b9e2d5;
+ color:#20484a;font-weight:800;font-size:13px}
+.choice:active{background:#fff0bd}
+#toast{position:absolute;z-index:8;top:18%;left:50%;transform:translateX(-50%);
+ background:#fff2c7;color:#573c19;border-radius:30px;padding:10px 18px;
+ font-weight:900;font-size:12px;display:none;box-shadow:0 5px 20px #0004}
 @media(max-height:600px){
-#controls{height:105px}
-.pad{grid-template-columns:34px 34px 34px;grid-template-rows:29px 29px 29px}
-.actions button{width:47px;height:47px}
+ #pad{bottom:105px;transform:scale(.82);transform-origin:bottom left}
+ #bottom{padding-top:5px}
+ #message{min-height:35px;font-size:11px}
+ .panelbox{padding:15px}
 }
 </style>
 </head>
 <body>
-
-<div id="intro" class="overlay">
- <div class="box">
-  <div class="big">🌄</div>
-  <h1>MISI PAHLAWAN ALPHA</h1>
-  <h2>Permulaan Pengembaraan</h2>
-  <p>Di bumi Borneo yang luas terbentang, lima sahabat memulakan perjalanan membina ilmu, keberanian dan akhlak mulia. Mereka bukan mencari kemasyhuran, tetapi ingin menjadi insan yang memberi manfaat kepada semua.</p>
-  <button onclick="story()">🔊 DENGAR CERITA</button>
-  <button onclick="stopSpeech()">HENTIKAN</button>
-  <br><br>
-  <button onclick="nextIntro()">MULAKAN ➜</button>
- </div>
-</div>
-
-<div id="select" class="overlay hidden">
- <div class="box">
-  <h1>PILIH PAHLAWAN</h1>
-  <p>Pilih wira pengembaraan anda.</p>
-  <div class="heroes" id="heroList"></div>
-  <br><button onclick="startGame()">MULA BERMAIN</button>
- </div>
-</div>
-
-<div id="game" class="hidden">
- <header>
-  <div class="stat">⭐ <span id="xp">0</span></div>
-  <div class="stat">🪙 <span id="coins">0</span></div>
-  <div class="stat">📜 <span id="mission">1</span>/230</div>
-  <div class="stat">🏅 <span id="level">1</span></div>
- </header>
- <div id="world">
-  <canvas id="scene"></canvas>
-  <div id="missionbar">
-   <div class="tag" onclick="menu()">🐾 <span id="heroName">Wira</span></div>
-   <div class="tag" onclick="showMap()">🌳 BORNEO</div>
+<div id="game">
+ <canvas id="world"></canvas>
+ <div id="topbar">
+  <div class="brand">KARAKTER QUEST <small>2027 · BORNEO ADVENTURE</small></div>
+  <div style="display:flex;gap:7px">
+   <div class="pill" id="rank">PREBET</div>
+   <button class="pill" id="journalBtn">📖 JURNAL</button>
   </div>
-  <button id="sound" onclick="toggleSound()">🔊 MUZIK ON</button>
  </div>
- <div id="controls">
-  <div class="pad">
-   <button class="up" data-dir="up">▲</button>
-   <button class="left" data-dir="left">◀</button>
-   <button class="down" data-dir="down">▼</button>
-   <button class="right" data-dir="right">▶</button>
-  </div>
+ <div id="sceneTitle">KAMPUNG SUNGAI</div>
+ <div id="toast"></div>
+ <div id="pad">
+  <div></div><button class="padbtn" data-dir="up">▲</button><div></div>
+  <button class="padbtn" data-dir="left">◀</button>
+  <button class="padbtn" data-dir="down">▼</button>
+  <button class="padbtn" data-dir="right">▶</button>
+  <div></div><div></div><div></div>
+ </div>
+ <div id="bottom">
+  <div id="message">Selamat datang ke dunia KARAKTER QUEST 2027.</div>
   <div class="actions">
-   <button onclick="jump()">⬆️<br>Lompat</button>
-   <button onclick="action()">⚔️<br>Aksi</button>
+   <button class="action" id="interact">INTERAKSI</button>
+   <button class="action secondary" id="mapBtn">PETA DUNIA</button>
+   <button class="action purple" id="soundBtn">♫ AUDIO</button>
   </div>
  </div>
-</div>
-
-<div id="question" class="overlay hidden">
- <div class="box">
-  <div class="small">CABARAN ILMU</div>
-  <h2 id="qtitle"></h2>
-  <p id="qtext"></p>
-  <div id="readStatus">Sedang menyediakan bacaan...</div>
-  <div id="choices"></div>
-  <button onclick="repeatQuestion()">🔊 DENGAR SEMULA</button>
+ <div id="panel">
+  <div class="panelbox" id="panelContent"></div>
  </div>
 </div>
-
-<div id="result" class="overlay hidden">
- <div class="box">
-  <div class="big" id="resultIcon">🏆</div>
-  <h1 id="resultTitle"></h1>
-  <p id="resultText"></p>
-  <button onclick="closeResult()">TERUSKAN</button>
- </div>
-</div>
-
-<div id="panel" class="overlay hidden">
- <div class="box">
-  <h2 id="panelTitle"></h2>
-  <div id="panelContent"></div>
-  <button onclick="closePanel()">KEMBALI</button>
- </div>
-</div>
-
 <script>
-/* DATA */
-const heroes=[
-{name:"Arnab",face:"🐰",color:"#eee4d0"},
-{name:"Hamster",face:"🐹",color:"#d8a36e"},
-{name:"Kucing",face:"🐱",color:"#b5b6c5"},
-{name:"Cenderawasih",face:"🦜",color:"#e6aa2e"},
-{name:"Kijang",face:"🦌",color:"#b77a4b"}
-];
-
-const questions=[
-{q:"Apakah rukun Islam yang pertama?",a:["Solat","Mengucap dua kalimah syahadah","Puasa"],c:1},
-{q:"Berapakah jumlah rukun iman?",a:["Lima","Enam","Tujuh"],c:1},
-{q:"Siapakah nabi terakhir?",a:["Nabi Musa AS","Nabi Isa AS","Nabi Muhammad ﷺ"],c:2},
-{q:"Apakah ibu negara Malaysia?",a:["Kuala Lumpur","Kuching","Johor Bahru"],c:0},
-{q:"Apakah sumber cahaya utama bumi?",a:["Bulan","Matahari","Bintang"],c:1},
-{q:"Berapakah 8 darab 7?",a:["54","56","64"],c:1},
-{q:"Apakah kitab suci umat Islam?",a:["Al-Quran","Taurat","Zabur"],c:0},
-{q:"Apakah sifat Allah yang bermaksud sedia ada?",a:["Qidam","Baqa","Wahdaniyyah"],c:0},
-{q:"Apakah mamalia terbesar di dunia?",a:["Gajah","Paus biru","Badak"],c:1},
-{q:"Apakah bahasa kebangsaan Malaysia?",a:["Inggeris","Arab","Melayu"],c:2}
-];
-
-const missionNames=[
-"Jejak Hutan Borneo","Sungai Kehidupan","Perkampungan Damai",
-"Cabaran Gunung","Misi Sahabat","Lembah Ilmu",
-"Rimba Hijau","Jambatan Harapan","Kota Pengetahuan","Puncak Kejayaan"
-];
-
-let state={hero:0,mission:1,xp:0,coins:0,level:1,
-completed:[],collections:[],x:170,y:0,dir:1,
-frame:0,moving:false,jumping:false,jumpTime:0};
-
-let selected=0,keys={},last=0,AC=null;
-let musicOn=true, musicTimer=null,birdTimer=null;
-let voiceList=[],speechToken=0,questionLocked=true;
-
-const canvas=document.getElementById("scene");
+(()=>{
+"use strict";
+const canvas=document.getElementById("world");
 const ctx=canvas.getContext("2d");
+const panel=document.getElementById("panel");
+const pc=document.getElementById("panelContent");
+const message=document.getElementById("message");
+const title=document.getElementById("sceneTitle");
+const toast=document.getElementById("toast");
 
+let W=0,H=0,D=1;
+let state={
+ started:false,hero:0,x:0,y:0,dir:"down",moving:false,
+ scene:0,completed:[],journal:[],decisions:{},sound:false
+};
+const characters=[
+ {name:"Karakter 1",emoji:"🐿️",color:"#d58b4c",core:"Penyayang"},
+ {name:"Karakter 2",emoji:"🐻",color:"#b97c58",core:"Berdaya Tahan"},
+ {name:"Karakter 3",emoji:"🐦",color:"#4c9ce0",core:"Berupaya Memimpin"},
+ {name:"Karakter 4",emoji:"🐱",color:"#e9a5bd",core:"Warganegara Aktif"},
+ {name:"Karakter 5",emoji:"🦌",color:"#c99a62",core:"Pengembaraan"}
+];
+const places=[
+ {name:"Kampung Sungai",x:.5,y:.56,icon:"🏡",color:"#ffd16b"},
+ {name:"Jeti",x:.82,y:.64,icon:"🛶",color:"#61d3ed"},
+ {name:"Rumah Panjang",x:.22,y:.42,icon:"🏘️",color:"#f7a46b"},
+ {name:"Tebing Sungai",x:.73,y:.30,icon:"🌊",color:"#6bd4e8"},
+ {name:"Laluan Hutan",x:.30,y:.19,icon:"🌳",color:"#83df9d"},
+ {name:"Balai Kampung",x:.50,y:.34,icon:"🏛️",color:"#d0a4ff"}
+];
+const missions=[
+ {name:"MISI 1 · KENALI DIRI",core:"Penyayang",
+  npc:"Penduduk kampung",text:"Seorang penduduk membawa barang yang berat. Dia kelihatan memerlukan bantuan.",
+  options:[
+   ["Mendekati dan menawarkan bantuan dengan ikhlas.","Tindakan penyayang"],
+   ["Berlalu kerana menganggap itu bukan urusan kita.","Memilih untuk tidak membantu"],
+   ["Mengajak rakan lain membantu bersama.","Kerjasama dan keprihatinan"]
+  ]},
+ {name:"MISI 2 · CABARAN DIRI",core:"Berdaya Tahan",
+  npc:"Rakan pengembara",text:"Hujan lebat menyebabkan laluan yang hendak dilalui menjadi sukar.",
+  options:[
+   ["Berhenti, menilai keadaan dan mencari laluan selamat.","Berfikir sebelum bertindak"],
+   ["Terus mara tanpa memikirkan risiko.","Tindakan terburu-buru"],
+   ["Mengajak rakan mencari jalan penyelesaian.","Ketabahan dan kerjasama"]
+  ]},
+ {name:"MISI 3 · PIMPINAN",core:"Berupaya Memimpin",
+  npc:"Ketua kumpulan",text:"Kumpulan kamu perlu membuat keputusan bersama untuk menyelesaikan satu tugasan.",
+  options:[
+   ["Mendengar pandangan semua sebelum membuat keputusan.","Kepimpinan yang adil"],
+   ["Membuat keputusan sendiri tanpa mendengar orang lain.","Kurang pertimbangan"],
+   ["Memberi tugasan mengikut kebolehan setiap ahli.","Kepimpinan dan amanah"]
+  ]},
+ {name:"MISI 4 · KOMUNITI",core:"Warganegara Aktif",
+  npc:"Penduduk setempat",text:"Kawasan sekitar kampung perlu dibersihkan sebelum program komuniti bermula.",
+  options:[
+   ["Turut serta menjaga kebersihan kawasan.","Tanggungjawab bersama"],
+   ["Menunggu orang lain melakukannya.","Kurang penglibatan"],
+   ["Mengajak jiran dan rakan menyertai gotong-royong.","Inisiatif komuniti"]
+  ]},
+ {name:"MISI 5 · BERSAMA KITA KUAT",core:"Empat Teras Karakter",
+  npc:"Warga kampung",text:"Satu masalah kampung memerlukan bantuan, ketabahan, kepimpinan dan kerjasama semua.",
+  options:[
+   ["Menggabungkan kekuatan setiap ahli untuk bertindak.","Kekuatan bersama"],
+   ["Membiarkan seorang sahaja menyelesaikan semuanya.","Kurang kerjasama"],
+   ["Menyusun tindakan dan melibatkan seluruh komuniti.","Tindakan berkarakter"]
+  ]}
+];
+let selected=0,keys={},last=0,frame=0;
+let audioCtx=null,oscTimer=null;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function resize(){
+ D=Math.min(devicePixelRatio||1,2);
+ W=innerWidth;H=innerHeight;
+ canvas.width=W*D;canvas.height=H*D;
+ ctx.setTransform(D,0,0,D,0,0);
+}
+addEventListener("resize",resize);resize();
+
+function rounded(x,y,w,h,r,color){
+ ctx.fillStyle=color;ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill();
+}
+function ellipse(x,y,rx,ry,color){
+ ctx.fillStyle=color;ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,Math.PI*2);ctx.fill();
+}
+function gradient(y1,y2,c1,c2){
+ let g=ctx.createLinearGradient(0,y1,0,y2);g.addColorStop(0,c1);g.addColorStop(1,c2);return g;
+}
+function drawTree(x,y,s=1){
+ ctx.save();ctx.translate(x,y);ctx.scale(s,s);
+ rounded(-7,0,14,58,5,"#855536");
+ ellipse(0,-15,34,38,"#168b64");
+ ellipse(-20,-2,24,27,"#23a978");
+ ellipse(20,-3,25,28,"#39bd78");
+ ellipse(0,-38,23,24,"#54d18a");
+ ellipse(-10,-40,6,4,"#a4ef9a");
+ ctx.restore();
+}
+function drawHouse(x,y,s=1){
+ ctx.save();ctx.translate(x,y);ctx.scale(s,s);
+ rounded(-44,-5,88,48,5,"#e8bd7e");
+ ctx.fillStyle="#9e6049";ctx.beginPath();ctx.moveTo(-52,-5);ctx.lineTo(0,-42);ctx.lineTo(52,-5);ctx.closePath();ctx.fill();
+ rounded(-9,12,18,31,3,"#8b6046");
+ rounded(-35,5,17,15,3,"#85d9e8");
+ rounded(18,5,17,15,3,"#85d9e8");
+ ctx.fillStyle="#d9a76a";ctx.fillRect(-48,43,96,5);
+ ctx.restore();
+}
+function drawWorld(){
+ frame++;
+ let sky=gradient(0,H*.65,"#58c9ee","#b5f0df");
+ ctx.fillStyle=sky;ctx.fillRect(0,0,W,H);
+ // sunlight
+ let sun=ctx.createRadialGradient(W*.79,H*.16,4,W*.79,H*.16,75);
+ sun.addColorStop(0,"#fff7a8");sun.addColorStop(1,"#fff7a800");
+ ctx.fillStyle=sun;ctx.fillRect(0,0,W,H*.5);
+ ellipse(W*.79,H*.16,27,27,"#ffe78a");
+ // mountains
+ ctx.fillStyle="#72c99a";
+ ctx.beginPath();ctx.moveTo(0,H*.52);ctx.lineTo(W*.15,H*.2);ctx.lineTo(W*.31,H*.49);
+ ctx.lineTo(W*.49,H*.17);ctx.lineTo(W*.68,H*.51);ctx.lineTo(W*.85,H*.24);
+ ctx.lineTo(W,H*.49);ctx.lineTo(W,H*.65);ctx.lineTo(0,H*.65);ctx.fill();
+ ctx.fillStyle="#4aa77e";
+ ctx.beginPath();ctx.moveTo(0,H*.55);ctx.lineTo(W*.2,H*.34);ctx.lineTo(W*.39,H*.58);
+ ctx.lineTo(W*.61,H*.31);ctx.lineTo(W*.8,H*.58);ctx.lineTo(W,H*.39);
+ ctx.lineTo(W,H*.68);ctx.lineTo(0,H*.68);ctx.fill();
+ // ground
+ ctx.fillStyle=gradient(H*.52,H,"#8be1a1","#278c68");
+ ctx.fillRect(0,H*.52,W,H*.48);
+ // river
+ ctx.fillStyle="#42b9d4";ctx.beginPath();
+ ctx.moveTo(W*.61,H*.48);ctx.bezierCurveTo(W*.48,H*.63,W*.83,H*.72,W*.65,H);
+ ctx.lineTo(W*.99,H);ctx.bezierCurveTo(W*.88,H*.75,W*.76,H*.64,W*.83,H*.48);ctx.closePath();ctx.fill();
+ ctx.strokeStyle="#b5f2ec";ctx.lineWidth=4;
+ ctx.beginPath();ctx.moveTo(W*.72,H*.59);ctx.quadraticCurveTo(W*.62,H*.72,W*.8,H*.87);ctx.stroke();
+ // hills
+ ellipse(W*.05,H*.67,W*.37,H*.19,"#48b77d");
+ ellipse(W*.98,H*.68,W*.36,H*.2,"#3cae77");
+ // trees
+ for(let i=0;i<11;i++){
+  let x=(i*137+35)%W;
+  let y=H*(.49+((i*17)%18)/100);
+  drawTree(x,y,.55+((i%3)*.15));
+ }
+ // buildings
+ drawHouse(W*.22,H*.57,.72);
+ drawHouse(W*.48,H*.53,.85);
+ drawHouse(W*.91,H*.59,.58);
+ // paths
+ ctx.strokeStyle="#e9ca8b";ctx.lineWidth=23;ctx.lineCap="round";
+ ctx.beginPath();ctx.moveTo(W*.47,H*.68);ctx.quadraticCurveTo(W*.35,H*.77,W*.22,H*.62);ctx.stroke();
+ ctx.beginPath();ctx.moveTo(W*.5,H*.68);ctx.quadraticCurveTo(W*.68,H*.72,W*.78,H*.61);ctx.stroke();
+ ctx.strokeStyle="#fff0c2";ctx.lineWidth=2;
+ ctx.beginPath();ctx.moveTo(W*.47,H*.68);ctx.quadraticCurveTo(W*.35,H*.77,W*.22,H*.62);ctx.stroke();
+ // flowers
+ for(let i=0;i<23;i++){
+  let x=(i*83+17)%W,y=H*(.65+((i*13)%27)/100);
+  ellipse(x,y,3,3,["#ffdf75","#ff8fb2","#fff5d1"][i%3]);
+ }
+ drawLocations();
+ drawHero();
+}
+function drawLocations(){
+ places.forEach((p,i)=>{
+  let x=p.x*W,y=p.y*H;
+  if(i===state.scene){
+   ctx.beginPath();ctx.arc(x,y,25+Math.sin(frame*.08)*3,0,Math.PI*2);
+   ctx.strokeStyle="#fff2a0";ctx.lineWidth=3;ctx.stroke();
+  }
+  ellipse(x,y+8,19,7,"#174b4c55");
+  rounded(x-18,y-28,36,35,12,"#fff5d9");
+  ctx.font="21px sans-serif";ctx.textAlign="center";ctx.fillText(p.icon,x,y-4);
+ }
+}
+function drawHero(){
+ let x=state.x*W,y=state.y*H;
+ if(!state.started){x=W*.5;y=H*.69}
+ let c=characters[state.hero]||characters[0];
+ let bob=state.moving?Math.sin(frame*.3)*3:Math.sin(frame*.07)*1.5;
+ // shadow
+ ellipse(x,y+21,19,7,"#174b4b55");
+ // legs
+ let step=state.moving?Math.sin(frame*.34)*6:0;
+ ctx.strokeStyle="#573c35";ctx.lineWidth=7;ctx.lineCap="round";
+ ctx.beginPath();ctx.moveTo(x-7,y+6+bob);ctx.lineTo(x-9-step,y+19);ctx.stroke();
+ ctx.beginPath();ctx.moveTo(x+7,y+6+bob);ctx.lineTo(x+9+step,y+19);ctx.stroke();
+ // body
+ rounded(x-14,y-17+bob,28,29,11,c.color);
+ // arms
+ ctx.strokeStyle=c.color;ctx.lineWidth=7;
+ ctx.beginPath();ctx.moveTo(x-12,y-9+bob);ctx.lineTo(x-21,y+2+bob+step*.3);ctx.stroke();
+ ctx.beginPath();ctx.moveTo(x+12,y-9+bob);ctx.lineTo(x+21,y+2+bob-step*.3);ctx.stroke();
+ // head
+ ellipse(x,y-28+bob,19,18,c.color);
+ // ears / character details
+ if(state.hero===0){
+  ellipse(x-10,y-47+bob,6,15,c.color);ellipse(x+10,y-47+bob,6,15,c.color);
+ }else if(state.hero===1){
+  ellipse(x-12,y-29+bob,6,7,"#7a4938");ellipse(x+12,y-29+bob,6,7,"#7a4938");
+ }else if(state.hero===2){
+  ctx.fillStyle="#f5c84f";ctx.beginPath();ctx.moveTo(x-9,y-43+bob);ctx.lineTo(x-4,y-56+bob);ctx.lineTo(x,y-43+bob);ctx.fill();
+  ctx.beginPath();ctx.moveTo(x,y-43+bob);ctx.lineTo(x+7,y-55+bob);ctx.lineTo(x+10,y-40+bob);ctx.fill();
+ }else if(state.hero===3){
+  ellipse(x-16,y-40+bob,5,10,c.color);ellipse(x+16,y-40+bob,5,10,c.color);
+ }else{
+  ctx.strokeStyle="#8b603e";ctx.lineWidth=4;
+  ctx.beginPath();ctx.moveTo(x-8,y-41+bob);ctx.lineTo(x-14,y-53+bob);ctx.lineTo(x-20,y-55+bob);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(x+8,y-41+bob);ctx.lineTo(x+14,y-53+bob);ctx.lineTo(x+20,y-55+bob);ctx.stroke();
+ }
+ // face
+ ellipse(x-6,y-29+bob,2,2,"#243b3d");ellipse(x+6,y-29+bob,2,2,"#243b3d");
+ ellipse(x,y-22+bob,3,2,"#68433c");
+ ctx.strokeStyle="#68433c";ctx.lineWidth=1.5;
+ ctx.beginPath();ctx.arc(x,y-23+bob,5,.2,2.9);ctx.stroke();
+}
+function loop(t){
+ let dt=Math.min((t-last)/1000,.04);last=t;
+ if(state.started){
+  let dx=0,dy=0;
+  if(keys.left||keys.ArrowLeft)dx--;
+  if(keys.right||keys.ArrowRight)dx++;
+  if(keys.up||keys.ArrowUp)dy--;
+  if(keys.down||keys.ArrowDown)dy++;
+  if(dx||dy){
+   let len=Math.hypot(dx,dy);dx/=len;dy/=len;
+   state.x=clamp(state.x+dx*dt*.36,.06,.94);
+   state.y=clamp(state.y+dy*dt*.36,.17,.83);
+   state.moving=true;state.dir=dx<0?"left":dx>0?"right":dy<0?"up":"down";
+  }else state.moving=false;
+ }
+ drawWorld();requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+function showToast(t){
+ toast.textContent=t;toast.style.display="block";
+ clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>toast.style.display="none",1900);
+}
+function openPanel(html){
+ pc.innerHTML=html;panel.classList.remove("hidden");
+}
+function closePanel(){panel.classList.add("hidden")}
+function welcome(){
+ openPanel(`
+ <div class="sub">DUNIA PENGEMBARAAN BORNEO</div>
+ <h1>KARAKTER<br>QUEST 2027</h1>
+ <div class="bigicon">🌈 🌴 🏡</div>
+ <p class="desc">Sebuah pengembaraan untuk mengenali dan membina karakter. Setiap tindakan membawa makna. Setiap pilihan memberi kesan kepada dunia sekeliling.</p>
+ <div class="line"></div>
+ <h2>Empat Teras Karakter</h2>
+ <div class="desc">💚 Penyayang<br>🔥 Berdaya Tahan<br>👑 Berupaya Memimpin<br>🌏 Warganegara Aktif</div>
+ <br><button class="action" id="begin" style="width:100%">MULAKAN PENGEMBARAAN</button>
+ `);
+ document.getElementById("begin").onclick=chooseHero;
+}
+function chooseHero(){
+ openPanel(`
+ <div class="sub">PERSIAPAN PENGEMBARA</div>
+ <h2>Pilih Watak</h2>
+ <p class="desc">Pilih watak pengembaraan kamu.</p>
+ <div class="cards" id="characterCards">
+ ${characters.map((c,i)=>`<button class="charcard ${i===selected?"selected":""}" data-id="${i}">
+ <span>${c.emoji}</span><b>${c.name}</b><small>${c.core}</small></button>`).join("")}
+ </div>
+ <button class="action" id="confirm" style="width:100%">SAHKAN WATAK</button>
+ `);
+ pc.querySelectorAll(".charcard").forEach(b=>b.onclick=()=>{
+  selected=Number(b.dataset.id);chooseHero();
+ });
+ document.getElementById("confirm").onclick=()=>{
+  state.hero=selected;state.started=true;state.x=.5;state.y=.69;
+  save();closePanel();
+  message.textContent="Pengembaraan bermula! Terokai kampung dan dekati penduduk untuk berinteraksi.";
+  showToast("Watak dipilih!");
+  audioStart();
+ };
+}
+function nearestPlace(){
+ let best=null,dist=999;
+ places.forEach((p,i)=>{
+  let d=Math.hypot(state.x-p.x,state.y-p.y);
+  if(d<dist){dist=d;best=i}
+ });
+ return dist<.15?best:null;
+}
+function interact(){
+ if(!state.started)return;
+ let p=nearestPlace();
+ if(p===null){
+  message.textContent="Bergerak ke kawasan penduduk, rumah panjang atau lokasi yang ditandakan untuk berinteraksi.";
+  return;
+ }
+ state.scene=p;title.textContent=places[p].name.toUpperCase();
+ let next=state.completed.length;
+ if(next>=5){showCompletion();return}
+ if(p===0||p===5||p===2){
+  showMission(next);
+ }else{
+  openPanel(`<div class="bigicon">${places[p].icon}</div><h2>${places[p].name}</h2>
+  <p class="desc">Kawasan ini sebahagian daripada dunia pengembaraan KP2027. Teruskan meneroka dan berinteraksi dengan penduduk kampung.</p>
+  <button class="action" id="back" style="width:100%">KEMBALI KE DUNIA</button>`);
+  document.getElementById("back").onclick=closePanel;
+ }
+}
+function showMission(n){
+ let m=missions[n];
+ openPanel(`
+ <div class="sub">TAHAP 1 · MISI KENALI KARAKTER</div>
+ <h2>${m.name}</h2>
+ <div class="bigicon">🧑‍🌾</div>
+ <p class="desc"><b>${m.npc}</b><br>${m.text}</p>
+ <div class="line"></div>
+ <p class="desc"><b>Apakah tindakan kamu?</b></p>
+ ${m.options.map((o,i)=>`<button class="choice" data-choice="${i}">${["A","B","C"][i]}. ${o[0]}</button>`).join("")}
+ <button class="action secondary" id="leave" style="width:100%">KELUAR</button>
+ `);
+ pc.querySelectorAll("[data-choice]").forEach(b=>b.onclick=()=>{
+  let i=Number(b.dataset.choice);
+  let result=m.options[i][1];
+  state.decisions[n]=i;
+  state.completed.push(n);
+  state.journal.push({mission:m.name,core:m.core,choice:m.options[i][0],result});
+  save();
+  showResult(m,result,i);
+ });
+ document.getElementById("leave").onclick=closePanel;
+}
+function showResult(m,result,i){
+ let words=[
+  "Tindakan kamu menjadi sebahagian daripada perjalanan membina karakter.",
+  "Setiap pengalaman memberi peluang untuk berfikir dan memperbaiki tindakan.",
+  "Pilihan kamu memberi kesan kepada hubungan dengan masyarakat."
+ ];
+ openPanel(`
+ <div class="bigicon">${i===0?"🌟":i===1?"🌱":"🤝"}</div>
+ <div class="sub">KESAN TINDAKAN</div>
+ <h2>${result}</h2>
+ <p class="desc">${words[i]}</p>
+ <p class="desc">Teras karakter: <b>${m.core}</b></p>
+ <button class="action" id="continue" style="width:100%">TERUSKAN PENGEMBARAAN</button>
+ `);
+ document.getElementById("continue").onclick=()=>{
+  closePanel();
+  if(state.completed.length===5)showCompletion();
+  else message.textContent="Misi direkodkan dalam jurnal. Teruskan pengembaraan dan kenali karakter melalui pengalaman.";
+ };
+}
+function showCompletion(){
+ let n=state.completed.length;
+ openPanel(`
+ <div class="bigicon">🏅🌈</div>
+ <div class="sub">TAHNIAH, PENGEMBARA!</div>
+ <h2>Lima Misi Selesai</h2>
+ <p class="desc">Kamu telah melalui pengalaman membina empat teras karakter. Perjalanan ini bukan sekadar tentang sampai ke destinasi, tetapi tentang tindakan dan nilai yang dibawa.</p>
+ <div class="line"></div>
+ <h2>🏅 PAHLAWAN RUMAH</h2>
+ <p class="desc">Lima misi diselesaikan. Guru boleh memberikan ganjaran sebenar mengikut sistem KP2027.</p>
+ <button class="action" id="done" style="width:100%">KEMBALI KE DUNIA</button>
+ `);
+ document.getElementById("done").onclick=()=>{
+  closePanel();showToast("Pangkat: Pahlawan Rumah");
+  document.getElementById("rank").textContent="PAHLAWAN RUMAH";
+ };
+}
+function showJournal(){
+ let rows=state.journal.length?state.journal.map((j,i)=>`
+ <div style="background:#fff;padding:11px;border-radius:12px;margin:8px 0">
+ <b>${i+1}. ${j.mission}</b><br>
+ <small>${j.core}</small><p class="desc" style="margin:5px 0">${j.choice}</p>
+ <small style="color:#16846d">${j.result}</small>
+ </div>`).join(""):"<p class='desc'>Belum ada catatan. Mulakan misi untuk mengisi jurnal pengembaraan.</p>";
+ openPanel(`<div class="sub">CATATAN PENGEMBARA</div><h2>📖 Jurnal Karakter</h2>${rows}
+ <button class="action" id="jclose" style="width:100%">TUTUP JURNAL</button>`);
+ document.getElementById("jclose").onclick=closePanel;
+}
+function showMap(){
+ openPanel(`<div class="sub">DUNIA BORNEO · SARAWAK</div><h2>🗺️ Peta Pengembaraan</h2>
+ <p class="desc">Pilih kawasan untuk menuju ke lokasi tersebut.</p>
+ <div class="cards">${places.map((p,i)=>`<button class="charcard" data-place="${i}">
+ <span>${p.icon}</span><b>${p.name}</b><small>Lokasi pengembaraan</small></button>`).join("")}</div>
+ <button class="action secondary" id="mapclose" style="width:100%">KEMBALI</button>`);
+ pc.querySelectorAll("[data-place]").forEach(b=>b.onclick=()=>{
+  let p=places[Number(b.dataset.place)];
+  state.x=p.x;state.y=p.y;state.scene=Number(b.dataset.place);
+  title.textContent=p.name.toUpperCase();
+  closePanel();message.textContent="Kamu tiba di "+p.name+". Tekan INTERAKSI untuk meneroka.";
+ });
+ document.getElementById("mapclose").onclick=closePanel;
+}
 function save(){
- localStorage.setItem("alphaSave",JSON.stringify(state));
+ try{localStorage.setItem("KP2027_SAVE",JSON.stringify(state))}catch(e){}
 }
 function load(){
  try{
- const s=JSON.parse(localStorage.getItem("alphaSave"));
- if(s)state={...state,...s};
+  let s=JSON.parse(localStorage.getItem("KP2027_SAVE")||"null");
+  if(s&&Array.isArray(s.completed)&&Array.isArray(s.journal)){
+   state={...state,...s};
+   selected=state.hero||0;
+   if(state.completed.length>=5)document.getElementById("rank").textContent="PAHLAWAN RUMAH";
+  }
  }catch(e){}
 }
-
-/* SUARA */
-function refreshVoices(){
- if("speechSynthesis" in window){
-  voiceList=speechSynthesis.getVoices();
- }
-}
-if("speechSynthesis" in window){
- refreshVoices();
- speechSynthesis.onvoiceschanged=refreshVoices;
-}
-
-function stopSpeech(){
- speechToken++;
- if(window.speechSynthesis)speechSynthesis.cancel();
-}
-
-function speakOne(text,token,callback){
- if(token!==speechToken)return;
- if(!window.speechSynthesis){
-  callback();
-  return;
- }
-
- const u=new SpeechSynthesisUtterance(text);
- u.lang="ms-MY";
- u.rate=.85;
- u.pitch=1;
- u.volume=1;
-
- const voice=voiceList.find(v=>v.lang.toLowerCase()==="ms-my")
- ||voiceList.find(v=>v.lang.toLowerCase().startsWith("ms"))
- ||voiceList.find(v=>v.lang.toLowerCase()==="id-id");
-
- if(voice)u.voice=voice;
-
- let finished=false;
- function finish(){
-  if(finished)return;
-  finished=true;
-  if(token===speechToken)callback();
- }
- u.onend=finish;
- u.onerror=finish;
- speechSynthesis.speak(u);
-
- // Penyelamat jika enjin Android tidak menghantar event tamat.
- const duration=Math.max(5000,text.length*105);
- setTimeout(()=>{
-  if(!finished&&token===speechToken){
-   if(!speechSynthesis.speaking&&!speechSynthesis.pending)finish();
-  }
- },duration);
-}
-
-function speakSequence(lines,done){
- stopSpeech();
- const token=speechToken;
- let i=0;
- function next(){
-  if(token!==speechToken)return;
-  if(i>=lines.length){
-   if(done)done();
-   return;
-  }
-  speakOne(lines[i++],token,next);
- }
- next();
-}
-
-function story(){
- speakSequence([
- "Selamat datang ke Misi Pahlawan Alpha.",
- "Di bumi Borneo yang luas terbentang, lima sahabat memulakan perjalanan.",
- "Mereka terdiri daripada Arnab, Hamster, Kucing, Cenderawasih dan Kijang.",
- "Setiap seorang mempunyai kelebihan tersendiri.",
- "Namun kekuatan sebenar lahir daripada ilmu, disiplin, keberanian dan akhlak mulia.",
- "Mereka akan melalui dua ratus tiga puluh misi.",
- "Bersedialah wahai pahlawan. Pengembaraan kita bermula sekarang."
- ]);
-}
-
-function nextIntro(){
- stopSpeech();
- document.getElementById("intro").classList.add("hidden");
- document.getElementById("select").classList.remove("hidden");
- renderHeroes();
-}
-
-function renderHeroes(){
- const el=document.getElementById("heroList");
- el.innerHTML="";
- heroes.forEach((h,i)=>{
-  let d=document.createElement("div");
-  d.className="hero "+(selected===i?"selected":"");
-  d.innerHTML=`<div class="face">${h.face}</div><b>${h.name}</b><br><small>${i===0?"Lincah":i===1?"Ketahanan":i===2?"Tangkas":i===3?"Udara":"Rimba"}</small>`;
-  d.onclick=()=>{selected=i;renderHeroes()};
-  el.appendChild(d);
- });
-}
-
-/* AUDIO */
 function audioStart(){
- if(!AC){
-  AC=new(window.AudioContext||window.webkitAudioContext)();
- }
- if(AC.state==="suspended")AC.resume();
- musicOn=true;
- startMelody();
- startBirds();
- document.getElementById("sound").textContent="🔊 MUZIK ON";
+ if(state.sound)return;
+ try{
+  audioCtx=audioCtx||new(window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==="suspended")audioCtx.resume();
+  state.sound=true;
+  document.getElementById("soundBtn").textContent="♫ AUDIO ON";
+  let notes=[392,440,523,587,523,440,349,392];
+  let k=0;
+  oscTimer=setInterval(()=>{
+   if(!state.sound||!audioCtx)return;
+   let o=audioCtx.createOscillator(),g=audioCtx.createGain();
+   o.type="sine";o.frequency.value=notes[k++%notes.length];
+   g.gain.setValueAtTime(.0001,audioCtx.currentTime);
+   g.gain.exponentialRampToValueAtTime(.035,audioCtx.currentTime+.03);
+   g.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+.28);
+   o.connect(g);g.connect(audioCtx.destination);
+   o.start();o.stop(audioCtx.currentTime+.3);
+  },330);
+ }catch(e){showToast("Audio tidak disokong oleh peranti ini")}
 }
-
-function note(freq,dur,vol=.055,type="triangle"){
- if(!AC||!musicOn)return;
- const o=AC.createOscillator();
- const g=AC.createGain();
- o.type=type;
- o.frequency.value=freq;
- g.gain.setValueAtTime(vol,AC.currentTime);
- g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+dur);
- o.connect(g);g.connect(AC.destination);
- o.start();o.stop(AC.currentTime+dur);
+function audioStop(){
+ state.sound=false;clearInterval(oscTimer);
+ document.getElementById("soundBtn").textContent="♫ AUDIO";
 }
-
-function startMelody(){
- if(musicTimer)clearInterval(musicTimer);
- const melody=[
-  523,659,784,659,587,698,880,698,
-  523,659,784,880,784,659,587,523,
-  392,523,659,784,659,587,523,440
- ];
- let n=0;
- musicTimer=setInterval(()=>{
-  if(!musicOn)return;
-  note(melody[n%melody.length],.34,.045,"triangle");
-  if(n%4===0)note(131,.7,.035,"sine");
-  if(n%2===0)note(262,.28,.018,"sine");
-  n++;
- },420);
-}
-
-function birdSound(){
- if(!AC||!musicOn)return;
- const f=1300+Math.random()*1100;
- note(f,.14,.035,"sine");
- setTimeout(()=>note(f*1.35,.18,.03,"sine"),180);
- setTimeout(()=>note(f*1.1,.12,.025,"sine"),350);
-}
-
-function startBirds(){
- if(birdTimer)clearInterval(birdTimer);
- birdTimer=setInterval(()=>{
-  if(musicOn&&Math.random()>.2)birdSound();
- },2300);
-}
-
-function toggleSound(){
- if(!AC){audioStart();return}
- musicOn=!musicOn;
- if(musicOn){
-  audioStart();
- }else{
-  clearInterval(musicTimer);
-  clearInterval(birdTimer);
-  document.getElementById("sound").textContent="🔇 MUZIK OFF";
- }
-}
-
-function successSound(){
- note(523,.2,.07);
- setTimeout(()=>note(659,.2,.07),140);
- setTimeout(()=>note(784,.35,.07),280);
-}
-function wrongSound(){note(220,.4,.06,"sawtooth")}
-
-/* MULA */
-function startGame(){
- load();
- state.hero=selected;
- document.getElementById("select").classList.add("hidden");
- document.getElementById("game").classList.remove("hidden");
- audioStart();
- updateUI();
- resize();
- speakSequence(["Selamat datang, "+heroes[state.hero].name+". Pengembaraan anda bermula sekarang."]);
- requestAnimationFrame(loop);
-}
-
-function updateUI(){
- document.getElementById("xp").textContent=state.xp;
- document.getElementById("coins").textContent=state.coins;
- document.getElementById("mission").textContent=state.mission;
- document.getElementById("level").textContent=state.level;
- document.getElementById("heroName").textContent=heroes[state.hero].name;
-}
-
-/* DUNIA */
-function resize(){
- const r=canvas.getBoundingClientRect();
- const d=Math.min(devicePixelRatio||1,2);
- canvas.width=r.width*d;
- canvas.height=r.height*d;
- ctx.setTransform(d,0,0,d,0,0);
-}
-window.addEventListener("resize",resize);
-
-function world(w,h,t){
- let sky=ctx.createLinearGradient(0,0,0,h);
- sky.addColorStop(0,"#74c4d3");
- sky.addColorStop(.7,"#d8e8b0");
- sky.addColorStop(1,"#7baa62");
- ctx.fillStyle=sky;ctx.fillRect(0,0,w,h);
-
- ctx.fillStyle="#ffe8a2";
- ctx.beginPath();ctx.arc(w*.82,h*.17,32,0,7);ctx.fill();
-
- // Gunung
- ctx.fillStyle="#638f76";
- ctx.beginPath();
- ctx.moveTo(0,h*.58);ctx.lineTo(w*.22,h*.19);
- ctx.lineTo(w*.43,h*.58);ctx.lineTo(w*.65,h*.24);
- ctx.lineTo(w*.9,h*.57);ctx.lineTo(w,h*.42);
- ctx.lineTo(w,h);ctx.lineTo(0,h);ctx.fill();
-
- // Pokok
- for(let i=0;i<10;i++){
-  let x=(i*137)%w,y=h*.58;
-  ctx.fillStyle="#67452d";
-  ctx.fillRect(x-6,y-50,12,62);
-  ctx.fillStyle=i%2?"#286e43":"#36814d";
-  ctx.beginPath();
-  ctx.arc(x,y-59,27,0,7);
-  ctx.arc(x-18,y-43,21,0,7);
-  ctx.arc(x+18,y-43,21,0,7);
-  ctx.fill();
- }
-
- ctx.fillStyle="#8dbb69";ctx.fillRect(0,h*.68,w,h*.32);
- ctx.fillStyle="#c8ad7d";
- ctx.beginPath();
- ctx.moveTo(w*.3,h);ctx.quadraticCurveTo(w*.4,h*.72,w*.55,h*.71);
- ctx.lineTo(w*.7,h*.71);ctx.quadraticCurveTo(w*.6,h*.9,w*.65,h);
- ctx.fill();
-
- // Rumput dan bunga
- for(let i=0;i<22;i++){
-  let x=(i*67)%w,y=h*.78+(i%3)*9;
-  ctx.strokeStyle="#397c43";ctx.lineWidth=2;
-  ctx.beginPath();ctx.moveTo(x,y+6);ctx.lineTo(x-3,y-5);ctx.stroke();
-  ctx.fillStyle=["#fff1bb","#e8b0a1","#fff"][i%3];
-  ctx.beginPath();ctx.arc(x,y-5,3,0,7);ctx.fill();
- }
-}
-
-/* WATAK: ANATOMI BERBEZA */
-function limb(x,y,phase,color){
- const swing=Math.sin(phase)*9;
- ctx.strokeStyle=color;ctx.lineWidth=9;ctx.lineCap="round";
- ctx.beginPath();
- ctx.moveTo(x,y);
- ctx.lineTo(x+swing,y+15);
- ctx.lineTo(x+swing+2,y+29);
- ctx.stroke();
- ctx.fillStyle="#55402d";
- ctx.beginPath();ctx.ellipse(x+swing+5,y+30,8,4,0,0,7);ctx.fill();
-}
-
-function animal(x,y,frame,moving,jump){
- ctx.save();
- ctx.translate(x,y-jump);
- if(state.dir<0)ctx.scale(-1,1);
- ctx.fillStyle="#263e2755";
- ctx.beginPath();ctx.ellipse(0,5,43,7,0,0,7);ctx.fill();
-
- if(state.hero===3)bird(frame,moving);
- else mammal(frame,moving);
-
- ctx.restore();
-}
-
-function mammal(frame,moving){
- const id=state.hero,c=heroes[id].color;
- const p=moving?frame*.19:0;
- const swing=moving?Math.sin(p)*9:0;
-
- // Ekor yang jelas
- ctx.strokeStyle=c;ctx.lineWidth=id===2?7:6;
- ctx.lineCap="round";ctx.beginPath();
- if(id===0)ctx.moveTo(-28,-39),ctx.quadraticCurveTo(-50,-58,-43,-69);
- else if(id===1)ctx.moveTo(-28,-40),ctx.quadraticCurveTo(-45,-45,-46,-52);
- else if(id===2)ctx.moveTo(-29,-40),ctx.bezierCurveTo(-65,-60,-56,-90,-45,-82);
- else ctx.moveTo(-30,-39),ctx.quadraticCurveTo(-49,-55,-50,-66);
- ctx.stroke();
-
- // Kaki belakang dan hadapan
- limb(-23,-27,p,c);
- limb(-10,-27,p+Math.PI,c);
- limb(12,-27,p+Math.PI,c);
- limb(23,-27,p,c);
-
- // Badan
- ctx.fillStyle=c;
- ctx.beginPath();
- ctx.ellipse(0,-48,id===1?28:33,id===1?24:27,0,0,7);
- ctx.fill();
-
- // Perut
- ctx.fillStyle=id===0?"#fff5e8":id===1?"#f4d6ae":id===2?"#e7e7ed":"#f0d0a8";
- ctx.beginPath();ctx.ellipse(4,-43,18,17,0,0,7);ctx.fill();
-
- // Tangan
- ctx.strokeStyle=c;ctx.lineWidth=9;
- ctx.beginPath();
- ctx.moveTo(12,-59);ctx.lineTo(19+swing,-43);
- ctx.moveTo(22,-59);ctx.lineTo(29-swing,-43);
- ctx.stroke();
-
- // Leher dan kepala
- ctx.fillStyle=c;
- ctx.beginPath();ctx.ellipse(25,-64,13,17,.3,0,7);ctx.fill();
- ctx.beginPath();ctx.arc(35,-82,19,0,7);ctx.fill();
-
- if(id===0){
-  // Telinga arnab
-  ctx.beginPath();
-  ctx.ellipse(25,-110,6,19,-.16,0,7);
-  ctx.ellipse(43,-110,6,19,.16,0,7);ctx.fill();
-  ctx.fillStyle="#dc9c9e";
-  ctx.beginPath();
-  ctx.ellipse(25,-110,3,13,-.16,0,7);
-  ctx.ellipse(43,-110,3,13,.16,0,7);ctx.fill();
- }else if(id===1){
-  ctx.beginPath();
-  ctx.arc(20,-96,8,0,7);ctx.arc(49,-96,8,0,7);ctx.fill();
- }else if(id===2){
-  ctx.beginPath();
-  ctx.moveTo(20,-92);ctx.lineTo(20,-113);ctx.lineTo(37,-99);
-  ctx.moveTo(35,-99);ctx.lineTo(51,-113);ctx.lineTo(51,-91);
-  ctx.fill();
-  ctx.fillStyle="#e5a5ad";
-  ctx.beginPath();
-  ctx.moveTo(24,-100);ctx.lineTo(24,-107);ctx.lineTo(31,-101);
-  ctx.moveTo(40,-101);ctx.lineTo(47,-107);ctx.lineTo(47,-100);
-  ctx.fill();
- }else{
-  // Tanduk bercabang kijang
-  ctx.strokeStyle="#5d412a";ctx.lineWidth=4;
-  ctx.beginPath();
-  ctx.moveTo(27,-96);ctx.lineTo(18,-119);ctx.lineTo(9,-125);
-  ctx.moveTo(18,-119);ctx.lineTo(21,-133);
-  ctx.moveTo(43,-96);ctx.lineTo(52,-119);ctx.lineTo(61,-125);
-  ctx.moveTo(52,-119);ctx.lineTo(49,-133);
-  ctx.stroke();
-
-  // Telinga
-  ctx.fillStyle=c;
-  ctx.beginPath();
-  ctx.ellipse(17,-95,5,12,-.7,0,7);
-  ctx.ellipse(53,-95,5,12,.7,0,7);ctx.fill();
-
-  // Corak badan
-  ctx.fillStyle="#f1d8b0";
-  ctx.beginPath();ctx.ellipse(-4,-54,7,11,0,0,7);ctx.fill();
- }
-
- // Mata, hidung dan mulut
- ctx.fillStyle="#1c241d";
- ctx.beginPath();ctx.arc(41,-85,2.5,0,7);ctx.fill();
- ctx.fillStyle=id===0?"#db8d92":"#51382c";
- ctx.beginPath();ctx.ellipse(53,-75,4,3,0,0,7);ctx.fill();
- ctx.strokeStyle="#64452e";ctx.lineWidth=1.5;
- ctx.beginPath();ctx.moveTo(52,-70);ctx.quadraticCurveTo(56,-66,59,-70);ctx.stroke();
-}
-
-function bird(frame,moving){
- const flap=moving?Math.sin(frame*.32)*17:Math.sin(frame*.12)*4;
-
- // Kaki
- limb(-6,-18,frame*.1,"#d9a32f");
- limb(10,-18,frame*.1+Math.PI,"#d9a32f");
-
- // Ekor panjang
- ctx.strokeStyle="#e4a82c";ctx.lineWidth=5;
- for(let i=0;i<3;i++){
-  ctx.beginPath();
-  ctx.moveTo(-18,-43);
-  ctx.quadraticCurveTo(-43,-51-i*8,-68,-78-i*11);
-  ctx.stroke();
- }
-
- // Badan
- ctx.fillStyle="#e7a82c";
- ctx.beginPath();ctx.ellipse(0,-49,24,34,-.2,0,7);ctx.fill();
-
- // Dada
- ctx.fillStyle="#f5e3ae";
- ctx.beginPath();ctx.ellipse(9,-44,14,20,0,0,7);ctx.fill();
-
- // Sayap berwarna
- ctx.save();ctx.translate(-10,-54);ctx.rotate(-flap*.02);
- ctx.fillStyle="#cf493b";
- ctx.beginPath();ctx.ellipse(-9,0,22,12,-.5,0,7);ctx.fill();
- ctx.restore();
-
- ctx.save();ctx.translate(10,-54);ctx.rotate(flap*.02);
- ctx.fillStyle="#28775d";
- ctx.beginPath();ctx.ellipse(12,0,22,12,.5,0,7);ctx.fill();
- ctx.restore();
-
- // Leher
- ctx.fillStyle="#e9ad31";
- ctx.beginPath();ctx.ellipse(8,-78,11,18,0,0,7);ctx.fill();
-
- // Kepala
- ctx.fillStyle="#277c5e";
- ctx.beginPath();ctx.arc(10,-94,15,0,7);ctx.fill();
-
- // Bulu kepala
- ctx.strokeStyle="#f3c44c";ctx.lineWidth=3;
- ctx.beginPath();
- ctx.moveTo(4,-106);ctx.lineTo(-3,-122);
- ctx.moveTo(10,-108);ctx.lineTo(12,-126);
- ctx.moveTo(16,-106);ctx.lineTo(26,-119);
- ctx.stroke();
-
- // Paruh
- ctx.fillStyle="#f0b83e";
- ctx.beginPath();ctx.moveTo(22,-95);ctx.lineTo(42,-89);ctx.lineTo(22,-84);ctx.fill();
-
- // Mata
- ctx.fillStyle="#17271b";
- ctx.beginPath();ctx.arc(16,-97,2.5,0,7);ctx.fill();
-}
-
-/* PERMAINAN */
-function loop(time){
- if(document.getElementById("game").classList.contains("hidden"))return;
- let dt=Math.min((time-last)/16.67||1,2);
- last=time;state.frame+=dt;
- let w=canvas.clientWidth,h=canvas.clientHeight;
- ctx.clearRect(0,0,w,h);
- world(w,h,time);
-
- const speed=3.2*dt;
- state.moving=false;
- if(keys.left){state.x-=speed;state.dir=-1;state.moving=true}
- if(keys.right){state.x+=speed;state.dir=1;state.moving=true}
- if(keys.up){state.y-=speed;state.moving=true}
- if(keys.down){state.y+=speed;state.moving=true}
- state.x=Math.max(70,Math.min(w-70,state.x));
- state.y=Math.max(0,Math.min(h*.12,state.y));
-
- if(state.jumping){
-  state.jumpTime+=dt;
-  if(state.jumpTime>22){state.jumping=false;state.jumpTime=0}
- }
- let jumpHeight=state.jumping?Math.sin(state.jumpTime/22*Math.PI)*45:0;
- animal(state.x,h*.79-state.y,state.frame,state.moving,jumpHeight);
-
- ctx.fillStyle="#ffdf78";
- ctx.beginPath();ctx.arc(w*.78,h*.7,14+Math.sin(time/180)*3,0,7);ctx.fill();
- ctx.fillStyle="#263e2b";ctx.font="bold 12px Arial";
- ctx.fillText("MISI",w*.78-14,h*.7-22);
- requestAnimationFrame(loop);
-}
-
-/* KAWALAN */
-document.querySelectorAll("[data-dir]").forEach(b=>{
- const d=b.dataset.dir;
+document.getElementById("soundBtn").onclick=()=>state.sound?audioStop():audioStart();
+document.getElementById("interact").onclick=interact;
+document.getElementById("mapBtn").onclick=showMap;
+document.getElementById("journalBtn").onclick=showJournal;
+document.querySelectorAll(".padbtn").forEach(b=>{
+ let d=b.dataset.dir;
  b.addEventListener("pointerdown",e=>{e.preventDefault();keys[d]=true});
- ["pointerup","pointerleave","pointercancel"].forEach(ev=>{
-  b.addEventListener(ev,()=>keys[d]=false);
- });
+ ["pointerup","pointercancel","pointerleave"].forEach(ev=>b.addEventListener(ev,e=>{keys[d]=false}));
 });
-document.addEventListener("keydown",e=>{
- const k=e.key.toLowerCase();
- if(k.includes("arrow")||["w","a","s","d"].includes(k))e.preventDefault();
- if(k==="arrowleft"||k==="a")keys.left=true;
- if(k==="arrowright"||k==="d")keys.right=true;
- if(k==="arrowup"||k==="w")keys.up=true;
- if(k==="arrowdown"||k==="s")keys.down=true;
+addEventListener("keydown",e=>{
+ let k=e.key.toLowerCase();
+ if(["arrowup","arrowdown","arrowleft","arrowright","w","a","s","d"].includes(k)){
+  e.preventDefault();
+  keys[k.startsWith("arrow")?k:k==="w"?"up":k==="s"?"down":k==="a"?"left":"right"]=true;
+ }
+ if(k===" "||k==="enter")interact();
 });
-document.addEventListener("keyup",e=>{
- const k=e.key.toLowerCase();
- if(k==="arrowleft"||k==="a")keys.left=false;
- if(k==="arrowright"||k==="d")keys.right=false;
- if(k==="arrowup"||k==="w")keys.up=false;
- if(k==="arrowdown"||k==="s")keys.down=false;
+addEventListener("keyup",e=>{
+ let k=e.key.toLowerCase();
+ if(k.startsWith("arrow"))keys[k]=false;
+ if(["w","a","s","d"].includes(k))keys[k==="w"?"up":k==="s"?"down":k==="a"?"left":"right"]=false;
 });
-function jump(){
- if(!state.jumping){state.jumping=true;state.jumpTime=0}
-}
-function action(){
- if(document.getElementById("question").classList.contains("hidden"))openQuestion();
-}
-
-/* SOALAN: BACA SATU PERSATU */
-function openQuestion(){
- if(state.mission>230){
-  panel("TAMAT","Tahniah! Anda telah menamatkan 230 misi.");
-  return;
- }
-
- const q=questions[(state.mission-1)%questions.length];
- state.question=q;
- questionLocked=true;
-
- document.getElementById("qtitle").textContent=
- "MISI "+state.mission+" — "+missionNames[(state.mission-1)%10];
- document.getElementById("qtext").textContent=q.q;
- document.getElementById("question").classList.remove("hidden");
-
- const choices=document.getElementById("choices");
- choices.innerHTML="";
- q.a.forEach((a,i)=>{
-  const b=document.createElement("button");
-  b.className="choice";
-  b.disabled=true;
-  b.textContent=String.fromCharCode(65+i)+". "+a;
-  b.onclick=()=>answer(i);
-  choices.appendChild(b);
- });
-
- repeatQuestion();
-}
-
-function repeatQuestion(){
- if(!state.question)return;
- questionLocked=true;
- const buttons=[...document.querySelectorAll("#choices button")];
- buttons.forEach(b=>b.disabled=true);
-
- const q=state.question;
- document.getElementById("readStatus").textContent=
- "🔊 BACAAN BERLANGSUNG — TUNGGU SEHINGGA SELESAI";
-
- // Empat bacaan berasingan untuk memastikan setiap pilihan dibaca.
- const lines=[
-  "Dengar soalan.",
-  q.q,
-  "Pilihan A.",
-  q.a[0],
-  "Pilihan B.",
-  q.a[1],
-  "Pilihan C.",
-  q.a[2],
-  "Selesai. Sekarang anda boleh memilih jawapan A, B atau C."
- ];
-
- speakSequence(lines,()=>{
-  questionLocked=false;
-  buttons.forEach(b=>b.disabled=false);
-  document.getElementById("readStatus").textContent=
-  "✓ SEMUA BACAAN SELESAI. SILA PILIH JAWAPAN.";
- });
-}
-
-function answer(i){
- if(questionLocked)return;
- const q=state.question;
- if(!q)return;
-
- questionLocked=true;
- stopSpeech();
- document.getElementById("question").classList.add("hidden");
-
- if(i===q.c){
-  state.xp+=100;
-  state.coins+=20;
-  state.completed.push(state.mission);
-  state.collections.push("Lencana Misi "+state.mission);
-  if(state.xp>=state.level*500)state.level++;
-  state.mission++;
-  save();updateUI();successSound();
-
-  document.getElementById("resultIcon").textContent="🏆";
-  document.getElementById("resultTitle").textContent="JAWAPAN BETUL!";
-  document.getElementById("resultText").textContent=
-  "Syabas! Anda mendapat 100 XP dan 20 syiling.";
-  speakSequence(["Tahniah. Jawapan anda betul. Anda mendapat seratus XP dan dua puluh syiling."]);
- }else{
-  wrongSound();
-  document.getElementById("resultIcon").textContent="💡";
-  document.getElementById("resultTitle").textContent="CUBA LAGI!";
-  document.getElementById("resultText").textContent=
-  "Jawapan yang betul ialah "+String.fromCharCode(65+q.c)+". "+q.a[q.c]+".";
-  speakSequence(["Jawapan belum tepat. Jawapan yang betul ialah "+String.fromCharCode(65+q.c)+". "+q.a[q.c]]);
- }
- document.getElementById("result").classList.remove("hidden");
-}
-function closeResult(){
- document.getElementById("result").classList.add("hidden");
- questionLocked=false;
-}
-
-/* MENU */
-function panel(title,content){
- document.getElementById("panelTitle").textContent=title;
- document.getElementById("panelContent").innerHTML=content;
- document.getElementById("panel").classList.remove("hidden");
-}
-function closePanel(){document.getElementById("panel").classList.add("hidden")}
-function menu(){
- panel("MENU PAHLAWAN",`
- <button onclick="showMap()">🗺️ PETA</button>
- <button onclick="bag()">🎒 BEG</button>
- <button onclick="save();alert('Disimpan!')">💾 SIMPAN</button>
- <button onclick="reset()">🔄 RESET</button>
- <p>Wira: ${heroes[state.hero].name}</p>
- <p>Misi: ${state.mission}/230</p>`);
-}
-function showMap(){
- panel("PETA BORNEO",
- missionNames.map((m,i)=>"<p>📍 "+m+"</p>").join("")+
- "<p>Perjalanan: "+state.mission+"/230</p>");
-}
-function bag(){
- panel("BEG PAHLAWAN",
- "<p>⭐ XP: "+state.xp+"</p>"+
- "<p>🪙 Syiling: "+state.coins+"</p>"+
- "<p>🏅 Tahap: "+state.level+"</p>"+
- "<p>🎖️ Lencana: "+state.collections.length+"</p>"+
- state.collections.slice(-20).map(x=>"<p>🏵️ "+x+"</p>").join(""));
-}
-function reset(){
- if(confirm("Padam semua kemajuan?")){
-  localStorage.removeItem("alphaSave");
-  location.reload();
- }
-}
+document.addEventListener("visibilitychange",()=>{if(document.hidden)keys={}});
 load();
-selected=state.hero||0;
+welcome();
+})();
 </script>
 </body>
 </html>
