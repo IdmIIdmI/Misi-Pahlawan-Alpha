@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ms">
 <head>
@@ -6,21 +7,21 @@
 <meta name="theme-color" content="#102d25">
 <title>Misi Pahlawan Alpha</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <style>
 :root{--dark:#102d25;--green:#176b48;--lime:#a7e66b;--gold:#ffd45e;--cream:#fff6df}
 *{box-sizing:border-box}
-html,body{margin:0;min-height:100%;overflow-x:hidden;overflow-y:auto}
-body{background:#10251f;color:white;font-family:system-ui,Arial,sans-serif;-webkit-overflow-scrolling:touch}
-button,input{font:inherit}
+html,body{margin:0;min-height:100%;overflow-x:hidden}
+body{background:#10251f;color:white;font-family:system-ui,Arial,sans-serif}
+button,input,select{font:inherit}
 button{border:0;border-radius:13px;padding:12px 15px;font-weight:800;cursor:pointer;background:linear-gradient(135deg,#ffe27b,#ffb72e);color:#38280c;box-shadow:0 4px 0 #9b651c}
 button:active{transform:translateY(3px);box-shadow:none}
 button.secondary{background:#285c49;color:white;box-shadow:0 4px 0 #143b2d}
 button.danger{background:#d94b4b;color:white}
 button:disabled{opacity:.4}
-input{width:100%;padding:13px;border-radius:12px;border:2px solid #b6d9bd;background:white;color:#182b21;margin:6px 0 12px}
+input,select{width:100%;padding:13px;border-radius:12px;border:2px solid #b6d9bd;background:white;color:#182b21;margin:6px 0 12px}
+label{font-weight:700;font-size:13px;color:#294b36}
 .hidden{display:none!important}
-.screen{display:none;min-height:100vh;min-height:100dvh;padding:18px;overflow:visible}
+.screen{display:none;min-height:100vh;min-height:100dvh;padding:18px}
 .screen.active{display:flex;flex-direction:column}
 .center{align-items:center;justify-content:center;text-align:center}
 .logo{font-size:clamp(35px,9vw,65px);font-weight:1000;color:#ffe17b;text-shadow:0 5px #75451a,0 8px 18px #000;line-height:1.05}
@@ -32,33 +33,27 @@ input{width:100%;padding:13px;border-radius:12px;border:2px solid #b6d9bd;backgr
 .row>*{flex:1}
 .stat{background:#fff4cf;color:#4b3815;border-radius:12px;padding:8px 12px;font-weight:900}
 footer{text-align:center;color:#c4dfc9;font-size:11px;padding:10px}
-
-/* INTRO */
 #storyScreen{position:relative;overflow:hidden;background:linear-gradient(#092e3c,#176c65 55%,#1c603b);text-align:center;justify-content:center;align-items:center}
 .storySky{position:absolute;inset:0;background:radial-gradient(circle at 80% 15%,#ffe88c 0 35px,transparent 37px),linear-gradient(#6ac3d4 0 45%,#398e54 45% 100%)}
 .storyMountain{position:absolute;bottom:38%;width:0;height:0;border-left:160px solid transparent;border-right:160px solid transparent;border-bottom:210px solid #4d9172}
-.storyMountain.one{left:-70px}
-.storyMountain.two{right:-100px;border-bottom-color:#33785a;transform:scale(1.2)}
+.storyMountain.one{left:-70px}.storyMountain.two{right:-100px;border-bottom-color:#33785a;transform:scale(1.2)}
 .storyForest{position:absolute;bottom:0;width:100%;height:40%;background:linear-gradient(160deg,#1c663b,#103e2d);clip-path:polygon(0 25%,8% 5%,16% 30%,24% 0,34% 30%,45% 5%,55% 35%,67% 0,78% 25%,90% 4%,100% 25%,100% 100%,0 100%)}
-.storyCloud{position:absolute;top:16%;left:-150px;width:110px;height:30px;border-radius:30px;background:#fff9;animation:cloudmove 24s linear infinite}
-.storyCloud:before,.storyCloud:after{content:"";position:absolute;background:#fff9;border-radius:50%;width:40px;height:40px;top:-15px}
-.storyCloud:before{left:15px}.storyCloud:after{right:15px;top:-10px}
+.storyCloud,.cloud{position:absolute;top:12%;left:-150px;width:110px;height:30px;border-radius:30px;background:#fff9;animation:cloudmove 24s linear infinite}
+.storyCloud:before,.storyCloud:after,.cloud:before,.cloud:after{content:"";position:absolute;background:#fff9;border-radius:50%;width:40px;height:40px;top:-15px}
+.storyCloud:before,.cloud:before{left:15px}.storyCloud:after,.cloud:after{right:15px;top:-10px}
 @keyframes cloudmove{to{left:110%}}
 .storyContent{position:relative;z-index:3;width:100%;max-width:620px;padding:18px;margin:auto}
 .storyBox{background:#102d25df;border:2px solid #f5d17b;border-radius:22px;padding:20px;margin-top:18px;box-shadow:0 10px 30px #0006}
-.storyScene{font-size:clamp(65px,16vw,110px);animation:float 2.5s ease-in-out infinite;filter:drop-shadow(0 8px 5px #0005)}
+.storyScene{font-size:clamp(65px,16vw,110px);animation:float 2.5s ease-in-out infinite}
 @keyframes float{50%{transform:translateY(-12px)}}
 .storyText{font-size:16px;line-height:1.7;color:#fff5d8}
 .storyTitle{font-size:clamp(25px,7vw,42px);font-weight:1000;color:#ffe17b}
 .storyButtons{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
 .storyButtons button{flex:1;min-width:120px}
-
-/* DUNIA */
 #gameScreen{padding:12px;gap:8px}
-.topbar{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:5px}
+.topbar{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center}
 #world{position:relative;flex:none;width:100%;height:min(62vh,600px);min-height:440px;border:5px solid #e6c77c;border-radius:23px;overflow:hidden;background:linear-gradient(#80d7ed 0 43%,#70b94f 43% 68%,#368447 68%)}
 .sun{position:absolute;right:9%;top:7%;width:65px;height:65px;border-radius:50%;background:#ffe77a;box-shadow:0 0 35px #ffe77a}
-.cloud{position:absolute;top:12%;width:100px;height:27px;border-radius:30px;background:#fff9;animation:cloudmove 22s linear infinite}
 .mountain{position:absolute;bottom:48%;width:0;height:0;border-left:100px solid transparent;border-right:100px solid transparent;border-bottom:150px solid #599c78}
 .mountain.m2{left:35%;border-bottom-color:#458b6d;transform:scale(1.3)}
 .tree{position:absolute;bottom:23%;width:18px;height:85px;background:#76502e;border-radius:5px}
@@ -73,7 +68,7 @@ footer{text-align:center;color:#c4dfc9;font-size:11px;padding:10px}
 @keyframes bob{50%{transform:translateY(-7px)}}
 .npc.n1{left:20%}.npc.n2{right:20%}
 .collectible{position:absolute;font-size:30px;bottom:35%;left:68%;animation:bob 1s infinite;cursor:pointer}
-.areaButtons{display:flex;gap:7px;overflow-x:auto;padding:5px 0;flex:none;-webkit-overflow-scrolling:touch}
+.areaButtons{display:flex;gap:7px;overflow-x:auto;padding:5px 0;flex:none}
 .areaButtons button{white-space:nowrap}
 .actionbar{display:flex;gap:8px;flex-wrap:wrap}
 .actionbar button{flex:1;min-width:115px}
@@ -86,7 +81,7 @@ footer{text-align:center;color:#c4dfc9;font-size:11px;padding:10px}
 .animal{height:100px;display:flex;align-items:center;justify-content:center;font-size:75px}
 .option{display:block;width:100%;margin:9px 0;text-align:left;background:#e5f3e6;box-shadow:0 3px 0 #9ab99e;color:#183d2a}
 .option.selected{background:#ffe18b}
-#modal{position:fixed;inset:0;background:#000b;z-index:50;display:none;align-items:flex-start;justify-content:center;padding:15px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+#modal{position:fixed;inset:0;background:#000b;z-index:50;display:none;align-items:flex-start;justify-content:center;padding:15px;overflow-y:auto}
 #modal .panel{max-height:calc(100dvh - 30px);overflow-y:auto;margin:auto}
 #toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#122d24;color:white;padding:12px 20px;border-radius:20px;z-index:99;display:none;box-shadow:0 4px 20px #0008;text-align:center;max-width:90%}
 .adminList,.missionCard{background:#edf5e9;color:#263b2c;border-radius:14px;padding:13px;margin:10px 0}
@@ -98,231 +93,102 @@ footer{text-align:center;color:#c4dfc9;font-size:11px;padding:10px}
 .missionMeta span{background:#dcebd8;padding:5px 8px;border-radius:8px}
 .musicControl{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center}
 .musicControl input{width:110px;margin:0}
-@media(max-width:420px){
- .screen{padding:12px}#gameScreen{padding:9px}
- .topbar{gap:5px}.stat{padding:7px 9px;font-size:12px}
- .actionbar button{font-size:12px;padding:11px 8px}
-}
+@media(max-width:420px){.screen{padding:12px}#gameScreen{padding:9px}.topbar{gap:5px}.stat{padding:7px 9px;font-size:12px}.actionbar button{font-size:12px;padding:11px 8px}}
 </style>
 </head>
-
 <body>
-
 <audio id="bgMusic" src="https://idmiidmi.github.io/Misi-Pahlawan-Alpha/Naga%20Api%20Zabarjad.mp3" preload="auto" loop></audio>
 
 <section id="openingScreen" class="screen center">
- <div style="font-size:65px">🌴 🦜 🌺</div>
- <div class="logo">MISI<br>PAHLAWAN<br>ALPHA</div>
+ <div style="font-size:65px">🌴 🦜 🌺</div><div class="logo">MISI<br>PAHLAWAN<br>ALPHA</div>
  <p class="subtitle">PENGEMBARAAN ILMU BORNEO</p>
- <p style="max-width:420px;color:#e2f5df">
-  Satu pengembaraan. Lima wilayah. Lapan cabaran.
-  Buktikan keberanian, kasih sayang dan kebijaksanaanmu!
- </p>
+ <p style="max-width:420px;color:#e2f5df">Satu pengembaraan. Lima wilayah. Lapan cabaran. Buktikan keberanian, kasih sayang dan kebijaksanaanmu!</p>
  <button style="width:240px;margin-top:20px" onclick="beginStory()">🎬 MULA PENGEMBARAAN</button>
- <div class="musicControl" style="margin-top:18px">
-  <button class="secondary" onclick="toggleMusic()">🎵 MUZIK ON / OFF</button>
-  <label>Volume</label>
-  <input type="range" min="0" max="100" value="45" oninput="setMusicVolume(this.value)">
- </div>
+ <div class="musicControl" style="margin-top:18px"><button class="secondary" onclick="toggleMusic()">🎵 MUZIK ON / OFF</button><label>Volume</label><input type="range" min="0" max="100" value="45" oninput="setMusicVolume(this.value)"></div>
  <footer>© MISI PAHLAWAN ALPHA</footer>
 </section>
 
 <section id="storyScreen" class="screen">
  <div class="storySky"></div><div class="storyMountain one"></div><div class="storyMountain two"></div><div class="storyForest"></div><div class="storyCloud"></div>
- <div class="storyContent">
-  <div class="storyScene" id="storyEmoji">🌴🦜</div>
-  <div class="storyBox">
-   <div class="storyTitle" id="storyHeading">PANGGILAN BORNEO</div>
-   <p class="storyText" id="storyText"></p>
-   <div class="storyButtons">
-    <button class="secondary" onclick="previousStory()">◀ KEMBALI</button>
-    <button onclick="nextStory()">SETERUSNYA ▶</button>
-   </div>
-   <button class="secondary" style="width:100%;margin-top:12px" onclick="toggleStoryVoice()">🔊 BACA / ULANG NARATOR</button>
-   <button class="secondary" style="width:100%;margin-top:10px" onclick="stopVoice()">🔇 HENTIKAN SUARA</button>
-   <button class="secondary" style="width:100%;margin-top:10px" onclick="goToLogin()">🔐 LOG MASUK / DAFTAR</button>
-  </div>
- </div>
+ <div class="storyContent"><div class="storyScene" id="storyEmoji">🌴🦜</div><div class="storyBox">
+ <div class="storyTitle" id="storyHeading">PANGGILAN BORNEO</div><p class="storyText" id="storyText"></p>
+ <div class="storyButtons"><button class="secondary" onclick="previousStory()">◀ KEMBALI</button><button onclick="nextStory()">SETERUSNYA ▶</button></div>
+ <button class="secondary" style="width:100%;margin-top:12px" onclick="toggleStoryVoice()">🔊 BACA / ULANG NARATOR</button>
+ <button class="secondary" style="width:100%;margin-top:10px" onclick="stopVoice()">🔇 HENTIKAN SUARA</button>
+ <button class="secondary" style="width:100%;margin-top:10px" onclick="goToLogin()">🔐 LOG MASUK</button>
+ </div></div>
 </section>
 
 <section id="authScreen" class="screen active center">
- <div class="panel">
-  <div style="font-size:45px">🌴 🦜 🌺</div>
-  <h2>🔐 Pintu Pengembaraan</h2>
-  <p>Selamat datang ke Misi Pahlawan Alpha.</p>
-  <p>Semua murid perlu log masuk atau mendaftar akaun sebelum bermain.</p>
-
-  <label>Nama murid (untuk pendaftaran sahaja)</label>
-  <input id="fullName" type="text" maxlength="80" placeholder="Nama penuh murid">
-
-  <label>Emel</label>
-  <input id="email" type="email" placeholder="Masukkan emel">
-
-  <label>Kata laluan</label>
-  <input id="password" type="password" minlength="6" placeholder="Minimum 6 aksara">
-
-  <button style="width:100%" onclick="login()">LOG MASUK</button>
-  <button class="secondary" style="width:100%;margin-top:12px" onclick="register()">DAFTAR AKAUN MURID</button>
-
-  <div class="musicControl" style="margin-top:16px">
-   <button class="secondary" onclick="toggleMusic()">🎵 MUZIK ON / OFF</button>
-   <label>Volume</label>
-   <input type="range" min="0" max="100" value="45" oninput="setMusicVolume(this.value)">
-  </div>
-  <p id="authMessage" class="small" aria-live="polite"></p>
-  <footer>© MISI PAHLAWAN ALPHA</footer>
- </div>
+ <div class="panel"><div style="font-size:45px">🌴 🦜 🌺</div><h2>🔐 Pintu Pengembaraan</h2>
+ <p>Selamat datang ke Misi Pahlawan Alpha.</p>
+ <p>Masukkan emel dan kata laluan yang telah diberikan oleh Master.</p>
+ <label>Emel</label><input id="email" type="email" autocomplete="username" placeholder="Masukkan emel">
+ <label>Kata laluan</label><input id="password" type="password" autocomplete="current-password" placeholder="Kata laluan">
+ <button id="loginButton" style="width:100%" onclick="login()">LOG MASUK</button>
+ <div class="musicControl" style="margin-top:16px"><button class="secondary" onclick="toggleMusic()">🎵 MUZIK ON / OFF</button><label>Volume</label><input type="range" min="0" max="100" value="45" oninput="setMusicVolume(this.value)"></div>
+ <p id="authMessage" class="small" aria-live="polite"></p><footer>© MISI PAHLAWAN ALPHA</footer></div>
 </section>
 
-<section id="characterScreen" class="screen center">
- <div class="panel">
-  <h2>🐾 Pilih Wira Kamu</h2>
-  <p>Pilih sahabat yang akan menemani pengembaraan.</p>
-  <div class="characterGrid" id="characterGrid"></div>
-  <button style="width:100%;margin-top:15px" onclick="confirmCharacter()">PILIH WATAK INI</button>
-  <button class="secondary" style="width:100%;margin-top:12px" onclick="logout()">LOG KELUAR</button>
- </div>
-</section>
+<section id="characterScreen" class="screen center"><div class="panel">
+ <h2>🐾 Pilih Wira Kamu</h2><p>Pilih sahabat yang akan menemani pengembaraan.</p>
+ <div class="characterGrid" id="characterGrid"></div>
+ <button style="width:100%;margin-top:15px" onclick="confirmCharacter()">PILIH WATAK INI</button>
+ <button class="secondary" style="width:100%;margin-top:12px" onclick="logout()">LOG KELUAR</button>
+</div></section>
 
-<section id="introScreen" class="screen center">
- <div style="font-size:60px">🏞️</div>
- <div class="logo" style="font-size:38px">SELAMAT DATANG, WIRA!</div>
- <div class="panel" style="margin-top:20px">
-  <h2 id="welcomeName">Pengembara</h2>
-  <p>Jelajahi Borneo, bantu penduduk dan selesaikan cabaran ilmu.</p>
-  <div class="row">
-   <div class="stat">💎 <span id="introPearls">0</span></div>
-   <div class="stat">🏅 <span id="introRank">Wira Baharu</span></div>
-  </div>
-  <button style="width:100%;margin-top:16px" onclick="speakWelcome()">🔊 DENGAR PENGENALAN</button>
-  <button style="width:100%;margin-top:12px" onclick="startGame()">🎮 MASUK DUNIA PERMAINAN</button>
-  <div class="musicControl" style="margin-top:14px">
-   <button class="secondary" onclick="toggleMusic()">🎵 MUZIK ON / OFF</button>
-   <input type="range" min="0" max="100" value="45" oninput="setMusicVolume(this.value)">
-  </div>
-  <button class="secondary" style="width:100%;margin-top:12px" onclick="showScreen('characterScreen')">🐾 TUKAR WATAK</button>
-  <button id="masterPanelButton" class="secondary hidden" style="width:100%;margin-top:12px" onclick="openMasterPanel()">👑 PANEL MASTER</button>
-  <button class="secondary" style="width:100%;margin-top:12px" onclick="showLeaderboard()">🏆 PAPAN KEDUDUKAN</button>
-  <button class="secondary" style="width:100%;margin-top:12px" onclick="logout()">LOG KELUAR</button>
- </div>
-</section>
+<section id="introScreen" class="screen center"><div style="font-size:60px">🏞️</div><div class="logo" style="font-size:38px">SELAMAT DATANG, WIRA!</div>
+ <div class="panel" style="margin-top:20px"><h2 id="welcomeName">Pengembara</h2>
+ <p>Jelajahi Borneo, bantu penduduk dan selesaikan cabaran ilmu.</p>
+ <div class="row"><div class="stat">💎 <span id="introPearls">0</span></div><div class="stat">🏅 <span id="introRank">Wira Baharu</span></div></div>
+ <button style="width:100%;margin-top:16px" onclick="speakWelcome()">🔊 DENGAR PENGENALAN</button>
+ <button style="width:100%;margin-top:12px" onclick="startGame()">🎮 MASUK DUNIA PERMAINAN</button>
+ <div class="musicControl" style="margin-top:14px"><button class="secondary" onclick="toggleMusic()">🎵 MUZIK ON / OFF</button><input type="range" min="0" max="100" value="45" oninput="setMusicVolume(this.value)"></div>
+ <button class="secondary" style="width:100%;margin-top:12px" onclick="showScreen('characterScreen')">🐾 TUKAR WATAK</button>
+ <button id="masterPanelButton" class="secondary hidden" style="width:100%;margin-top:12px" onclick="openMasterPanel()">👑 PANEL MASTER</button>
+ <button class="secondary" style="width:100%;margin-top:12px" onclick="showLeaderboard()">🏆 PAPAN KEDUDUKAN</button>
+ <button class="secondary" style="width:100%;margin-top:12px" onclick="logout()">LOG KELUAR</button>
+ </div></section>
 
 <section id="gameScreen" class="screen">
- <div class="topbar">
-  <div class="stat">💎 <span id="pearls">0</span></div>
-  <div class="stat">⏱️ <span id="clock">15:00</span></div>
-  <div class="stat">🏅 <span id="rank">Wira Baharu</span></div>
- </div>
- <div class="musicControl">
-  <button class="secondary" onclick="toggleMusic()">🎵 MUZIK ON / OFF</button>
-  <input type="range" min="0" max="100" value="45" oninput="setMusicVolume(this.value)">
- </div>
+ <div class="topbar"><div class="stat">💎 <span id="pearls">0</span></div><div class="stat">⏱️ <span id="clock">15:00</span></div><div class="stat">🏅 <span id="rank">Wira Baharu</span></div></div>
+ <div class="musicControl"><button class="secondary" onclick="toggleMusic()">🎵 MUZIK ON / OFF</button><input type="range" min="0" max="100" value="45" oninput="setMusicVolume(this.value)"></div>
  <div class="areaButtons" id="areaButtons"></div>
- <div id="world">
-  <div class="sun"></div><div class="cloud"></div>
-  <div class="mountain"></div><div class="mountain m2"></div>
-  <div class="tree t1"></div><div class="tree t2"></div>
-  <div class="path"></div><div class="river"></div>
-  <div class="locationLabel" id="locationLabel">KAMPUNG DAMAI</div>
-  <div class="npc n1" onclick="talkNPC(0)">🦜</div>
-  <div class="npc n2" onclick="talkNPC(1)">🐒</div>
-  <div class="collectible" onclick="collectPearl()">💎</div>
-  <div id="hero"></div>
- </div>
- <div class="actionbar">
-  <button onclick="interact()">🔎 AKSI / MISI</button>
-  <button class="secondary" onclick="showMissionBook()">📖 BUKU MISI</button>
-  <button class="secondary" onclick="showMap()">🗺️ PETA</button>
-  <button class="secondary" onclick="backToIntro()">🏠 MENU</button>
- </div>
- <div class="controls">
-  <span class="empty"></span><button class="secondary" onclick="move(0,-1)">⬆️</button><span class="empty"></span>
-  <button class="secondary" onclick="move(-1,0)">⬅️</button>
-  <button class="secondary" onclick="interact()">⚔️</button>
-  <button class="secondary" onclick="move(1,0)">➡️</button>
-  <span class="empty"></span><button class="secondary" onclick="move(0,1)">⬇️</button><span class="empty"></span>
- </div>
+ <div id="world"><div class="sun"></div><div class="cloud"></div><div class="mountain"></div><div class="mountain m2"></div><div class="tree t1"></div><div class="tree t2"></div><div class="path"></div><div class="river"></div>
+ <div class="locationLabel" id="locationLabel">KAMPUNG DAMAI</div><div class="npc n1" onclick="talkNPC(0)">🦜</div><div class="npc n2" onclick="talkNPC(1)">🐒</div><div class="collectible" onclick="collectPearl()">💎</div><div id="hero"></div></div>
+ <div class="actionbar"><button onclick="interact()">🔎 AKSI / MISI</button><button class="secondary" onclick="showMissionBook()">📖 BUKU MISI</button><button class="secondary" onclick="showMap()">🗺️ PETA</button><button class="secondary" onclick="backToIntro()">🏠 MENU</button></div>
+ <div class="controls"><span class="empty"></span><button class="secondary" onclick="move(0,-1)">⬆️</button><span class="empty"></span><button class="secondary" onclick="move(-1,0)">⬅️</button><button class="secondary" onclick="interact()">⚔️</button><button class="secondary" onclick="move(1,0)">➡️</button><span class="empty"></span><button class="secondary" onclick="move(0,1)">⬇️</button><span class="empty"></span></div>
  <footer>MISI PAHLAWAN ALPHA · PENGEMBARAAN ILMU BORNEO</footer>
 </section>
 
-<section id="leaderScreen" class="screen center">
- <div class="panel">
-  <h2>🏆 Papan Kedudukan</h2>
-  <div id="leaderList">Memuatkan data...</div>
-  <button class="secondary" style="width:100%;margin-top:15px" onclick="showScreen('introScreen')">KEMBALI</button>
- </div>
-</section>
+<section id="leaderScreen" class="screen center"><div class="panel"><h2>🏆 Papan Kedudukan</h2><div id="leaderList">Memuatkan data...</div><button class="secondary" style="width:100%;margin-top:15px" onclick="showScreen('introScreen')">KEMBALI</button></div></section>
 
-<section id="masterScreen" class="screen">
- <div class="panel" style="max-width:700px;margin:auto">
-  <h2>👑 PANEL MASTER</h2>
-  <div class="row">
-   <button onclick="masterTab('missions')">📚 Misi</button>
-   <button onclick="masterTab('players')">👥 Pemain</button>
-   <button onclick="masterTab('scores')">🏆 Skor</button>
-  </div>
-  <div id="masterContent" style="margin-top:18px"></div>
-  <button class="secondary" style="width:100%;margin-top:15px" onclick="backToMasterGame()">🎮 KEMBALI</button>
-  <button class="danger" style="width:100%;margin-top:12px" onclick="logout()">LOG KELUAR</button>
- </div>
-</section>
+<section id="masterScreen" class="screen"><div class="panel" style="max-width:700px;margin:auto">
+ <h2>👑 PANEL MASTER</h2>
+ <div class="row"><button onclick="masterTab('missions')">📚 Misi</button><button onclick="masterTab('players')">👥 Pemain</button><button onclick="masterTab('scores')">🏆 Skor</button></div>
+ <button style="width:100%;margin-top:10px" onclick="masterTab('register')">➕ DAFTAR AKAUN MURID</button>
+ <div id="masterContent" style="margin-top:18px"></div>
+ <button class="secondary" style="width:100%;margin-top:15px" onclick="backToMasterGame()">🎮 KEMBALI</button>
+ <button class="danger" style="width:100%;margin-top:12px" onclick="logout()">LOG KELUAR</button>
+</div></section>
 
-<div id="modal">
- <div class="panel">
-  <div id="modalContent"></div>
-  <button class="secondary" style="width:100%;margin-top:12px" onclick="closeModal()">TUTUP</button>
- </div>
-</div>
+<div id="modal"><div class="panel"><div id="modalContent"></div><button class="secondary" style="width:100%;margin-top:12px" onclick="closeModal()">TUTUP</button></div></div>
 <div id="toast"></div>
 
 <script>
-/* SUPABASE */
 const SUPABASE_URL="https://krijvnbpbmqqyquzzrxu.supabase.co";
 const SUPABASE_KEY="sb_publishable_NRa91_nx4Xc2PSvUoiCWWw_zgf3xJha";
 const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-/* AUDIO MP3 */
 const bgMusic=document.getElementById("bgMusic");
-bgMusic.volume=0.45;
+bgMusic.volume=.45;
 let musicOn=true;
+async function startMusic(){if(musicOn)try{await bgMusic.play()}catch(e){}}
+function toggleMusic(){musicOn=!musicOn;if(musicOn)startMusic();else bgMusic.pause();toast(musicOn?"🎵 Muzik dihidupkan":"Muzik dihentikan")}
+function setMusicVolume(v){bgMusic.volume=Math.max(0,Math.min(1,Number(v)/100))}
+function stopVoice(){if("speechSynthesis"in window)window.speechSynthesis.cancel()}
+function speakText(t){if(!("speechSynthesis"in window))return;stopVoice();const u=new SpeechSynthesisUtterance(String(t));u.lang="ms-MY";u.rate=.88;const v=speechSynthesis.getVoices().find(x=>x.lang.toLowerCase().startsWith("ms"));if(v)u.voice=v;speechSynthesis.speak(u)}
 
-async function startMusic(){
- if(!musicOn)return;
- try{await bgMusic.play()}
- catch(e){
-  console.warn("Muzik tidak dapat dimainkan:",e);
-  toast("Muzik belum dapat dimainkan. Semak lokasi fail MP3.");
- }
-}
-function toggleMusic(){
- musicOn=!musicOn;
- if(musicOn)startMusic();
- else bgMusic.pause();
- toast(musicOn?"🎵 Muzik dihidupkan":"Muzik dihentikan");
-}
-function setMusicVolume(value){
- bgMusic.volume=Math.max(0,Math.min(1,Number(value)/100));
-}
-
-/* SUARA */
-function stopVoice(){
- if("speechSynthesis" in window)window.speechSynthesis.cancel();
-}
-function speakText(text){
- if(!("speechSynthesis" in window)){
-  toast("Pelayar tidak menyokong fungsi suara.");return;
- }
- stopVoice();
- const utterance=new SpeechSynthesisUtterance(String(text));
- utterance.lang="ms-MY";utterance.rate=0.88;utterance.pitch=1;utterance.volume=1;
- const voices=window.speechSynthesis.getVoices();
- const malay=voices.find(v=>v.lang.toLowerCase().startsWith("ms"));
- if(malay)utterance.voice=malay;
- utterance.onerror=()=>toast("Suara gagal dimainkan. Semak Teks-ke-Ucapan Android.");
- window.speechSynthesis.speak(utterance);
-}
-
-/* WATAK */
 const characters=[
  {id:"hamster",name:"Hamster",emoji:"🐹",color:"#d99b55"},
  {id:"tupai",name:"Tupai",emoji:"🐿️",color:"#ad7040"},
@@ -330,8 +196,6 @@ const characters=[
  {id:"arnab",name:"Arnab",emoji:"🐰",color:"#eee2d2"},
  {id:"kijang",name:"Kijang",emoji:"🦌",color:"#c18a54"}
 ];
-
-/* KAWASAN */
 const areas=[
  {name:"Kampung Damai",unlock:0,emoji:"🏡"},
  {name:"Hutan Rimba",unlock:2,emoji:"🌳"},
@@ -339,713 +203,275 @@ const areas=[
  {name:"Rumah Panjang",unlock:6,emoji:"🛖"},
  {name:"Gua Misteri",unlock:7,emoji:"⛰️"}
 ];
-
-/* INTRO CERITA */
 const storyScenes=[
  {emoji:"🌴🦜",title:"PANGGILAN BORNEO",text:"Di sebuah bumi yang kaya dengan hutan, sungai dan kehidupan, terletaknya dunia pengembaraan Borneo. Di sinilah kisah seorang wira akan bermula."},
- {emoji:"🏡🌳",title:"LIMA WILAYAH",text:"Kampung Damai, Hutan Rimba, Air Terjun, Rumah Panjang dan Gua Misteri menanti untuk diterokai. Setiap tempat mempunyai cabaran dan penduduk yang memerlukan bantuan."},
- {emoji:"🐹🐿️🐱🐰🦌",title:"PILIH SAHABAT WIRA",text:"Kamu tidak mengembara bersendirian. Pilih sahabat haiwan yang akan menemani perjalananmu. Bersama-sama, kamu akan belajar dan membantu masyarakat."},
- {emoji:"💎📜🏆",title:"LAPAN CABARAN",text:"Selesaikan lapan misi. Buktikan sifat penyayang, berdaya tahan, berupaya memimpin dan menjadi warganegara aktif. Jawapan betul memberi dua puluh Mutiara."},
- {emoji:"🦸🌟",title:"PENGEMBARAAN BERMULA",text:"Wahai wira, dunia Borneo sedang menantimu. Gunakan kebijaksanaan, bekerjasama dengan sahabat dan bantu penduduk. Semoga pengembaraan ini menjadi pengalaman bermakna!"}
+ {emoji:"🏡🌳",title:"LIMA WILAYAH",text:"Kampung Damai, Hutan Rimba, Air Terjun, Rumah Panjang dan Gua Misteri menanti untuk diterokai."},
+ {emoji:"🐹🐿️🐱🐰🦌",title:"PILIH SAHABAT WIRA",text:"Pilih sahabat haiwan yang akan menemani perjalananmu."},
+ {emoji:"💎📜🏆",title:"LAPAN CABARAN",text:"Selesaikan lapan misi. Buktikan sifat penyayang, berdaya tahan, berupaya memimpin dan menjadi warganegara aktif."},
+ {emoji:"🦸🌟",title:"PENGEMBARAAN BERMULA",text:"Dunia Borneo sedang menantimu. Gunakan kebijaksanaan, bekerjasama dan bantu penduduk!"}
 ];
-let storyIndex=0;
+let storyIndex=0,user=null,profile=null,isMaster=false,authBusy=false;
+let selectedCharacter="hamster",missions=[],progress={},balance=0,currentArea=0;
+let heroX=45,heroY=22,remainingSeconds=900,timer=null,usageHeartbeat=null;
+let selectedAnswer=null,currentMission=null,pearlTaken=false,submitting=false;
+let currentDay=1,currentWeek=1,serverTimeKnown=false;
 
-/* 8 MISI */
-const defaultMissions=[
- {id:"m1",title:"Jiran yang Memerlukan",area:0,pillar:"Penyayang",question:"Kamu melihat jiran terjatuh ketika membawa barang. Apakah tindakan terbaik?",a:"Membantu jiran mengangkat barang",b:"Berpura-pura tidak nampak",c:"Mentertawakan jiran",answer:"A"},
- {id:"m2",title:"Sahabat Baharu",area:0,pillar:"Penyayang",question:"Seorang murid baharu duduk bersendirian. Apakah yang patut kamu lakukan?",a:"Mengejeknya",b:"Mengajaknya berkawan",c:"Menyuruhnya pulang",answer:"B"},
- {id:"m3",title:"Jambatan Rosak",area:1,pillar:"Berdaya Tahan",question:"Jambatan kecil rosak dan kamu perlu mencari jalan selamat. Apakah tindakan kamu?",a:"Terus melompat tanpa berfikir",b:"Berputus asa",c:"Mencari laluan selamat dan meminta bantuan",answer:"C"},
- {id:"m4",title:"Cabaran Hujan",area:1,pillar:"Berdaya Tahan",question:"Hujan lebat menyebabkan aktiviti tergendala. Apakah sikap terbaik?",a:"Bertenang dan menyusun rancangan baharu",b:"Marah kepada semua orang",c:"Terus menyalahkan orang lain",answer:"A"},
- {id:"m5",title:"Ketua Pasukan",area:2,pillar:"Berupaya Memimpin",question:"Pasukan kamu tidak sependapat. Apakah tindakan seorang pemimpin yang baik?",a:"Memaksa semua ikut kehendaknya",b:"Mendengar pandangan dan mencari persetujuan",c:"Meninggalkan pasukan",answer:"B"},
- {id:"m6",title:"Tugas Bersama",area:2,pillar:"Berupaya Memimpin",question:"Rakan sepasukan tidak tahu tugasnya. Apakah tindakan kamu?",a:"Memarahinya",b:"Membiarkannya",c:"Menerangkan tugas dan membimbingnya",answer:"C"},
- {id:"m7",title:"Sungai Bersih",area:3,pillar:"Warganegara Aktif",question:"Kamu melihat sampah di tepi sungai. Apakah tindakan yang wajar?",a:"Mengutip sampah dengan selamat dan mengajak orang menjaga kebersihan",b:"Membuang lebih banyak sampah",c:"Membiarkannya sahaja",answer:"A"},
- {id:"m8",title:"Warisan Borneo",area:4,pillar:"Warganegara Aktif",question:"Bagaimanakah kamu menghargai masyarakat dan budaya di Borneo?",a:"Memperlekeh adat orang lain",b:"Menghormati kepelbagaian dan hidup bekerjasama",c:"Enggan mengenali masyarakat lain",answer:"B"}
-];
-
-/* STATUS PERMAINAN */
-let user=null,profile=null,isMaster=false;
-let selectedCharacter="hamster";
-let missions=defaultMissions.map(m=>({...m}));
-let progress={},balance=0,currentArea=0;
-let heroX=45,heroY=22;
-let remainingSeconds=900,timer=null;
-let selectedAnswer=null,currentMission=null,pearlTaken=false;
-let authBusy=false;
-
-function requireLogin(){
- if(!user){
-  clearInterval(timer);
-  showScreen("authScreen");
-  document.getElementById("authMessage").textContent="Sila log masuk dahulu untuk bermain.";
-  return false;
- }
- return true;
-}
-function attempted(id){return !!progress[id]?.attempted}
-function attemptedCount(){return Object.keys(progress).filter(k=>progress[k]?.attempted).length}
+function escapeHTML(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function toast(m){const t=document.getElementById("toast");t.textContent=m;t.style.display="block";setTimeout(()=>t.style.display="none",2600)}
+function showScreen(id){if(["gameScreen","introScreen","characterScreen","leaderScreen","masterScreen","storyScreen"].includes(id)&&!user)id="authScreen";stopVoice();document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));document.getElementById(id)?.classList.add("active");window.scrollTo(0,0)}
+function requireLogin(){if(!user){showScreen("authScreen");return false}return true}
+function showModal(html){if(!requireLogin())return;stopVoice();document.getElementById("modalContent").innerHTML=html;document.getElementById("modal").style.display="flex"}
+function closeModal(){stopVoice();document.getElementById("modal").style.display="none"}
+function localKey(){return user?"mpa_"+user.id:""}
+function rankName(){return balance>=500?"Legenda Borneo":balance>=250?"Pahlawan Hebat":balance>=100?"Wira Berani":"Wira Baharu"}
+function updateStats(){["pearls","introPearls"].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=balance});["rank","introRank"].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=rankName()})}
+function attempted(id){return !!progress[String(id)]?.attempted}
+function attemptedCount(){return Object.values(progress).filter(x=>x?.attempted).length}
 function areaUnlocked(i){return isMaster||attemptedCount()>=areas[i].unlock}
-function localKey(){return "mpa_"+user.id}
 
-/* INTRO */
-function beginStory(){
- if(!requireLogin())return;
- storyIndex=0;renderStory();showScreen("storyScreen");
- startMusic();speakText(storyScenes[0].text);
-}
-function renderStory(){
- const s=storyScenes[storyIndex];
- document.getElementById("storyEmoji").textContent=s.emoji;
- document.getElementById("storyHeading").textContent=s.title;
- document.getElementById("storyText").textContent=s.text;
-}
-function nextStory(){
- stopVoice();
- if(storyIndex<storyScenes.length-1){
-  storyIndex++;renderStory();speakText(storyScenes[storyIndex].text);
- }else goToLogin();
-}
-function previousStory(){
- stopVoice();
- if(storyIndex>0){
-  storyIndex--;renderStory();speakText(storyScenes[storyIndex].text);
- }
-}
+function beginStory(){storyIndex=0;renderStory();showScreen("storyScreen");startMusic();speakText(storyScenes[0].text)}
+function renderStory(){const s=storyScenes[storyIndex];document.getElementById("storyEmoji").textContent=s.emoji;document.getElementById("storyHeading").textContent=s.title;document.getElementById("storyText").textContent=s.text}
+function nextStory(){stopVoice();if(storyIndex<storyScenes.length-1){storyIndex++;renderStory();speakText(storyScenes[storyIndex].text)}else goToLogin()}
+function previousStory(){stopVoice();if(storyIndex>0){storyIndex--;renderStory();speakText(storyScenes[storyIndex].text)}}
 function toggleStoryVoice(){speakText(storyScenes[storyIndex].text)}
 function goToLogin(){stopVoice();showScreen("authScreen")}
-function speakWelcome(){
- if(!requireLogin())return;
- speakText("Selamat datang, wira. "+(profile?.full_name||"Pengembara")+
- " . Dunia Borneo menanti untuk diterokai. Selesaikan lapan cabaran dan kumpulkan Mutiara.");
-}
+function speakWelcome(){speakText("Selamat datang, wira. "+(profile?.display_name||"Pengembara")+". Dunia Borneo menanti untuk diterokai.")}
 
-/* PAPARAN */
-function showScreen(id){
- if(["gameScreen","introScreen","characterScreen","leaderScreen","masterScreen","storyScreen"].includes(id)&&!user){
-  id="authScreen";
- }
- stopVoice();
- document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
- document.getElementById(id)?.classList.add("active");
- window.scrollTo(0,0);
-}
-function toast(msg){
- const t=document.getElementById("toast");
- t.textContent=msg;t.style.display="block";
- setTimeout(()=>t.style.display="none",2600);
-}
-function showModal(html){
- if(!requireLogin())return;
- stopVoice();
- document.getElementById("modalContent").innerHTML=html;
- document.getElementById("modal").style.display="flex";
- document.getElementById("modal").scrollTop=0;
-}
-function closeModal(){
- stopVoice();document.getElementById("modal").style.display="none";
-}
-function escapeHTML(s){
- return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-}
-function rankName(){
- if(balance>=500)return "Legenda Borneo";
- if(balance>=250)return "Pahlawan Hebat";
- if(balance>=100)return "Wira Berani";
- return "Wira Baharu";
-}
-function updateStats(){
- ["pearls","introPearls"].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=balance});
- ["rank","introRank"].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=rankName()});
-}
-
-/* WATAK */
 function heroGraphic(){
  const c=characters.find(x=>x.id===selectedCharacter)||characters[0];
- let ears="";
- if(selectedCharacter==="arnab"){
-  ears=`<ellipse cx="35" cy="15" rx="11" ry="27" fill="${c.color}"/><ellipse cx="65" cy="15" rx="11" ry="27" fill="${c.color}"/>`;
- }else{
-  ears=`<path d="M20 35 L24 8 L45 28 M55 28 L76 8 L80 35" fill="${c.color}" stroke="#704a30" stroke-width="3"/>`;
- }
+ let ears=selectedCharacter==="arnab"?`<ellipse cx="35" cy="15" rx="11" ry="27" fill="${c.color}"/><ellipse cx="65" cy="15" rx="11" ry="27" fill="${c.color}"/>`:`<path d="M20 35 L24 8 L45 28 M55 28 L76 8 L80 35" fill="${c.color}" stroke="#704a30" stroke-width="3"/>`;
  if(selectedCharacter==="kijang")ears+=`<path d="M40 24 L28 0 M60 24 L72 0" stroke="#80522e" stroke-width="5" fill="none"/>`;
- return `<svg class="heroSvg" viewBox="0 0 100 150">
- <ellipse cx="50" cy="137" rx="29" ry="8" fill="#173d2a" opacity=".4"/>
- ${ears}
- <ellipse cx="50" cy="105" rx="27" ry="32" fill="${c.color}" stroke="#704a30" stroke-width="3"/>
- <ellipse cx="50" cy="55" rx="35" ry="34" fill="${c.color}" stroke="#704a30" stroke-width="3"/>
- <ellipse cx="38" cy="52" rx="5" ry="7" fill="#201d18"/>
- <ellipse cx="62" cy="52" rx="5" ry="7" fill="#201d18"/>
- <ellipse cx="50" cy="67" rx="8" ry="5" fill="#8d5147"/>
- <path d="M43 77 Q50 85 57 77" fill="none" stroke="#5d392e" stroke-width="2"/>
- <path d="M32 127 L29 145 M68 127 L71 145" stroke="${c.color}" stroke-width="10" stroke-linecap="round"/>
- <path d="M25 96 Q8 85 12 70" stroke="${c.color}" stroke-width="9" fill="none" stroke-linecap="round"/>
- </svg>`;
+ return `<svg class="heroSvg" viewBox="0 0 100 150"><ellipse cx="50" cy="137" rx="29" ry="8" fill="#173d2a" opacity=".4"/>${ears}<ellipse cx="50" cy="105" rx="27" ry="32" fill="${c.color}" stroke="#704a30" stroke-width="3"/><ellipse cx="50" cy="55" rx="35" ry="34" fill="${c.color}" stroke="#704a30" stroke-width="3"/><ellipse cx="38" cy="52" rx="5" ry="7" fill="#201d18"/><ellipse cx="62" cy="52" rx="5" ry="7" fill="#201d18"/><ellipse cx="50" cy="67" rx="8" ry="5" fill="#8d5147"/><path d="M43 77 Q50 85 57 77" fill="none" stroke="#5d392e" stroke-width="2"/><path d="M32 127 L29 145 M68 127 L71 145" stroke="${c.color}" stroke-width="10" stroke-linecap="round"/></svg>`;
 }
-function renderCharacterPicker(){
- document.getElementById("characterGrid").innerHTML=characters.map(c=>
- `<div class="character ${selectedCharacter===c.id?"selected":""}" onclick="chooseCharacter('${c.id}')">
- <div class="animal">${c.emoji}</div><b>${c.name}</b></div>`).join("");
+function renderCharacterPicker(){document.getElementById("characterGrid").innerHTML=characters.map(c=>`<div class="character ${selectedCharacter===c.id?"selected":""}" onclick="chooseCharacter('${c.id}')"><div class="animal">${c.emoji}</div><b>${c.name}</b></div>`).join("")}
+function chooseCharacter(id){selectedCharacter=id;renderCharacterPicker();saveLocal()}
+async function confirmCharacter(){saveLocal();document.getElementById("hero").innerHTML=heroGraphic();document.getElementById("welcomeName").textContent="Wira "+(characters.find(c=>c.id===selectedCharacter)?.name||"");showScreen("introScreen");speakWelcome()}
+
+function renderAreas(){document.getElementById("areaButtons").innerHTML=areas.map((a,i)=>`<button class="${i===currentArea?"":"secondary"}" onclick="travelTo(${i})">${a.emoji} ${a.name} ${areaUnlocked(i)?"":"🔒"}</button>`).join("")}
+function renderWorld(){document.getElementById("locationLabel").textContent=areas[currentArea].name.toUpperCase();const h=document.getElementById("hero");h.style.left=heroX+"%";h.style.bottom=heroY+"%";h.innerHTML=heroGraphic();renderAreas()}
+function travelTo(i){if(!areaUnlocked(i)){toast("Selesaikan lebih banyak misi untuk membuka kawasan ini.");return}currentArea=i;heroX=45;heroY=22;renderWorld()}
+function move(dx,dy){if(!isMaster&&remainingSeconds<=0){toast("Masa permainan tamat.");return}heroX=Math.max(5,Math.min(85,heroX+dx*5));heroY=Math.max(10,Math.min(45,heroY+dy*4));const h=document.getElementById("hero");h.style.left=heroX+"%";h.style.bottom=heroY+"%"}
+function talkNPC(i){const m=i===0?"Burung kenyalang: Teruskan membantu penduduk!":"Monyet: Setiap cabaran mengajar kita sesuatu!";toast(m);speakText(m)}
+function collectPearl(){if(pearlTaken){toast("Mutiara ini sudah dikutip.");return}pearlTaken=true;toast("Mutiara bonus hanya hiasan. Skor rasmi datang daripada misi.");}
+
+function normalizeOptions(raw){
+ if(Array.isArray(raw))return raw;
+ if(raw&&typeof raw==="object")return [raw.A||raw.a,raw.B||raw.b,raw.C||raw.c].filter(Boolean);
+ if(typeof raw==="string"){try{return normalizeOptions(JSON.parse(raw))}catch(e){return raw.split("|").map(x=>x.trim()).filter(Boolean)}}
+ return [];
 }
-function chooseCharacter(id){
- if(!requireLogin())return;
- selectedCharacter=id;renderCharacterPicker();
+function normalizeMission(r){
+ const opts=normalizeOptions(r.options);
+ const answer=String(r.correct_answer||"").trim().toUpperCase();
+ return {id:r.id,title:r.title||"Misi",pillar:r.pillar||"Penyayang",story:r.story||"",question:r.question||"",a:opts[0]||"",b:opts[1]||"",c:opts[2]||"",answer,explanation:r.explanation||"",week:Number(r.week_number)||1,day:Number(r.day_number)||1,area:Math.min(4,Math.max(0,(Number(r.day_number)||1)-1))};
 }
-async function confirmCharacter(){
- if(!requireLogin())return;
- await saveCharacter();
- document.getElementById("hero").innerHTML=heroGraphic();
- document.getElementById("welcomeName").textContent="Wira "+(characters.find(c=>c.id===selectedCharacter)?.name||"");
- showScreen("introScreen");speakWelcome();
+async function loadMissions(){
+ const {data,error}=await db.from("missions").select("id,week_number,day_number,pillar,title,story,question,options,correct_answer,explanation,published").eq("published",true).order("week_number").order("day_number").order("id");
+ if(error)throw new Error("Gagal memuatkan misi: "+error.message);
+ missions=(data||[]).map(normalizeMission).filter(m=>m.id!==null&&m.a&&m.b&&m.c&&m.answer);
+ if(!missions.length)throw new Error("Belum ada misi yang diterbitkan dalam Supabase.");
+ const attemptedIds=new Set(Object.keys(progress));
+ const pending=missions.filter(m=>!attemptedIds.has(String(m.id)));
+ const next=pending[0]||missions[missions.length-1];
+ currentDay=next.day;currentWeek=next.week;
+}
+async function loadProgress(){
+ const {data,error}=await db.from("student_progress").select("mission_id,completed,xp").eq("user_id",user.id);
+ if(error)throw new Error("Gagal membaca kemajuan: "+error.message);
+ progress={};balance=0;
+ (data||[]).forEach(p=>{progress[String(p.mission_id)]={attempted:true,correct:!!p.completed};balance+=Number(p.xp)||0});
+ const saved=JSON.parse(localStorage.getItem(localKey())||"{}");
+ selectedCharacter=saved.selectedCharacter||"hamster";
+ updateStats();
 }
 
-/* DUNIA DAN PERGERAKAN */
-function renderAreas(){
- document.getElementById("areaButtons").innerHTML=areas.map((a,i)=>
- `<button class="${i===currentArea?"":"secondary"}" onclick="travelTo(${i})">${a.emoji} ${a.name} ${areaUnlocked(i)?"":"🔒"}</button>`).join("");
-}
-function renderWorld(){
- if(!requireLogin())return;
- document.getElementById("locationLabel").textContent=areas[currentArea].name.toUpperCase();
- const hero=document.getElementById("hero");
- hero.style.left=heroX+"%";hero.style.bottom=heroY+"%";
- hero.innerHTML=heroGraphic();renderAreas();
-}
-function travelTo(i){
- if(!requireLogin())return;
- if(!areaUnlocked(i)){toast("Selesaikan lebih banyak misi untuk membuka kawasan ini.");return}
- currentArea=i;heroX=45;heroY=22;renderWorld();
-}
-function move(dx,dy){
- if(!requireLogin())return;
- if(!isMaster&&remainingSeconds<=0){toast("Masa permainan tamat.");return}
- heroX=Math.max(5,Math.min(85,heroX+dx*5));
- heroY=Math.max(10,Math.min(45,heroY+dy*4));
- const hero=document.getElementById("hero");
- hero.style.left=heroX+"%";hero.style.bottom=heroY+"%";
-}
-function talkNPC(which){
- if(!requireLogin())return;
- const msg=which===0?"Burung kenyalang: Teruskan membantu penduduk!":"Monyet: Setiap cabaran mengajar kita sesuatu!";
- toast(msg);speakText(msg);
-}
-function collectPearl(){
- if(!requireLogin())return;
- if(pearlTaken){toast("Mutiara ini sudah dikutip.");return}
- pearlTaken=true;balance+=5;updateStats();saveLocal();
- toast("+5 Mutiara bonus!");speakText("Tahniah. Kamu mendapat lima Mutiara bonus.");
-}
-
-/* BUKU MISI */
 function showMissionBook(){
- if(!requireLogin())return;
- const cards=missions.map((m,index)=>{
-  const unlocked=areaUnlocked(Number(m.area)),done=attempted(m.id);
-  const areaName=areas[Number(m.area)]?.name||"Kawasan";
-  let status="",label="",disabled="";
-  if(!unlocked){status="🔒 Kawasan belum dibuka";label="KAWASAN TERKUNCI";disabled="disabled"}
-  else if(done&&!isMaster){status="✅ Sudah dijawab";label="SUDAH SELESAI";disabled="disabled"}
-  else{status=done?"🔁 Boleh dimainkan semula":"🟢 Misi tersedia";label=done?"ULANG MISI":"MULA MISI"}
-  return `<div class="missionCard">
-   <h3>${index+1}. ${escapeHTML(m.title)}</h3><p>${escapeHTML(m.question)}</p>
-   <div class="missionMeta"><span>${escapeHTML(m.pillar)}</span><span>${escapeHTML(areaName)}</span></div>
-   <p><b>${status}</b></p>
-   <button ${disabled} onclick="launchBookMission('${escapeHTML(m.id)}')">${label}</button>
-  </div>`;
- }).join("");
- showModal(`<h2>📖 BUKU MISI PAHLAWAN</h2>
- <p>Kesemua lapan cabaran pengembaraan kamu.</p>
- <div class="stat" style="text-align:center;margin-bottom:12px">${missions.length} MISI · ${attemptedCount()} SELESAI</div>${cards}`);
+ const cards=missions.map((m,i)=>{const done=attempted(m.id),locked=!areaUnlocked(m.area);return `<div class="missionCard"><h3>${i+1}. ${escapeHTML(m.title)}</h3><p>${escapeHTML(m.question)}</p><div class="missionMeta"><span>${escapeHTML(m.pillar)}</span><span>${escapeHTML(areas[m.area]?.name)}</span></div><p>${locked?"🔒 Kawasan terkunci":done?"✅ Sudah dijawab":"🟢 Misi tersedia"}</p><button ${locked||done&&!isMaster?"disabled":""} onclick="launchBookMission('${m.id}')">${done?"SUDAH SELESAI":"MULA MISI"}</button></div>`}).join("");
+ showModal(`<h2>📖 BUKU MISI PAHLAWAN</h2><p>${missions.length} misi diterbitkan · ${attemptedCount()} selesai</p>${cards}`);
 }
-function launchBookMission(id){
- if(!requireLogin())return;
- const m=missions.find(x=>String(x.id)===String(id));if(!m)return;
- if(!areaUnlocked(Number(m.area))){toast("Kawasan ini belum dibuka.");return}
- if(attempted(id)&&!isMaster){toast("Misi ini telah selesai.");return}
- currentArea=Number(m.area);heroX=45;heroY=22;renderWorld();openMission(m);
-}
-
-/* MISI DAN SUARA */
-function availableMissions(){
- return missions.filter(m=>Number(m.area)===currentArea&&(isMaster||!attempted(m.id)));
-}
-function interact(){
- if(!requireLogin())return;
- if(!isMaster&&remainingSeconds<=0){toast("Masa permainan tamat.");return}
- const list=availableMissions();
- if(!list.length){showMissionBook();return}
- openMission(list[0]);
-}
-function readMission(){
- if(!requireLogin()||!currentMission)return;
- const m=currentMission;
- speakText("Misi "+m.title+". "+m.pillar+". "+m.question+". "+
- "Pilihan A. "+m.a+". Pilihan B. "+m.b+". Pilihan C. "+m.c+".");
-}
+function launchBookMission(id){const m=missions.find(x=>String(x.id)===String(id));if(!m)return;if(!areaUnlocked(m.area)){toast("Kawasan belum dibuka.");return}if(attempted(id)&&!isMaster)return;currentArea=m.area;renderWorld();openMission(m)}
+function availableMissions(){return missions.filter(m=>m.area===currentArea&&(isMaster||!attempted(m.id)))}
+function interact(){if(!isMaster&&remainingSeconds<=0){toast("Masa permainan tamat.");return}const list=availableMissions();if(list.length)openMission(list[0]);else showMissionBook()}
+function readMission(){if(!currentMission)return;speakText("Misi "+currentMission.title+". "+currentMission.question+". Pilihan A. "+currentMission.a+". Pilihan B. "+currentMission.b+". Pilihan C. "+currentMission.c)}
 function openMission(m){
- if(!requireLogin())return;
+ if(!isMaster&&attempted(m.id)){toast("Misi ini telah dijawab.");return}
  currentMission=m;selectedAnswer=null;
- showModal(`
- <h2>📜 ${escapeHTML(m.title)}</h2>
- <p><b>${escapeHTML(m.pillar)}</b></p>
- <p>${escapeHTML(m.question)}</p>
- <button class="secondary" style="width:100%" onclick="readMission()">🔊 DENGAR SOALAN DAN PILIHAN A, B, C</button>
- ${["A","B","C"].map(k=>`<button class="option" id="opt${k}" onclick="selectOption('${k}')">${k}. ${escapeHTML(m[k.toLowerCase()])}</button>`).join("")}
- <button class="secondary" style="width:100%;margin-top:5px" onclick="speakText('Pilihan A. '+currentMission.a)">🔊 DENGAR A</button>
- <button class="secondary" style="width:100%;margin-top:5px" onclick="speakText('Pilihan B. '+currentMission.b)">🔊 DENGAR B</button>
- <button class="secondary" style="width:100%;margin-top:5px" onclick="speakText('Pilihan C. '+currentMission.c)">🔊 DENGAR C</button>
- <button style="width:100%;margin-top:12px" onclick="submitAnswer()">HANTAR JAWAPAN</button>`);
- setTimeout(readMission,500);
+ showModal(`<h2>📜 ${escapeHTML(m.title)}</h2><p><b>${escapeHTML(m.pillar)}</b></p><p>${escapeHTML(m.story)}</p><p>${escapeHTML(m.question)}</p><button class="secondary" style="width:100%" onclick="readMission()">🔊 DENGAR SOALAN</button>${["A","B","C"].map(k=>`<button class="option" id="opt${k}" onclick="selectOption('${k}')">${k}. ${escapeHTML(m[k.toLowerCase()])}</button>`).join("")}<button style="width:100%;margin-top:12px" onclick="submitAnswer()">HANTAR JAWAPAN</button>`);
+ setTimeout(readMission,400);
 }
-function selectOption(k){
- if(!requireLogin())return;
- selectedAnswer=k;
- ["A","B","C"].forEach(x=>document.getElementById("opt"+x)?.classList.toggle("selected",x===k));
- speakText("Kamu memilih jawapan "+k+". "+currentMission[k.toLowerCase()]);
-}
+function selectOption(k){selectedAnswer=k;["A","B","C"].forEach(x=>document.getElementById("opt"+x)?.classList.toggle("selected",x===k));speakText("Kamu memilih jawapan "+k+". "+currentMission[k.toLowerCase()])}
 async function submitAnswer(){
- if(!requireLogin())return;
- if(!selectedAnswer){toast("Pilih jawapan dahulu.");return}
- stopVoice();
- const correct=selectedAnswer===String(currentMission.answer).toUpperCase();
- const reward=correct?20:-3;
- balance=Math.max(0,balance+reward);
- progress[currentMission.id]={attempted:true,correct,answer:selectedAnswer};
- updateStats();saveLocal();
- const answeredMission=currentMission,answerGiven=selectedAnswer;
- showModal(`<h2>${correct?"🎉 TAHNIAH!":"💪 CUBA LAGI!"}</h2>
- <p>${correct?"Jawapan kamu tepat.":"Jawapan belum tepat. Teruskan belajar."}</p>
- <h2 style="text-align:center;color:${correct?"#23804a":"#c33"}">${correct?"+20":"−3"} Mutiara</h2>
- <p>Jumlah Mutiara: <b>${balance}</b></p>
- <button style="width:100%" onclick="closeModal();renderWorld()">TERUSKAN</button>`);
- speakText(correct?"Tahniah. Jawapan kamu tepat. Kamu mendapat dua puluh Mutiara.":"Jawapan belum tepat. Tiga Mutiara ditolak. Teruskan berusaha.");
- await saveProgressToCloud(answeredMission,answerGiven,correct,reward);
-}
-
-/* PETA */
-function showMap(){
- if(!requireLogin())return;
- showModal(`<h2>🗺️ PETA BORNEO</h2>${areas.map((a,i)=>
- `<button class="option" onclick="closeModal();travelTo(${i})">${a.emoji} ${a.name} ${areaUnlocked(i)?"🔓":"🔒"}</button>`).join("")}`);
-}
-
-/* MASA DAN MULA */
-function startGame(){
- if(!requireLogin())return;
- showScreen("gameScreen");renderWorld();updateStats();
- startMusic();
- if(!isMaster)startTimer();
- else document.getElementById("clock").textContent="∞";
-}
-function startTimer(){
- clearInterval(timer);
- timer=setInterval(()=>{
-  if(remainingSeconds>0)remainingSeconds--;
-  const mm=String(Math.floor(remainingSeconds/60)).padStart(2,"0");
-  const ss=String(remainingSeconds%60).padStart(2,"0");
-  document.getElementById("clock").textContent=mm+":"+ss;
-  if(remainingSeconds<=0){clearInterval(timer);toast("Masa permainan tamat!")}
- },1000);
-}
-function backToIntro(){
- if(!requireLogin())return;
- clearInterval(timer);showScreen("introScreen");
-}
-function backToMasterGame(){
- if(!requireLogin())return;
- showScreen("introScreen");
-}
-
-/* MASTER */
-function openMasterPanel(){
- if(!requireLogin())return;
- if(!isMaster){toast("Akses Master sahaja.");return}
- showScreen("masterScreen");masterTab("missions");
-}
-async function masterTab(tab){
- if(!requireLogin()||!isMaster)return;
- const box=document.getElementById("masterContent");
- box.innerHTML="Memuatkan...";
- if(tab==="missions"){
-  box.innerHTML=`<h3>📚 Lapan Misi Permainan</h3>
-  ${missions.map((m,i)=>`<div class="adminList"><b>${i+1}. ${escapeHTML(m.title)}</b><br>
-  <small>${escapeHTML(m.pillar)} · ${escapeHTML(areas[m.area]?.name||"")}</small><br>
-  <button onclick="masterReplay('${escapeHTML(m.id)}')">ULANG MISI</button></div>`).join("")}`;
- }else if(tab==="players"){
-  const {data,error}=await db.from("profiles").select("*").limit(100);
-  box.innerHTML="<h3>👥 Pemain</h3>";
-  if(error)box.innerHTML+="<p>"+escapeHTML(error.message)+"</p>";
-  else box.innerHTML+=(data||[]).map(p=>`<div class="adminList">${escapeHTML(p.full_name||p.username||p.email||p.id)}<br><small>${escapeHTML(p.role||"student")}</small></div>`).join("");
- }else{
-  box.innerHTML="<h3>🏆 Papan Kedudukan</h3>";
-  await loadLeaderboard(box);
- }
-}
-function masterReplay(id){
- if(!requireLogin()||!isMaster)return;
- const m=missions.find(x=>String(x.id)===String(id));if(!m)return;
- currentArea=Number(m.area);heroX=45;heroY=22;renderWorld();
- showScreen("gameScreen");openMission(m);
-}
-
-/* PAPAN KEDUDUKAN - PEMBAIKAN */
-async function loadLeaderboard(target){
- if(!requireLogin())return;
-
- target.innerHTML="<p>Memuatkan nama dan skor murid...</p>";
-
+ if(!selectedAnswer||!currentMission||submitting)return;
+ if(!isMaster&&remainingSeconds<=0){toast("Masa permainan tamat.");return}
+ submitting=true;
+ const m=currentMission,answer=selectedAnswer;
+ const btn=document.querySelector("#modalContent button:last-child");if(btn)btn.disabled=true;
  try{
-  const [profilesResult,progressResult]=await Promise.all([
-   db.from("profiles").select("*").limit(500),
-   db.from("student_progress").select("*").limit(5000)
-  ]);
-
-  if(profilesResult.error){
-   target.innerHTML="<p>Gagal membaca profil murid: "+
-    escapeHTML(profilesResult.error.message)+"</p>";
-   return;
-  }
-
-  if(progressResult.error){
-   target.innerHTML="<p>Gagal membaca rekod Mutiara: "+
-    escapeHTML(progressResult.error.message)+
-    "</p><p>Semak kebenaran membaca jadual student_progress untuk akaun Master.</p>";
-   return;
-  }
-
-  const scoreMap={};
-
-  (progressResult.data||[]).forEach(row=>{
-   if(!row.user_id)return;
-
-   const id=String(row.user_id);
-   const xp=Number(row.xp)||0;
-
-   // Ikut kaedah loadProgress() murid:
-   // XP tertinggi menjadi baki Mutiara akaun.
-   if(!Object.prototype.hasOwnProperty.call(scoreMap,id)){
-    scoreMap[id]=xp;
-   }else{
-    scoreMap[id]=Math.max(scoreMap[id],xp);
-   }
-  });
-
-  const students=(profilesResult.data||[])
-   .filter(p=>String(p.role||"student").toLowerCase()==="student")
-   .map(p=>({
-    id:String(p.id),
-    name:p.full_name||p.username||p.email||"Murid",
-    score:scoreMap[String(p.id)]||0
-   }))
-   .sort((a,b)=>b.score-a.score);
-
-  if(!students.length){
-   target.innerHTML="<h3>🏆 Papan Kedudukan</h3><p>Belum ada rekod murid.</p>";
-   return;
-  }
-
-  target.innerHTML="<h3>🏆 Kedudukan Mutiara Murid</h3>";
-  target.innerHTML+=`<p>Jumlah murid: <b>${students.length}</b></p>`;
-
-  target.innerHTML+=students.map((p,i)=>`
-   <div class="adminList">
-    <div style="display:flex;justify-content:space-between;gap:8px;align-items:center">
-     <b>${i+1}. ${escapeHTML(p.name)}</b>
-     <span style="font-size:20px">💎</span>
-    </div>
-    <div style="font-size:21px;font-weight:900;color:#176b48;margin-top:5px">
-     ${p.score} Mutiara
-    </div>
-   </div>
-  `).join("");
-
- }catch(error){
-  console.error("Ralat papan kedudukan:",error);
-  target.innerHTML="<p>Ralat memuatkan papan kedudukan: "+
-   escapeHTML(error.message||error)+"</p>";
- }
+  const {data,error}=await db.rpc("submit_mission_answer",{p_mission_id:Number(m.id),p_answer:answer});
+  if(error)throw error;
+  if(!data?.success)throw new Error(data?.message||"Jawapan tidak dapat direkodkan.");
+  await loadProgress();
+  const correct=!!data.correct;
+  showModal(`<h2>${correct?"🎉 TAHNIAH!":"💪 TERUSKAN BERUSAHA!"}</h2><p>${correct?"Jawapan kamu tepat.":"Jawapan belum tepat."}</p><h2 style="text-align:center;color:${correct?"#23804a":"#c33"}">${Number(data.xp_change)>0?"+":""}${data.xp_change} Mutiara</h2><p>Jumlah Mutiara: <b>${balance}</b></p><p>${escapeHTML(data.explanation||m.explanation||"Teruskan pengembaraan.")}</p><button style="width:100%" onclick="closeModal();renderWorld();showMissionBook()">TERUSKAN</button>`);
+  speakText(correct?"Tahniah. Jawapan kamu tepat.":"Jawapan belum tepat. Teruskan berusaha.");
+ }catch(e){toast("Gagal menyimpan jawapan: "+(e.message||e));if(btn)btn.disabled=false}
+ finally{submitting=false}
 }
+function showMap(){showModal(`<h2>🗺️ PETA BORNEO</h2>${areas.map((a,i)=>`<button class="option" onclick="closeModal();travelTo(${i})">${a.emoji} ${a.name} ${areaUnlocked(i)?"🔓":"🔒"}</button>`).join("")}`)}
 
-async function showLeaderboard(){
- if(!requireLogin())return;
- showScreen("leaderScreen");
- const target=document.getElementById("leaderList");
- target.innerHTML="Memuatkan...";
- await loadLeaderboard(target);
+async function refreshServerTime(){
+ if(isMaster){remainingSeconds=900;document.getElementById("clock").textContent="∞";return}
+ const {data,error}=await db.rpc("record_daily_usage");
+ if(error)throw new Error("Pengesahan masa gagal: "+error.message);
+ const result=Array.isArray(data)?data[0]:data;
+ if(!result)throw new Error("Server tidak memulangkan rekod masa.");
+ remainingSeconds=Math.max(0,900-Number(result.seconds_used||0));
+ serverTimeKnown=true;
+ updateClock();
+ if(remainingSeconds<=0)endGame();
 }
-
-/* AKAUN: LOG MASUK */
-async function login(){
- if(authBusy)return;
- const email=document.getElementById("email").value.trim();
- const password=document.getElementById("password").value;
- const msg=document.getElementById("authMessage");
- if(!email||!password){msg.textContent="Masukkan emel dan kata laluan dahulu.";return}
- authBusy=true;
- msg.textContent="Sedang log masuk...";
- try{
-  const {data,error}=await db.auth.signInWithPassword({email,password});
-  if(error){msg.textContent="Log masuk gagal: "+error.message;return}
-  if(!data.user){msg.textContent="Akaun tidak dapat disahkan.";return}
-  user=data.user;
-  await loadUser();
- }catch(e){
-  msg.textContent="Ralat: "+(e.message||e);
- }finally{
-  authBusy=false;
- }
+function updateClock(){const mm=String(Math.floor(remainingSeconds/60)).padStart(2,"0"),ss=String(remainingSeconds%60).padStart(2,"0");document.getElementById("clock").textContent=mm+":"+ss}
+function endGame(){clearInterval(timer);clearInterval(usageHeartbeat);remainingSeconds=0;updateClock();toast("Masa permainan hari ini telah tamat. Jumpa lagi esok!")}
+async function heartbeat(){
+ if(isMaster||!user)return;
+ try{await refreshServerTime();if(remainingSeconds<=0)endGame()}
+ catch(e){clearInterval(timer);clearInterval(usageHeartbeat);toast(e.message||"Pengesahan masa gagal.");}
 }
-
-/* AKAUN: DAFTAR */
-async function register(){
- if(authBusy)return;
- const fullName=document.getElementById("fullName").value.trim();
- const email=document.getElementById("email").value.trim();
- const password=document.getElementById("password").value;
- const msg=document.getElementById("authMessage");
-
- if(!fullName){msg.textContent="Masukkan nama penuh murid.";return}
- if(!email){msg.textContent="Masukkan emel murid.";return}
- if(!password||password.length<6){msg.textContent="Kata laluan mestilah sekurang-kurangnya 6 aksara.";return}
-
- authBusy=true;
- msg.textContent="Sedang mendaftarkan akaun...";
- try{
-  const {data,error}=await db.auth.signUp({
-   email,password,
-   options:{data:{full_name:fullName}}
-  });
-  if(error){msg.textContent="Pendaftaran gagal: "+error.message;return}
-
-  if(data.session&&data.user){
-   user=data.user;
-   const created=await ensureProfile(fullName);
-   if(!created){
-    msg.textContent="Akaun telah didaftarkan, tetapi profil murid gagal disimpan. Semak polisi Supabase profiles.";
-    return;
-   }
-   await loadUser();
-  }else{
-   msg.textContent="Pendaftaran berjaya. Semak emel untuk pengesahan akaun. Selepas disahkan, kembali ke sini dan log masuk.";
-  }
- }catch(e){
-  msg.textContent="Ralat pendaftaran: "+(e.message||e);
- }finally{
-  authBusy=false;
- }
+async function startGame(){
+ showScreen("gameScreen");renderWorld();updateStats();startMusic();
+ if(!isMaster){
+  try{await refreshServerTime()}catch(e){toast(e.message);return}
+  if(remainingSeconds<=0){endGame();return}
+  clearInterval(timer);clearInterval(usageHeartbeat);
+  timer=setInterval(()=>{if(remainingSeconds>0)remainingSeconds--;updateClock();if(remainingSeconds<=0)endGame()},1000);
+  usageHeartbeat=setInterval(heartbeat,25000);
+ }else document.getElementById("clock").textContent="∞";
 }
+function backToIntro(){clearInterval(timer);clearInterval(usageHeartbeat);showScreen("introScreen")}
+function backToMasterGame(){showScreen("introScreen")}
 
-/* PROFIL MURID */
-async function ensureProfile(nameFromForm=""){
- if(!user)return false;
-
- const {data,error}=await db.from("profiles")
-  .select("*").eq("id",user.id).maybeSingle();
-
- if(error){
-  console.error("Semakan profil:",error);
-  document.getElementById("authMessage").textContent="Gagal membaca profil: "+error.message;
-  return false;
- }
-
- if(data){
-  profile=data;
-  return true;
- }
-
- const fullName=nameFromForm||
-  user.user_metadata?.full_name||
-  user.email?.split("@")[0]||
-  "Murid";
-
- const {data:created,error:createError}=await db.from("profiles")
-  .insert({
-   id:user.id,
-   full_name:fullName,
-   role:"student"
-  })
-  .select("*")
-  .single();
-
- if(createError){
-  console.error("Cipta profil:",createError);
-  document.getElementById("authMessage").textContent=
-   "Profil belum dapat dicipta: "+createError.message+
-   ". Semak polisi INSERT pada jadual profiles.";
-  return false;
- }
-
- profile=created;
- return true;
+async function ensureProfile(){
+ const {data,error}=await db.from("profiles").select("id,username,display_name,role,created_at").eq("id",user.id).maybeSingle();
+ if(error)throw new Error("Gagal membaca profil: "+error.message);
+ if(!data)throw new Error("Profil akaun belum diwujudkan oleh Master.");
+ profile=data;return data;
 }
-
+async function checkStudentAccess(){
+ const {data,error}=await db.from("student_access").select("active").eq("user_id",user.id).maybeSingle();
+ if(error)throw new Error("Gagal menyemak kebenaran akaun murid: "+error.message);
+ if(!data||data.active!==true)throw new Error("Akaun murid belum diaktifkan oleh Master. Sila hubungi pihak pengurusan.");
+}
 async function loadUser(){
  const msg=document.getElementById("authMessage");
- if(!user){msg.textContent="Sila log masuk.";showScreen("authScreen");return}
-
- msg.textContent="Memuatkan profil pengembara...";
- const ok=await ensureProfile();
- if(!ok){
-  await db.auth.signOut();
-  user=null;profile=null;isMaster=false;
+ try{
+  msg.textContent="Menyemak akaun...";
+  await ensureProfile();
+  isMaster=String(profile.role||"").toLowerCase()==="master";
+  if(!isMaster)await checkStudentAccess();
+  document.getElementById("masterPanelButton").classList.toggle("hidden",!isMaster);
+  await loadProgress();
+  await loadMissions();
+  renderCharacterPicker();
+  document.getElementById("welcomeName").textContent="Selamat datang, "+(profile.display_name||profile.username||user.email);
+  document.getElementById("hero").innerHTML=heroGraphic();
+  msg.textContent="";
+  if(!localStorage.getItem(localKey()+"_character"))showScreen("characterScreen");
+  else showScreen("introScreen");
+ }catch(e){
+  msg.textContent=e.message||"Akaun tidak dibenarkan.";
+  await db.auth.signOut();user=null;profile=null;isMaster=false;
   showScreen("authScreen");
-  return;
- }
-
- isMaster=String(profile.role||"").toLowerCase()==="master";
- selectedCharacter=profile.character||"hamster";
-
- document.getElementById("masterPanelButton").classList.toggle("hidden",!isMaster);
-
- await loadMissions();
- await loadProgress();
- updateStats();
- renderCharacterPicker();
-
- document.getElementById("welcomeName").textContent=
-  "Selamat datang, "+(profile.full_name||user.email);
-
- document.getElementById("hero").innerHTML=heroGraphic();
- msg.textContent="";
-
- if(!profile.character){
-  showScreen("characterScreen");
- }else{
-  showScreen("introScreen");
-  speakWelcome();
+  document.getElementById("authMessage").textContent=e.message||"Akaun tidak dibenarkan.";
  }
 }
-
-/* MISI SUPABASE */
-async function loadMissions(){
- const original=defaultMissions.map(m=>({...m}));
- missions=original.map(m=>({...m}));
- try{
-  const {data,error}=await db.from("missions").select("*").order("week").order("day");
-  if(error){console.warn("Supabase missions:",error.message);return}
-  if(!data||!data.length)return;
-  data.forEach(remote=>{
-   const index=missions.findIndex(m=>String(m.id)===String(remote.id));
-   if(index<0)return;
-   const old=missions[index];
-   missions[index]={
-    ...old,
-    title:remote.title||remote.name||old.title,
-    pillar:remote.pillar||remote.category||old.pillar,
-    question:remote.question||old.question,
-    a:remote.option_a||remote.a||old.a,
-    b:remote.option_b||remote.b||old.b,
-    c:remote.option_c||remote.c||old.c,
-    answer:String(remote.correct_answer||remote.answer||old.answer).toUpperCase()
-   };
-  });
- }catch(err){
-  console.warn("Misi menggunakan data asal:",err);
-  missions=original.map(m=>({...m}));
- }
- if(missions.length!==8)missions=original.map(m=>({...m}));
+async function login(){
+ if(authBusy)return;
+ const email=document.getElementById("email").value.trim(),password=document.getElementById("password").value,msg=document.getElementById("authMessage");
+ if(!email||!password){msg.textContent="Masukkan emel dan kata laluan.";return}
+ authBusy=true;document.getElementById("loginButton").disabled=true;msg.textContent="Sedang log masuk...";
+ try{const {data,error}=await db.auth.signInWithPassword({email,password});if(error)throw error;user=data.user;await loadUser()}
+ catch(e){msg.textContent="Log masuk gagal: "+(e.message||e);user=null}
+ finally{authBusy=false;document.getElementById("loginButton").disabled=false}
 }
-
-/* KEMAJUAN */
-async function loadProgress(){
- if(!requireLogin())return;
- progress={};balance=0;
- const {data,error}=await db.from("student_progress").select("*").eq("user_id",user.id);
- if(error){
-  console.warn("Progress Supabase:",error.message);
-  loadLocal();
-  return;
- }
- (data||[]).forEach(p=>{
-  const id=String(p.mission_id);
-  progress[id]={attempted:true,correct:!!p.is_correct};
-  balance=Math.max(balance,Number(p.xp)||0);
- });
- try{
-  const local=JSON.parse(localStorage.getItem(localKey())||"{}");
-  balance=Math.max(balance,Number(local.balance)||0);
-  progress={...local.progress,...progress};
-  if(local.selectedCharacter&&!profile.character)selectedCharacter=local.selectedCharacter;
- }catch(e){}
-}
-
-/* SIMPANAN */
-async function saveCharacter(){
- if(!user)return;
- const {error}=await db.from("profiles")
-  .update({character:selectedCharacter}).eq("id",user.id);
- if(error)console.warn("Simpan watak:",error.message);
-}
-async function saveProgressToCloud(m,answer,correct,reward){
- if(!user)return;
- const {error}=await db.rpc("submit_mission_answer",{
-  p_mission_id:m.id,
-  p_answer:answer
- });
- if(error){
-  console.warn("Simpanan Supabase gagal:",error.message);
-  toast("Jawapan disimpan pada peranti. Semakan Supabase diperlukan.");
- }
-}
-function saveLocal(){
- if(!user)return;
- localStorage.setItem(localKey(),JSON.stringify({balance,progress,selectedCharacter}));
-}
-function loadLocal(){
- if(!user)return;
- try{
-  const saved=JSON.parse(localStorage.getItem(localKey())||"{}");
-  balance=Number(saved.balance)||0;
-  progress=saved.progress||{};
-  selectedCharacter=saved.selectedCharacter||selectedCharacter;
- }catch(e){balance=0;progress={}}
-}
-
-/* LOG KELUAR */
 async function logout(){
- clearInterval(timer);
- stopVoice();
- document.getElementById("modal").style.display="none";
+ clearInterval(timer);clearInterval(usageHeartbeat);stopVoice();closeModal();
  if(user)await db.auth.signOut();
- user=null;profile=null;isMaster=false;
- progress={};balance=0;
- document.getElementById("email").value="";
- document.getElementById("password").value="";
- document.getElementById("fullName").value="";
+ user=null;profile=null;isMaster=false;progress={};balance=0;
+ document.getElementById("email").value="";document.getElementById("password").value="";
  document.getElementById("authMessage").textContent="";
  showScreen("authScreen");
 }
+function saveLocal(){if(user)localStorage.setItem(localKey(),JSON.stringify({selectedCharacter}))}
+async function saveCharacter(){saveLocal();localStorage.setItem(localKey()+"_character",selectedCharacter)}
+function startStoryVoice(){speakText(storyScenes[storyIndex].text)}
 
-/* MULA APLIKASI */
-renderCharacterPicker();
-document.getElementById("hero").innerHTML=heroGraphic();
-renderAreas();
-updateStats();
-bgMusic.load();
-
-/* PULIHKAN SESI AKAUN JIKA MASIH LOG MASUK */
-(async function restoreSession(){
+async function openMasterPanel(){if(!isMaster){toast("Akses Master sahaja.");return}showScreen("masterScreen");masterTab("missions")}
+async function masterTab(tab){
+ if(!isMaster)return;
+ const box=document.getElementById("masterContent");box.innerHTML="Memuatkan...";
+ if(tab==="register"){
+  box.innerHTML=`<h3>➕ Daftar Akaun Murid</h3><p>Hanya Master boleh mendaftarkan akaun baharu.</p><label>Nama penuh murid</label><input id="newStudentName" placeholder="Nama penuh"><label>Emel murid</label><input id="newStudentEmail" type="email" placeholder="Emel"><label>Kata laluan sementara</label><input id="newStudentPassword" type="password" minlength="6" placeholder="Minimum 6 aksara"><button style="width:100%" onclick="masterCreateStudent()">DAFTAR MURID</button><p id="registerResult" class="small"></p><p class="small">Pendaftaran memerlukan fungsi server Supabase master-create-student.</p>`;
+ }else if(tab==="missions"){
+  box.innerHTML="<h3>📚 Misi Diterbitkan</h3>"+missions.map((m,i)=>`<div class="adminList"><b>${i+1}. ${escapeHTML(m.title)}</b><br><small>Hari ${m.day} · Minggu ${m.week} · ${escapeHTML(m.pillar)}</small></div>`).join("");
+ }else if(tab==="players"){
+  const {data,error}=await db.from("profiles").select("id,username,display_name,role").eq("role","student").limit(200);
+  if(error){box.innerHTML="<p>"+escapeHTML(error.message)+"</p>";return}
+  const ids=(data||[]).map(p=>p.id);
+  let access={};
+  if(ids.length){const r=await db.from("student_access").select("user_id,active").in("user_id",ids);if(!r.error)(r.data||[]).forEach(a=>access[a.user_id]=a.active)}
+  box.innerHTML="<h3>👥 Pengurusan Murid</h3>"+(data||[]).map(p=>`<div class="adminList"><b>${escapeHTML(p.display_name||p.username||"Murid")}</b><br><small>${escapeHTML(p.username||p.id)}</small><br><span>${access[p.id]?"🟢 Aktif":"🔴 Tidak aktif"}</span><button style="width:100%;margin-top:8px" onclick="toggleStudentAccess('${p.id}',${!!access[p.id]})">${access[p.id]?"NYAH-AKTIF AKAUN":"AKTIFKAN AKAUN"}</button></div>`).join("")||"<p>Belum ada murid.</p>";
+ }else{
+  await loadLeaderboard(box);
+ }
+}
+async function masterCreateStudent(){
+ if(!isMaster)return;
+ const name=document.getElementById("newStudentName").value.trim();
+ const email=document.getElementById("newStudentEmail").value.trim();
+ const password=document.getElementById("newStudentPassword").value;
+ const out=document.getElementById("registerResult");
+ if(!name||!email||password.length<6){out.textContent="Lengkapkan nama, emel dan kata laluan sekurang-kurangnya 6 aksara.";return}
+ out.textContent="Sedang mencipta akaun...";
  try{
-  const {data,error}=await db.auth.getSession();
+  const {data,error}=await db.functions.invoke("master-create-student",{body:{full_name:name,email,password}});
   if(error)throw error;
-  if(data.session&&data.session.user){
-   user=data.session.user;
-   await loadUser();
+  if(data?.error)throw new Error(data.error);
+  out.textContent="Akaun murid berjaya didaftarkan dan diaktifkan.";
+  document.getElementById("newStudentName").value="";
+  document.getElementById("newStudentEmail").value="";
+  document.getElementById("newStudentPassword").value="";
+ }catch(e){out.textContent="Belum berjaya: "+(e.message||e)+". Pastikan Edge Function master-create-student telah dideploy."}
+}
+async function toggleStudentAccess(id,currentlyActive){
+ if(!isMaster)return;
+ try{
+  if(currentlyActive){
+   const {error}=await db.from("student_access").update({active:false}).eq("user_id",id);
+   if(error)throw error;
   }else{
-   showScreen("authScreen");
+   const {error}=await db.from("student_access").upsert({user_id:id,active:true},{onConflict:"user_id"});
+   if(error)throw error;
   }
- }catch(e){
-  console.error("Pemulihan sesi gagal:",e);
-  showScreen("authScreen");
- }
-})();
+  toast("Status akaun murid dikemas kini.");masterTab("players");
+ }catch(e){toast("Gagal mengubah status: "+e.message)}
+}
+async function loadLeaderboard(target){
+ target.innerHTML="Memuatkan kedudukan...";
+ const {data,error}=await db.rpc("get_leaderboard");
+ if(error){target.innerHTML="Gagal memuatkan leaderboard: "+escapeHTML(error.message);return}
+ const rows=Array.isArray(data)?data:[];
+ if(!rows.length){target.innerHTML="<p>Belum ada rekod skor.</p>";return}
+ target.innerHTML=rows.map((p,i)=>`<div class="adminList"><b>${i+1}. ${escapeHTML(p.student_name||"Murid")}</b><div style="font-size:21px;font-weight:900;color:#176b48">${Number(p.total_mutiara)||0} 💎 Mutiara</div><small>${Number(p.missions_completed)||0} misi selesai</small></div>`).join("");
+}
+async function showLeaderboard(){showScreen("leaderScreen");await loadLeaderboard(document.getElementById("leaderList"))}
 
-/* PASTIKAN LOG KELUAR DIKESAN */
+renderCharacterPicker();document.getElementById("hero").innerHTML=heroGraphic();renderAreas();updateStats();bgMusic.load();
+(async function restoreSession(){
+ try{const {data,error}=await db.auth.getSession();if(error)throw error;if(data.session?.user){user=data.session.user;await loadUser()}else showScreen("authScreen")}
+ catch(e){showScreen("authScreen");document.getElementById("authMessage").textContent=e.message||"Sila log masuk."}
+})();
 db.auth.onAuthStateChange((event,session)=>{
- if(event==="SIGNED_OUT"){
-  user=null;profile=null;isMaster=false;
-  clearInterval(timer);
-  document.getElementById("modal").style.display="none";
-  showScreen("authScreen");
- }
+ if(event==="SIGNED_OUT"){user=null;profile=null;isMaster=false;clearInterval(timer);clearInterval(usageHeartbeat);document.getElementById("modal").style.display="none";showScreen("authScreen")}
 });
 </script>
 </body>
