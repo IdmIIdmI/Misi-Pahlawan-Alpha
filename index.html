@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ms">
 <head>
@@ -93,6 +92,8 @@ footer{text-align:center;color:#c4dfc9;font-size:11px;padding:10px}
 .missionMeta span{background:#dcebd8;padding:5px 8px;border-radius:8px}
 .musicControl{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center}
 .musicControl input{width:110px;margin:0}
+.progressTrack{height:12px;border-radius:20px;background:#d4e4d0;overflow:hidden;margin:10px 0}
+.progressFill{height:100%;background:#23965c}
 @media(max-width:420px){.screen{padding:12px}#gameScreen{padding:9px}.topbar{gap:5px}.stat{padding:7px 9px;font-size:12px}.actionbar button{font-size:12px;padding:11px 8px}}
 </style>
 </head>
@@ -177,8 +178,14 @@ footer{text-align:center;color:#c4dfc9;font-size:11px;padding:10px}
 
 <script>
 const SUPABASE_URL="https://krijvnbpbmqqyquzzrxu.supabase.co";
-const SUPABASE_KEY="sb_publishable_NRa91_nx4Xc2PSvUoiCWWw_zgf3xJha";
+const SUPABASE_KEY="sb_publishable_NRa91_xn4Xc2PSvUoiCWWw_zgf3xJha";
 const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+const MPA_PREFIX="MPA1600|";
+const MPA_TOTAL_WEEKS=40;
+const MPA_DAYS_PER_WEEK=5;
+const MPA_MISSIONS_PER_DAY=8;
+const MPA_TOTAL_MISSIONS=1600;
 
 const bgMusic=document.getElementById("bgMusic");
 bgMusic.volume=.45;
@@ -207,14 +214,15 @@ const storyScenes=[
  {emoji:"🌴🦜",title:"PANGGILAN BORNEO",text:"Di sebuah bumi yang kaya dengan hutan, sungai dan kehidupan, terletaknya dunia pengembaraan Borneo. Di sinilah kisah seorang wira akan bermula."},
  {emoji:"🏡🌳",title:"LIMA WILAYAH",text:"Kampung Damai, Hutan Rimba, Air Terjun, Rumah Panjang dan Gua Misteri menanti untuk diterokai."},
  {emoji:"🐹🐿️🐱🐰🦌",title:"PILIH SAHABAT WIRA",text:"Pilih sahabat haiwan yang akan menemani perjalananmu."},
- {emoji:"💎📜🏆",title:"LAPAN CABARAN",text:"Selesaikan lapan misi. Buktikan sifat penyayang, berdaya tahan, berupaya memimpin dan menjadi warganegara aktif."},
+ {emoji:"💎📜🏆",title:"LAPAN CABARAN",text:"Selesaikan lapan misi setiap hari. Buktikan sifat penyayang, berdaya tahan, berupaya memimpin dan menjadi warganegara aktif."},
  {emoji:"🦸🌟",title:"PENGEMBARAAN BERMULA",text:"Dunia Borneo sedang menantimu. Gunakan kebijaksanaan, bekerjasama dan bantu penduduk!"}
 ];
+
 let storyIndex=0,user=null,profile=null,isMaster=false,authBusy=false;
 let selectedCharacter="hamster",missions=[],progress={},balance=0,currentArea=0;
 let heroX=45,heroY=22,remainingSeconds=900,timer=null,usageHeartbeat=null;
 let selectedAnswer=null,currentMission=null,pearlTaken=false,submitting=false;
-let currentDay=1,currentWeek=1,serverTimeKnown=false;
+let currentDay=1,currentWeek=1;
 
 function escapeHTML(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function toast(m){const t=document.getElementById("toast");t.textContent=m;t.style.display="block";setTimeout(()=>t.style.display="none",2600)}
@@ -227,7 +235,8 @@ function rankName(){return balance>=500?"Legenda Borneo":balance>=250?"Pahlawan 
 function updateStats(){["pearls","introPearls"].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=balance});["rank","introRank"].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=rankName()})}
 function attempted(id){return !!progress[String(id)]?.attempted}
 function attemptedCount(){return Object.values(progress).filter(x=>x?.attempted).length}
-function areaUnlocked(i){return isMaster||attemptedCount()>=areas[i].unlock}
+function activeAttemptedCount(){return missions.filter(m=>attempted(m.id)).length}
+function areaUnlocked(i){return isMaster||activeAttemptedCount()>=areas[i].unlock}
 
 function beginStory(){storyIndex=0;renderStory();showScreen("storyScreen");startMusic();speakText(storyScenes[0].text)}
 function renderStory(){const s=storyScenes[storyIndex];document.getElementById("storyEmoji").textContent=s.emoji;document.getElementById("storyHeading").textContent=s.title;document.getElementById("storyText").textContent=s.text}
@@ -245,14 +254,14 @@ function heroGraphic(){
 }
 function renderCharacterPicker(){document.getElementById("characterGrid").innerHTML=characters.map(c=>`<div class="character ${selectedCharacter===c.id?"selected":""}" onclick="chooseCharacter('${c.id}')"><div class="animal">${c.emoji}</div><b>${c.name}</b></div>`).join("")}
 function chooseCharacter(id){selectedCharacter=id;renderCharacterPicker();saveLocal()}
-async function confirmCharacter(){saveLocal();document.getElementById("hero").innerHTML=heroGraphic();document.getElementById("welcomeName").textContent="Wira "+(characters.find(c=>c.id===selectedCharacter)?.name||"");showScreen("introScreen");speakWelcome()}
+async function confirmCharacter(){saveLocal();localStorage.setItem(localKey()+"_character",selectedCharacter);document.getElementById("hero").innerHTML=heroGraphic();document.getElementById("welcomeName").textContent="Wira "+(characters.find(c=>c.id===selectedCharacter)?.name||"");showScreen("introScreen");speakWelcome()}
 
 function renderAreas(){document.getElementById("areaButtons").innerHTML=areas.map((a,i)=>`<button class="${i===currentArea?"":"secondary"}" onclick="travelTo(${i})">${a.emoji} ${a.name} ${areaUnlocked(i)?"":"🔒"}</button>`).join("")}
 function renderWorld(){document.getElementById("locationLabel").textContent=areas[currentArea].name.toUpperCase();const h=document.getElementById("hero");h.style.left=heroX+"%";h.style.bottom=heroY+"%";h.innerHTML=heroGraphic();renderAreas()}
 function travelTo(i){if(!areaUnlocked(i)){toast("Selesaikan lebih banyak misi untuk membuka kawasan ini.");return}currentArea=i;heroX=45;heroY=22;renderWorld()}
 function move(dx,dy){if(!isMaster&&remainingSeconds<=0){toast("Masa permainan tamat.");return}heroX=Math.max(5,Math.min(85,heroX+dx*5));heroY=Math.max(10,Math.min(45,heroY+dy*4));const h=document.getElementById("hero");h.style.left=heroX+"%";h.style.bottom=heroY+"%"}
 function talkNPC(i){const m=i===0?"Burung kenyalang: Teruskan membantu penduduk!":"Monyet: Setiap cabaran mengajar kita sesuatu!";toast(m);speakText(m)}
-function collectPearl(){if(pearlTaken){toast("Mutiara ini sudah dikutip.");return}pearlTaken=true;toast("Mutiara bonus hanya hiasan. Skor rasmi datang daripada misi.");}
+function collectPearl(){if(pearlTaken){toast("Mutiara ini sudah dikutip.");return}pearlTaken=true;toast("Mutiara bonus hanya hiasan. Skor rasmi datang daripada misi.")}
 
 function normalizeOptions(raw){
  if(Array.isArray(raw))return raw;
@@ -265,38 +274,77 @@ function normalizeMission(r){
  const answer=String(r.correct_answer||"").trim().toUpperCase();
  return {id:r.id,title:r.title||"Misi",pillar:r.pillar||"Penyayang",story:r.story||"",question:r.question||"",a:opts[0]||"",b:opts[1]||"",c:opts[2]||"",answer,explanation:r.explanation||"",week:Number(r.week_number)||1,day:Number(r.day_number)||1,area:Math.min(4,Math.max(0,(Number(r.day_number)||1)-1))};
 }
+
+/* Hanya bank MPA1600 dibaca sebagai silibus baharu. */
 async function loadMissions(){
- const {data,error}=await db.from("missions").select("id,week_number,day_number,pillar,title,story,question,options,correct_answer,explanation,published").eq("published",true).order("week_number").order("day_number").order("id");
+ const {data,error}=await db.from("missions")
+  .select("id,week_number,day_number,pillar,title,story,question,options,correct_answer,explanation,published")
+  .eq("published",true)
+  .like("title","MPA1600|%")
+  .order("week_number").order("day_number").order("id")
+  .range(0,1999);
  if(error)throw new Error("Gagal memuatkan misi: "+error.message);
- missions=(data||[]).map(normalizeMission).filter(m=>m.id!==null&&m.a&&m.b&&m.c&&m.answer);
- if(!missions.length)throw new Error("Belum ada misi yang diterbitkan dalam Supabase.");
- const attemptedIds=new Set(Object.keys(progress));
- const pending=missions.filter(m=>!attemptedIds.has(String(m.id)));
- const next=pending[0]||missions[missions.length-1];
- currentDay=next.day;currentWeek=next.week;
+ missions=(data||[]).map(normalizeMission).filter(m=>m.id!==null&&m.a&&m.b&&m.c&&["A","B","C"].includes(m.answer));
+ if(!missions.length)throw new Error("Bank 1,600 misi belum dijana. Hubungi Master.");
+ const schedule=mpaGetCurrentSchedule();
+ currentDay=schedule.day;currentWeek=schedule.week;
 }
+
 async function loadProgress(){
  const {data,error}=await db.from("student_progress").select("mission_id,completed,xp").eq("user_id",user.id);
  if(error)throw new Error("Gagal membaca kemajuan: "+error.message);
  progress={};balance=0;
  (data||[]).forEach(p=>{progress[String(p.mission_id)]={attempted:true,correct:!!p.completed};balance+=Number(p.xp)||0});
  const saved=JSON.parse(localStorage.getItem(localKey())||"{}");
- selectedCharacter=saved.selectedCharacter||"hamster";
+ selectedCharacter=saved.selectedCharacter||localStorage.getItem(localKey()+"_character")||"hamster";
  updateStats();
 }
 
-function showMissionBook(){
- const cards=missions.map((m,i)=>{const done=attempted(m.id),locked=!areaUnlocked(m.area);return `<div class="missionCard"><h3>${i+1}. ${escapeHTML(m.title)}</h3><p>${escapeHTML(m.question)}</p><div class="missionMeta"><span>${escapeHTML(m.pillar)}</span><span>${escapeHTML(areas[m.area]?.name)}</span></div><p>${locked?"🔒 Kawasan terkunci":done?"✅ Sudah dijawab":"🟢 Misi tersedia"}</p><button ${locked||done&&!isMaster?"disabled":""} onclick="launchBookMission('${m.id}')">${done?"SUDAH SELESAI":"MULA MISI"}</button></div>`}).join("");
- showModal(`<h2>📖 BUKU MISI PAHLAWAN</h2><p>${missions.length} misi diterbitkan · ${attemptedCount()} selesai</p>${cards}`);
+/* Jadual berdasarkan rekod misi baharu sahaja, bukan rekod lama. */
+function mpaGetCurrentSchedule(){
+ const ordered=missions.slice().sort((a,b)=>a.week-b.week||a.day-b.day||Number(a.id)-Number(b.id));
+ const done=ordered.filter(m=>attempted(m.id)).length;
+ const nextIndex=ordered.findIndex(m=>!attempted(m.id));
+ const activeIndex=nextIndex<0?MPA_TOTAL_MISSIONS-1:nextIndex;
+ const dayIndex=Math.floor(activeIndex/MPA_MISSIONS_PER_DAY);
+ const week=Math.floor(dayIndex/MPA_DAYS_PER_WEEK)+1;
+ const day=(dayIndex%MPA_DAYS_PER_WEEK)+1;
+ return {week,day,completed:done,totalDays:200,finished:nextIndex<0};
 }
-function launchBookMission(id){const m=missions.find(x=>String(x.id)===String(id));if(!m)return;if(!areaUnlocked(m.area)){toast("Kawasan belum dibuka.");return}if(attempted(id)&&!isMaster)return;currentArea=m.area;renderWorld();openMission(m)}
-function availableMissions(){return missions.filter(m=>m.area===currentArea&&(isMaster||!attempted(m.id)))}
-function interact(){if(!isMaster&&remainingSeconds<=0){toast("Masa permainan tamat.");return}const list=availableMissions();if(list.length)openMission(list[0]);else showMissionBook()}
+
+function showMissionBook(){
+ const schedule=mpaGetCurrentSchedule();
+ const daily=missions.filter(m=>m.week===schedule.week&&m.day===schedule.day);
+ const cards=daily.map((m,i)=>{
+  const done=attempted(m.id);
+  return `<div class="missionCard"><h3>${i+1}. ${escapeHTML(m.title.replace(MPA_PREFIX,""))}</h3><p>${escapeHTML(m.question)}</p><div class="missionMeta"><span>${escapeHTML(m.pillar)}</span><span>Minggu ${m.week}</span><span>Hari ${m.day}</span></div><p>${done?"✅ Sudah dijawab":"🟢 Misi tersedia"}</p><button ${done&&!isMaster?"disabled":""} onclick="launchBookMission('${m.id}')">${done?"SUDAH SELESAI":"MULA MISI"}</button></div>`;
+ }).join("");
+ const percent=Math.round(schedule.completed/MPA_TOTAL_MISSIONS*100);
+ showModal(`<h2>📖 BUKU MISI PAHLAWAN</h2><p><b>Minggu ${schedule.week} · Hari ${schedule.day}</b></p><p>${daily.filter(m=>attempted(m.id)).length} / 8 misi selesai hari ini</p><p>Jumlah kemajuan: ${schedule.completed} / 1600</p><div class="progressTrack"><div class="progressFill" style="width:${percent}%"></div></div><p>${percent}% perjalanan diselesaikan</p>${schedule.finished?"<h3>🏆 TAHNIAH! SEMUA 200 HARI SELESAI!</h3>":""}${cards}`);
+}
+function launchBookMission(id){
+ const m=missions.find(x=>String(x.id)===String(id));
+ if(!m)return;
+ const schedule=mpaGetCurrentSchedule();
+ if(m.week!==schedule.week||m.day!==schedule.day){toast("Misi ini bukan misi hari semasa.");return}
+ if(attempted(id)&&!isMaster){toast("Misi ini telah dijawab.");return}
+ openMission(m);
+}
+function availableMissions(){
+ const s=mpaGetCurrentSchedule();
+ return missions.filter(m=>m.week===s.week&&m.day===s.day&&(isMaster||!attempted(m.id)));
+}
+function interact(){
+ if(!isMaster&&remainingSeconds<=0){toast("Masa permainan tamat.");return}
+ if(mpaGetCurrentSchedule().finished){showMissionBook();return}
+ const list=availableMissions();
+ if(list.length)openMission(list[0]);else showMissionBook();
+}
 function readMission(){if(!currentMission)return;speakText("Misi "+currentMission.title+". "+currentMission.question+". Pilihan A. "+currentMission.a+". Pilihan B. "+currentMission.b+". Pilihan C. "+currentMission.c)}
 function openMission(m){
  if(!isMaster&&attempted(m.id)){toast("Misi ini telah dijawab.");return}
  currentMission=m;selectedAnswer=null;
- showModal(`<h2>📜 ${escapeHTML(m.title)}</h2><p><b>${escapeHTML(m.pillar)}</b></p><p>${escapeHTML(m.story)}</p><p>${escapeHTML(m.question)}</p><button class="secondary" style="width:100%" onclick="readMission()">🔊 DENGAR SOALAN</button>${["A","B","C"].map(k=>`<button class="option" id="opt${k}" onclick="selectOption('${k}')">${k}. ${escapeHTML(m[k.toLowerCase()])}</button>`).join("")}<button style="width:100%;margin-top:12px" onclick="submitAnswer()">HANTAR JAWAPAN</button>`);
+ showModal(`<h2>📜 ${escapeHTML(m.title.replace(MPA_PREFIX,""))}</h2><p><b>${escapeHTML(m.pillar)}</b></p><p>${escapeHTML(m.story)}</p><p>${escapeHTML(m.question)}</p><button class="secondary" style="width:100%" onclick="readMission()">🔊 DENGAR SOALAN</button>${["A","B","C"].map(k=>`<button class="option" id="opt${k}" onclick="selectOption('${k}')">${k}. ${escapeHTML(m[k.toLowerCase()])}</button>`).join("")}<button id="submitAnswerButton" style="width:100%;margin-top:12px" onclick="submitAnswer()">HANTAR JAWAPAN</button>`);
  setTimeout(readMission,400);
 }
 function selectOption(k){selectedAnswer=k;["A","B","C"].forEach(x=>document.getElementById("opt"+x)?.classList.toggle("selected",x===k));speakText("Kamu memilih jawapan "+k+". "+currentMission[k.toLowerCase()])}
@@ -305,12 +353,13 @@ async function submitAnswer(){
  if(!isMaster&&remainingSeconds<=0){toast("Masa permainan tamat.");return}
  submitting=true;
  const m=currentMission,answer=selectedAnswer;
- const btn=document.querySelector("#modalContent button:last-child");if(btn)btn.disabled=true;
+ const btn=document.getElementById("submitAnswerButton");if(btn)btn.disabled=true;
  try{
   const {data,error}=await db.rpc("submit_mission_answer",{p_mission_id:Number(m.id),p_answer:answer});
   if(error)throw error;
   if(!data?.success)throw new Error(data?.message||"Jawapan tidak dapat direkodkan.");
   await loadProgress();
+  await loadMissions();
   const correct=!!data.correct;
   showModal(`<h2>${correct?"🎉 TAHNIAH!":"💪 TERUSKAN BERUSAHA!"}</h2><p>${correct?"Jawapan kamu tepat.":"Jawapan belum tepat."}</p><h2 style="text-align:center;color:${correct?"#23804a":"#c33"}">${Number(data.xp_change)>0?"+":""}${data.xp_change} Mutiara</h2><p>Jumlah Mutiara: <b>${balance}</b></p><p>${escapeHTML(data.explanation||m.explanation||"Teruskan pengembaraan.")}</p><button style="width:100%" onclick="closeModal();renderWorld();showMissionBook()">TERUSKAN</button>`);
   speakText(correct?"Tahniah. Jawapan kamu tepat.":"Jawapan belum tepat. Teruskan berusaha.");
@@ -326,17 +375,12 @@ async function refreshServerTime(){
  const result=Array.isArray(data)?data[0]:data;
  if(!result)throw new Error("Server tidak memulangkan rekod masa.");
  remainingSeconds=Math.max(0,900-Number(result.seconds_used||0));
- serverTimeKnown=true;
  updateClock();
  if(remainingSeconds<=0)endGame();
 }
 function updateClock(){const mm=String(Math.floor(remainingSeconds/60)).padStart(2,"0"),ss=String(remainingSeconds%60).padStart(2,"0");document.getElementById("clock").textContent=mm+":"+ss}
 function endGame(){clearInterval(timer);clearInterval(usageHeartbeat);remainingSeconds=0;updateClock();toast("Masa permainan hari ini telah tamat. Jumpa lagi esok!")}
-async function heartbeat(){
- if(isMaster||!user)return;
- try{await refreshServerTime();if(remainingSeconds<=0)endGame()}
- catch(e){clearInterval(timer);clearInterval(usageHeartbeat);toast(e.message||"Pengesahan masa gagal.");}
-}
+async function heartbeat(){if(isMaster||!user)return;try{await refreshServerTime();if(remainingSeconds<=0)endGame()}catch(e){clearInterval(timer);clearInterval(usageHeartbeat);toast(e.message||"Pengesahan masa gagal.")}}
 async function startGame(){
  showScreen("gameScreen");renderWorld();updateStats();startMusic();
  if(!isMaster){
@@ -402,56 +446,142 @@ async function logout(){
  showScreen("authScreen");
 }
 function saveLocal(){if(user)localStorage.setItem(localKey(),JSON.stringify({selectedCharacter}))}
-async function saveCharacter(){saveLocal();localStorage.setItem(localKey()+"_character",selectedCharacter)}
-function startStoryVoice(){speakText(storyScenes[storyIndex].text)}
 
 async function openMasterPanel(){if(!isMaster){toast("Akses Master sahaja.");return}showScreen("masterScreen");masterTab("missions")}
+
+/* 40 tema pembelajaran */
+const MPA_WEEK_THEMES=[
+"Kasih Sayang","Kejujuran","Amanah","Disiplin","Kerjasama",
+"Hormat-Menghormati","Kesabaran","Keberanian","Kebersihan","Kesyukuran",
+"Tanggungjawab","Kepimpinan","Tolong-Menolong","Kesederhanaan","Keadilan",
+"Adab Berkomunikasi","Pengurusan Masa","Cinta Ilmu","Keluarga","Persahabatan",
+"Keselamatan","Alam Sekitar","Kesihatan","Perpaduan","Patriotisme",
+"Kebijaksanaan","Daya Tahan","Empati","Pemikiran Kritis","Kreativiti",
+"Adab Digital","Pengurusan Emosi","Keprihatinan","Kecemerlangan","Budi Bahasa",
+"Masyarakat","Warisan Borneo","Kewarganegaraan","Membuat Keputusan","Jati Diri"
+];
+const MPA_DAY_CONTEXTS=["Kampung Damai","Hutan Rimba","Air Terjun","Rumah Panjang","Gua Misteri"];
+const MPA_SCENARIOS=[
+{q:"Seorang rakan memerlukan bantuan. Apakah tindakan paling baik?",c:"Membantu dengan ikhlas",w:["Membiarkannya sahaja","Mengejek kesusahannya"],p:"Penyayang"},
+{q:"Kamu menemui barang milik orang lain. Apakah tindakan yang betul?",c:"Menyerahkan barang itu kepada pemiliknya",w:["Menyimpan barang itu","Memberikannya kepada orang lain"],p:"Amanah"},
+{q:"Kamu melakukan kesilapan ketika menjalankan tugas. Apakah tindakan terbaik?",c:"Mengakui kesilapan dan memperbaikinya",w:["Menyalahkan orang lain","Menyembunyikan kesilapan"],p:"Kejujuran"},
+{q:"Kumpulan kamu menghadapi masalah ketika menyelesaikan tugasan. Apakah tindakan terbaik?",c:"Berbincang dan bekerjasama",w:["Bertengkar sesama sendiri","Meninggalkan kumpulan"],p:"Kerjasama"},
+{q:"Kamu menerima arahan yang baik daripada guru. Apakah tindakan yang sesuai?",c:"Mendengar dan melaksanakan arahan",w:["Mengabaikan arahan","Mengganggu rakan"],p:"Disiplin"},
+{q:"Seorang rakan berasa sedih. Apakah tindakan yang menunjukkan keprihatinan?",c:"Mendengar dan memberikan sokongan",w:["Mentertawakannya","Mengabaikannya"],p:"Empati"},
+{q:"Kamu perlu membuat pilihan ketika menghadapi masalah. Apakah cara terbaik?",c:"Berfikir tentang akibat sebelum bertindak",w:["Bertindak terburu-buru","Mengikut ajakan tanpa berfikir"],p:"Kebijaksanaan"},
+{q:"Kamu mempunyai masa lapang selepas tugasan selesai. Apakah tindakan yang bermanfaat?",c:"Menggunakan masa untuk belajar atau membantu",w:["Membuang masa tanpa tujuan","Mengganggu orang lain"],p:"Pengurusan Masa"}
+];
+const MPA_VARIATIONS=[
+"Apakah pilihan yang paling wajar dalam keadaan ini?",
+"Apakah tindakan yang mencerminkan nilai murni?",
+"Bagaimanakah seorang wira patut bertindak?",
+"Apakah keputusan yang membawa kebaikan kepada semua?",
+"Apakah sikap yang patut diamalkan dalam situasi ini?"
+];
+function mpaShuffle(a){const x=a.slice();for(let i=x.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]]}return x}
+function mpaGenerateQuestion(week,day,index){
+ const theme=MPA_WEEK_THEMES[week-1],place=MPA_DAY_CONTEXTS[day-1];
+ const s=MPA_SCENARIOS[(index-1)%MPA_SCENARIOS.length];
+ const variation=MPA_VARIATIONS[(week+day+index-2)%MPA_VARIATIONS.length];
+ const choices=mpaShuffle([s.c,...s.w]);
+ const answer=["A","B","C"][choices.indexOf(s.c)];
+ const serial=`W${String(week).padStart(2,"0")}D${String(day).padStart(2,"0")}M${String(index).padStart(2,"0")}`;
+ return {
+  week_number:week,day_number:day,pillar:theme,
+  title:`${MPA_PREFIX}${serial} — ${theme}`,
+  story:`Wira berada di ${place}. Penduduk memerlukan bantuan dalam satu keadaan yang menguji nilai ${theme.toLowerCase()}. ${variation} Gunakan kebijaksanaan dan pilih tindakan yang membawa manfaat.`,
+  question:`${s.q} Keadaan ini berlaku di ${place} dalam pengembaraan bertema ${theme.toLowerCase()}. ${variation}`,
+  options:{A:choices[0],B:choices[1],C:choices[2]},
+  correct_answer:answer,
+  explanation:`Pilihan yang tepat ialah "${s.c}". Nilai ${theme.toLowerCase()} dan sikap ${s.p.toLowerCase()} membantu membina masyarakat yang baik.`,
+  published:true
+ };
+}
+function mpaGenerateAllMissions(){
+ const rows=[];
+ for(let w=1;w<=40;w++)for(let d=1;d<=5;d++)for(let n=1;n<=8;n++)rows.push(mpaGenerateQuestion(w,d,n));
+ return rows;
+}
+
+/* PENJANA SELAMAT: tambah bank baharu, jangan padam misi atau progress lama.
+   Jika proses terhenti, Master boleh jalankan semula untuk sambung rekod yang belum ada. */
+async function mpaGenerateDatabase(){
+ if(!isMaster){toast("Akses Master sahaja.");return}
+ const ok=confirm("JANA BANK MISI 1,600?\n\n40 minggu × 5 hari × 8 misi.\n\nMisi lama dan rekod jawapan murid TIDAK akan dipadam.\nMisi baharu akan ditambah sebagai bank berasingan.\n\nTeruskan?");
+ if(!ok)return;
+ const box=document.getElementById("masterContent");
+ box.innerHTML="<h3>⏳ Menyediakan bank 1,600 misi...</h3><p id='mpaGenerationProgress'>Menyemak rekod sedia ada...</p>";
+ try{
+  const {data:existing,error:readError}=await db.from("missions").select("title").like("title","MPA1600|%").range(0,1999);
+  if(readError)throw readError;
+  const existingTitles=new Set((existing||[]).map(x=>x.title));
+  const all=mpaGenerateAllMissions();
+  const missing=all.filter(x=>!existingTitles.has(x.title));
+  if(!missing.length){
+   await loadMissions();
+   box.innerHTML="<h3>✅ BANK SUDAH LENGKAP</h3><p>1,600 misi telah tersedia. Tiada rekod baharu perlu dimasukkan.</p><button style='width:100%' onclick=\"masterTab('missions')\">KEMBALI</button>";
+   return;
+  }
+  for(let i=0;i<missing.length;i+=50){
+   const batch=missing.slice(i,i+50);
+   const {error}=await db.from("missions").insert(batch);
+   if(error)throw error;
+   const p=document.getElementById("mpaGenerationProgress");
+   if(p)p.textContent=`Misi baharu disimpan: ${Math.min(i+50,missing.length)} / ${missing.length}. Jumlah sedia ada: ${existingTitles.size+Math.min(i+50,missing.length)} / 1600`;
+  }
+  await loadMissions();
+  box.innerHTML="<h2>✅ PENJANAAN SELESAI</h2><p>Bank 1,600 misi berjaya disediakan.</p><p>40 minggu · 200 hari · 8 misi sehari.</p><p>Rekod lama dan kemajuan murid dikekalkan.</p><button style='width:100%' onclick=\"masterTab('missions')\">LIHAT BANK MISI</button>";
+  toast("Bank 1,600 misi berjaya disediakan.");
+ }catch(e){
+  box.innerHTML="<h3>❌ Penjanaan belum selesai</h3><p>"+escapeHTML(e.message||String(e))+"</p><p>Rekod yang telah berjaya dimasukkan tidak dipadam. Jalankan semula penjana untuk menyambung.</p>";
+  console.error(e);
+ }
+}
+
 async function masterTab(tab){
  if(!isMaster)return;
- const box=document.getElementById("masterContent");box.innerHTML="Memuatkan...";
- if(tab==="register"){
-  box.innerHTML=`<h3>➕ Daftar Akaun Murid</h3><p>Hanya Master boleh mendaftarkan akaun baharu.</p><label>Nama penuh murid</label><input id="newStudentName" placeholder="Nama penuh"><label>Emel murid</label><input id="newStudentEmail" type="email" placeholder="Emel"><label>Kata laluan sementara</label><input id="newStudentPassword" type="password" minlength="6" placeholder="Minimum 6 aksara"><button style="width:100%" onclick="masterCreateStudent()">DAFTAR MURID</button><p id="registerResult" class="small"></p><p class="small">Pendaftaran memerlukan fungsi server Supabase master-create-student.</p>`;
- }else if(tab==="missions"){
-  box.innerHTML="<h3>📚 Misi Diterbitkan</h3>"+missions.map((m,i)=>`<div class="adminList"><b>${i+1}. ${escapeHTML(m.title)}</b><br><small>Hari ${m.day} · Minggu ${m.week} · ${escapeHTML(m.pillar)}</small></div>`).join("");
+ const box=document.getElementById("masterContent");
+ box.innerHTML="Memuatkan...";
+ if(tab==="missions"){
+  const s=mpaGetCurrentSchedule(),percent=Math.round(s.completed/1600*100);
+  box.innerHTML=`<h3>📚 Pengurusan Misi</h3>
+   <div class="adminList"><b>Bank misi: ${missions.length} / 1600</b>
+   <p>40 minggu · 5 hari setiap minggu · 8 misi setiap hari</p>
+   <p>Hari aktif: Minggu ${s.week}, Hari ${s.day}</p>
+   <p>Jumlah selesai: ${s.completed} / 1600</p>
+   <div class="progressTrack"><div class="progressFill" style="width:${percent}%"></div></div>
+   <p>${percent}% kemajuan</p></div>
+   <button style="width:100%;margin-top:12px" onclick="mpaGenerateDatabase()">⚙️ JANA / SAMBUNG BANK 1,600 MISI</button>
+   <button class="secondary" style="width:100%;margin-top:12px" onclick="showMissionBook()">📖 LIHAT MISI HARI INI</button>
+   <h3 style="margin-top:20px">Senarai Misi Hari Ini</h3>
+   ${missions.filter(m=>m.week===s.week&&m.day===s.day).map((m,i)=>`<div class="adminList"><b>${i+1}. ${escapeHTML(m.title.replace(MPA_PREFIX,""))}</b><br><small>${escapeHTML(m.pillar)}</small></div>`).join("")}`;
+ }else if(tab==="register"){
+  box.innerHTML=`<h3>➕ Daftar Akaun Murid</h3><p>Hanya Master boleh mendaftarkan akaun baharu.</p><label>Nama penuh murid</label><input id="newStudentName" placeholder="Nama penuh"><label>Emel murid</label><input id="newStudentEmail" type="email" placeholder="Emel"><label>Kata laluan sementara</label><input id="newStudentPassword" type="password" minlength="6"><button style="width:100%" onclick="masterCreateStudent()">DAFTAR MURID</button><p id="registerResult" class="small"></p>`;
  }else if(tab==="players"){
   const {data,error}=await db.from("profiles").select("id,username,display_name,role").eq("role","student").limit(200);
-  if(error){box.innerHTML="<p>"+escapeHTML(error.message)+"</p>";return}
-  const ids=(data||[]).map(p=>p.id);
-  let access={};
+  if(error){box.innerHTML=escapeHTML(error.message);return}
+  const ids=(data||[]).map(p=>p.id);let access={};
   if(ids.length){const r=await db.from("student_access").select("user_id,active").in("user_id",ids);if(!r.error)(r.data||[]).forEach(a=>access[a.user_id]=a.active)}
   box.innerHTML="<h3>👥 Pengurusan Murid</h3>"+(data||[]).map(p=>`<div class="adminList"><b>${escapeHTML(p.display_name||p.username||"Murid")}</b><br><small>${escapeHTML(p.username||p.id)}</small><br><span>${access[p.id]?"🟢 Aktif":"🔴 Tidak aktif"}</span><button style="width:100%;margin-top:8px" onclick="toggleStudentAccess('${p.id}',${!!access[p.id]})">${access[p.id]?"NYAH-AKTIF AKAUN":"AKTIFKAN AKAUN"}</button></div>`).join("")||"<p>Belum ada murid.</p>";
- }else{
-  await loadLeaderboard(box);
- }
+ }else await loadLeaderboard(box);
 }
 async function masterCreateStudent(){
  if(!isMaster)return;
- const name=document.getElementById("newStudentName").value.trim();
- const email=document.getElementById("newStudentEmail").value.trim();
- const password=document.getElementById("newStudentPassword").value;
- const out=document.getElementById("registerResult");
+ const name=document.getElementById("newStudentName").value.trim(),email=document.getElementById("newStudentEmail").value.trim(),password=document.getElementById("newStudentPassword").value,out=document.getElementById("registerResult");
  if(!name||!email||password.length<6){out.textContent="Lengkapkan nama, emel dan kata laluan sekurang-kurangnya 6 aksara.";return}
  out.textContent="Sedang mencipta akaun...";
  try{
   const {data,error}=await db.functions.invoke("master-create-student",{body:{full_name:name,email,password}});
-  if(error)throw error;
-  if(data?.error)throw new Error(data.error);
+  if(error)throw error;if(data?.error)throw new Error(data.error);
   out.textContent="Akaun murid berjaya didaftarkan dan diaktifkan.";
-  document.getElementById("newStudentName").value="";
-  document.getElementById("newStudentEmail").value="";
-  document.getElementById("newStudentPassword").value="";
+  document.getElementById("newStudentName").value="";document.getElementById("newStudentEmail").value="";document.getElementById("newStudentPassword").value="";
  }catch(e){out.textContent="Belum berjaya: "+(e.message||e)+". Pastikan Edge Function master-create-student telah dideploy."}
 }
 async function toggleStudentAccess(id,currentlyActive){
  if(!isMaster)return;
  try{
-  if(currentlyActive){
-   const {error}=await db.from("student_access").update({active:false}).eq("user_id",id);
-   if(error)throw error;
-  }else{
-   const {error}=await db.from("student_access").upsert({user_id:id,active:true},{onConflict:"user_id"});
-   if(error)throw error;
-  }
+  if(currentlyActive){const {error}=await db.from("student_access").update({active:false}).eq("user_id",id);if(error)throw error}
+  else{const {error}=await db.from("student_access").upsert({user_id:id,active:true},{onConflict:"user_id"});if(error)throw error}
   toast("Status akaun murid dikemas kini.");masterTab("players");
  }catch(e){toast("Gagal mengubah status: "+e.message)}
 }
@@ -465,7 +595,10 @@ async function loadLeaderboard(target){
 }
 async function showLeaderboard(){showScreen("leaderScreen");await loadLeaderboard(document.getElementById("leaderList"))}
 
-renderCharacterPicker();document.getElementById("hero").innerHTML=heroGraphic();renderAreas();updateStats();bgMusic.load();
+renderCharacterPicker();
+document.getElementById("hero").innerHTML=heroGraphic();
+renderAreas();updateStats();bgMusic.load();
+
 (async function restoreSession(){
  try{const {data,error}=await db.auth.getSession();if(error)throw error;if(data.session?.user){user=data.session.user;await loadUser()}else showScreen("authScreen")}
  catch(e){showScreen("authScreen");document.getElementById("authMessage").textContent=e.message||"Sila log masuk."}
@@ -473,448 +606,7 @@ renderCharacterPicker();document.getElementById("hero").innerHTML=heroGraphic();
 db.auth.onAuthStateChange((event,session)=>{
  if(event==="SIGNED_OUT"){user=null;profile=null;isMaster=false;clearInterval(timer);clearInterval(usageHeartbeat);document.getElementById("modal").style.display="none";showScreen("authScreen")}
 });
- /* =========================================================
-   MISI PAHLAWAN ALPHA — SISTEM 1,600 MISI
-   40 MINGGU × 5 HARI × 8 MISI = 1,600
-   Masukkan sebelum </script> terakhir dalam HTML asal.
-   ========================================================= */
-
-const MPA_TOTAL_WEEKS = 40;
-const MPA_DAYS_PER_WEEK = 5;
-const MPA_MISSIONS_PER_DAY = 8;
-const MPA_TOTAL_MISSIONS = 1600;
-
-/* 40 tema mingguan */
-const MPA_WEEK_THEMES = [
- "Kasih Sayang","Kejujuran","Amanah","Disiplin","Kerjasama",
- "Hormat-Menghormati","Kesabaran","Keberanian","Kebersihan","Kesyukuran",
- "Tanggungjawab","Kepimpinan","Tolong-Menolong","Kesederhanaan","Keadilan",
- "Adab Berkomunikasi","Pengurusan Masa","Cinta Ilmu","Keluarga","Persahabatan",
- "Keselamatan","Alam Sekitar","Kesihatan","Perpaduan","Patriotisme",
- "Kebijaksanaan","Daya Tahan","Empati","Pemikiran Kritis","Kreativiti",
- "Adab Digital","Pengurusan Emosi","Keprihatinan","Kecemerlangan","Budi Bahasa",
- "Masyarakat","Warisan Borneo","Kewarganegaraan","Membuat Keputusan","Jati Diri"
-];
-
-const MPA_DAY_CONTEXTS = [
- "di Kampung Damai",
- "di Hutan Rimba",
- "di Air Terjun",
- "di Rumah Panjang",
- "di Gua Misteri"
-];
-
-const MPA_SCENARIOS = [
- {
-  q:"Seorang rakan memerlukan bantuan. Apakah tindakan paling baik?",
-  correct:"Membantu dengan ikhlas",
-  wrong:["Membiarkannya sahaja","Mengejek kesusahannya"]
- },
- {
-  q:"Kamu menemui barang milik orang lain. Apakah tindakan yang betul?",
-  correct:"Menyerahkan barang itu kepada pemiliknya",
-  wrong:["Menyimpan barang itu","Memberikan barang itu kepada orang lain"]
- },
- {
-  q:"Kamu melakukan kesilapan ketika menjalankan tugas. Apakah tindakan terbaik?",
-  correct:"Mengakui kesilapan dan memperbaikinya",
-  wrong:["Menyalahkan orang lain","Menyembunyikan kesilapan"]
- },
- {
-  q:"Kumpulan kamu menghadapi masalah ketika menyelesaikan tugasan. Apakah tindakan terbaik?",
-  correct:"Berbincang dan bekerjasama",
-  wrong:["Bertengkar sesama sendiri","Meninggalkan kumpulan"]
- },
- {
-  q:"Kamu menerima arahan yang baik daripada guru. Apakah tindakan yang sesuai?",
-  correct:"Mendengar dan melaksanakan arahan",
-  wrong:["Mengabaikan arahan","Mengganggu rakan"]
- },
- {
-  q:"Seorang rakan berasa sedih. Apakah tindakan yang menunjukkan keprihatinan?",
-  correct:"Mendengar dan memberikan sokongan",
-  wrong:["Mentertawakannya","Mengabaikannya"]
- },
- {
-  q:"Kamu perlu membuat pilihan ketika menghadapi masalah. Apakah cara terbaik?",
-  correct:"Berfikir tentang akibat sebelum bertindak",
-  wrong:["Bertindak terburu-buru","Mengikut ajakan tanpa berfikir"]
- },
- {
-  q:"Kamu mempunyai masa lapang selepas tugasan selesai. Apakah tindakan yang bermanfaat?",
-  correct:"Menggunakan masa untuk belajar atau membantu",
-  wrong:["Membuang masa tanpa tujuan","Mengganggu orang lain"]
- }
-];
-
-function mpaShuffle(array){
- const a=array.slice();
- for(let i=a.length-1;i>0;i--){
-  const j=Math.floor(Math.random()*(i+1));
-  [a[i],a[j]]=[a[j],a[i]];
- }
- return a;
-}
-
-/* Jana satu soalan */
-function mpaGenerateQuestion(week,day,index){
- const theme=MPA_WEEK_THEMES[week-1];
- const context=MPA_DAY_CONTEXTS[day-1];
- const scenario=MPA_SCENARIOS[index-1];
-
- const correct=scenario.correct;
- const wrong=scenario.wrong.slice();
-
- const choices=mpaShuffle([correct,...wrong]);
- const correctIndex=choices.indexOf(correct);
- const answer=["A","B","C"][correctIndex];
-
- return {
-  week_number:week,
-  day_number:day,
-  pillar:theme,
-  title:`Misi ${String(index).padStart(2,"0")} — ${theme}`,
-  story:
-   `Wira berada ${context}. `+
-   `Cabaran hari ini berkaitan nilai ${theme.toLowerCase()}. `+
-   `Gunakan kebijaksanaan untuk membantu penduduk Borneo.`,
-  question:
-   `${scenario.q} `+
-   `Situasi ini berlaku ${context} dalam minggu bertema ${theme.toLowerCase()}.`,
-  options:{
-   A:choices[0],
-   B:choices[1],
-   C:choices[2]
-  },
-  correct_answer:answer,
-  explanation:
-   `Jawapan yang tepat ialah "${correct}". `+
-   `Nilai ${theme.toLowerCase()} membantu kita menjadi wira yang bertanggungjawab.`,
-  published:true
- };
-}
-
-/* Jana kesemua 1,600 rekod */
-function mpaGenerateAllMissions(){
- const rows=[];
- for(let week=1;week<=MPA_TOTAL_WEEKS;week++){
-  for(let day=1;day<=MPA_DAYS_PER_WEEK;day++){
-   for(let mission=1;mission<=MPA_MISSIONS_PER_DAY;mission++){
-    rows.push(mpaGenerateQuestion(week,day,mission));
-   }
-  }
- }
- return rows;
-}
-
-/* Penjanaan ke Supabase dalam kumpulan 100 */
-async function mpaGenerateDatabase(){
- if(!isMaster){
-  toast("Akses Master sahaja.");
-  return;
- }
-
- const confirmGenerate=confirm(
-  "PENJANA MISI 1,600\n\n"+
-  "40 minggu × 5 hari × 8 misi.\n"+
-  "Misi lama dalam jadual missions akan digantikan.\n\n"+
-  "Teruskan?"
- );
-
- if(!confirmGenerate)return;
-
- const box=document.getElementById("masterContent");
- box.innerHTML=
-  "<h3>⏳ Menjana 1,600 misi...</h3>"+
-  "<p id='mpaGenerationProgress'>Bersedia...</p>";
-
- try{
-  /* Ambil ID misi lama */
-  const {data:oldRows,error:readError}=await db
-   .from("missions")
-   .select("id");
-
-  if(readError)throw readError;
-
-  /* Padam rekod lama secara berkumpulan */
-  const oldIds=(oldRows||[]).map(x=>x.id);
-
-  for(let i=0;i<oldIds.length;i+=100){
-   const batch=oldIds.slice(i,i+100);
-
-   const {error:deleteError}=await db
-    .from("missions")
-    .delete()
-    .in("id",batch);
-
-   if(deleteError)throw deleteError;
-  }
-
-  const allRows=mpaGenerateAllMissions();
-
-  if(allRows.length!==MPA_TOTAL_MISSIONS){
-   throw new Error("Jumlah misi tidak tepat.");
-  }
-
-  for(let i=0;i<allRows.length;i+=100){
-   const batch=allRows.slice(i,i+100);
-
-   const {error:insertError}=await db
-    .from("missions")
-    .insert(batch);
-
-   if(insertError)throw insertError;
-
-   const progress=document.getElementById("mpaGenerationProgress");
-   if(progress){
-    progress.textContent=
-     `Berjaya menyimpan ${Math.min(i+100,allRows.length)} / 1600 misi`;
-   }
-  }
-
-  await loadMissions();
-
-  box.innerHTML=
-   "<h2>✅ PENJANAAN SELESAI</h2>"+
-   "<p>1,600 misi berjaya disimpan.</p>"+
-   "<p>40 minggu · 200 hari · 8 misi sehari.</p>"+
-   "<button style='width:100%' onclick=\"masterTab('missions')\">LIHAT MISI</button>";
-
-  toast("1,600 misi berjaya dijana.");
-
- }catch(e){
-  box.innerHTML=
-   "<h3>❌ Penjanaan gagal</h3>"+
-   "<p>"+escapeHTML(e.message||String(e))+"</p>"+
-   "<p>Semak kebenaran Supabase dan jadual missions.</p>";
-
-  console.error("MPA generation error:",e);
- }
-}
-
-/* Tentukan hari semasa berdasarkan misi yang telah dijawab */
-function mpaGetCurrentSchedule(){
- const totalDone=attemptedCount();
-
- const completedDays=Math.floor(
-  totalDone/MPA_MISSIONS_PER_DAY
- );
-
- const cappedDay=Math.min(
-  completedDays,
-  MPA_TOTAL_WEEKS*MPA_DAYS_PER_WEEK-1
- );
-
- const week=Math.floor(
-  cappedDay/MPA_DAYS_PER_WEEK
- )+1;
-
- const day=(cappedDay%MPA_DAYS_PER_WEEK)+1;
-
- return {
-  week,
-  day,
-  completed:totalDone,
-  totalDays:MPA_TOTAL_WEEKS*MPA_DAYS_PER_WEEK
- };
-}
-
-/* Override fungsi loadMissions */
-loadMissions=async function(){
- const {data,error}=await db
-  .from("missions")
-  .select("id,week_number,day_number,pillar,title,story,question,options,correct_answer,explanation,published")
-  .eq("published",true)
-  .order("week_number")
-  .order("day_number")
-  .order("id");
-
- if(error){
-  throw new Error("Gagal memuatkan misi: "+error.message);
- }
-
- missions=(data||[])
-  .map(normalizeMission)
-  .filter(m=>m.id!==null&&m.a&&m.b&&m.c&&m.answer);
-
- if(!missions.length){
-  throw new Error("Belum ada misi diterbitkan.");
- }
-
- const schedule=mpaGetCurrentSchedule();
-
- currentWeek=schedule.week;
- currentDay=schedule.day;
-};
-
-/* Hanya misi bagi hari aktif dibuka */
-availableMissions=function(){
- const schedule=mpaGetCurrentSchedule();
-
- return missions.filter(m=>
-  m.week===schedule.week &&
-  m.day===schedule.day &&
-  (isMaster||!attempted(m.id))
- );
-};
-
-/* Buku misi menunjukkan 8 misi bagi hari semasa */
-showMissionBook=function(){
- const schedule=mpaGetCurrentSchedule();
-
- const daily=missions.filter(m=>
-  m.week===schedule.week &&
-  m.day===schedule.day
- );
-
- const cards=daily.map((m,i)=>{
-  const done=attempted(m.id);
-
-  return `
-   <div class="missionCard">
-    <h3>${i+1}. ${escapeHTML(m.title)}</h3>
-    <p>${escapeHTML(m.question)}</p>
-    <div class="missionMeta">
-     <span>${escapeHTML(m.pillar)}</span>
-     <span>Minggu ${m.week}</span>
-     <span>Hari ${m.day}</span>
-    </div>
-    <p>${done?"✅ Sudah dijawab":"🟢 Misi tersedia"}</p>
-    <button
-     ${done&&!isMaster?"disabled":""}
-     onclick="launchBookMission('${m.id}')">
-     ${done?"SUDAH SELESAI":"MULA MISI"}
-    </button>
-   </div>
-  `;
- }).join("");
-
- showModal(`
-  <h2>📖 BUKU MISI PAHLAWAN</h2>
-  <p><b>Minggu ${schedule.week} · Hari ${schedule.day}</b></p>
-  <p>${daily.filter(m=>attempted(m.id)).length} / 8 misi selesai</p>
-  <p>Jumlah kemajuan: ${schedule.completed} / 1600</p>
-  ${cards}
- `);
-};
-
-/* Buka misi yang dipilih */
-launchBookMission=function(id){
- const m=missions.find(x=>String(x.id)===String(id));
- if(!m)return;
-
- const schedule=mpaGetCurrentSchedule();
-
- if(m.week!==schedule.week||m.day!==schedule.day){
-  toast("Misi ini bukan misi hari semasa.");
-  return;
- }
-
- if(attempted(id)&&!isMaster){
-  toast("Misi ini telah dijawab.");
-  return;
- }
-
- openMission(m);
-};
-
-/* Panel Master — paparkan penjana dan statistik */
-masterTab=async function(tab){
- if(!isMaster)return;
-
- const box=document.getElementById("masterContent");
- box.innerHTML="Memuatkan...";
-
- if(tab==="missions"){
-  const schedule=mpaGetCurrentSchedule();
-
-  box.innerHTML=`
-   <h3>📚 Pengurusan Misi</h3>
-   <div class="adminList">
-    <b>Bank misi: ${missions.length} / 1600</b>
-    <p>40 minggu · 5 hari setiap minggu · 8 misi setiap hari</p>
-    <p>Hari aktif: Minggu ${schedule.week}, Hari ${schedule.day}</p>
-    <p>Jumlah selesai: ${schedule.completed} misi</p>
-   </div>
-
-   <button style="width:100%;margin-top:12px"
-    onclick="mpaGenerateDatabase()">
-    ⚙️ JANA / GANTIKAN 1,600 MISI
-   </button>
-
-   <button class="secondary" style="width:100%;margin-top:12px"
-    onclick="showMissionBook()">
-    📖 LIHAT MISI HARI INI
-   </button>
-
-   <h3 style="margin-top:20px">Senarai Misi</h3>
-   ${missions.slice(0,40).map((m,i)=>`
-    <div class="adminList">
-     <b>${i+1}. ${escapeHTML(m.title)}</b><br>
-     <small>Minggu ${m.week} · Hari ${m.day} · ${escapeHTML(m.pillar)}</small>
-    </div>
-   `).join("")}
-
-   <p class="small">Paparan senarai dihadkan kepada 40 misi pertama.</p>
-  `;
-
- }else if(tab==="register"){
-  box.innerHTML=`
-   <h3>➕ Daftar Akaun Murid</h3>
-   <label>Nama penuh murid</label>
-   <input id="newStudentName" placeholder="Nama penuh">
-   <label>Emel murid</label>
-   <input id="newStudentEmail" type="email" placeholder="Emel">
-   <label>Kata laluan sementara</label>
-   <input id="newStudentPassword" type="password" minlength="6">
-   <button style="width:100%" onclick="masterCreateStudent()">DAFTAR MURID</button>
-   <p id="registerResult" class="small"></p>
-  `;
-
- }else if(tab==="players"){
-  const {data,error}=await db
-   .from("profiles")
-   .select("id,username,display_name,role")
-   .eq("role","student")
-   .limit(200);
-
-  if(error){
-   box.innerHTML=escapeHTML(error.message);
-   return;
-  }
-
-  const ids=(data||[]).map(p=>p.id);
-  let access={};
-
-  if(ids.length){
-   const r=await db
-    .from("student_access")
-    .select("user_id,active")
-    .in("user_id",ids);
-
-   if(!r.error){
-    (r.data||[]).forEach(a=>access[a.user_id]=a.active);
-   }
-  }
-
-  box.innerHTML="<h3>👥 Pengurusan Murid</h3>"+
-   (data||[]).map(p=>`
-    <div class="adminList">
-     <b>${escapeHTML(p.display_name||p.username||"Murid")}</b><br>
-     <small>${escapeHTML(p.username||p.id)}</small><br>
-     <span>${access[p.id]?"🟢 Aktif":"🔴 Tidak aktif"}</span>
-     <button style="width:100%;margin-top:8px"
-      onclick="toggleStudentAccess('${p.id}',${!!access[p.id]})">
-      ${access[p.id]?"NYAH-AKTIF AKAUN":"AKTIFKAN AKAUN"}
-     </button>
-    </div>
-   `).join("")||"<p>Belum ada murid.</p>";
-
- }else{
-  await loadLeaderboard(box);
- };
-};
-</script> 
- <footer>© 2026 IdmI@'AbdunFaqeer. Hak cipta terpelihara.</footer>
+</script>
+<footer>© 2026 IdmI@'AbdunFaqeer. Hak cipta terpelihara.</footer>
 </body>
 </html>
