@@ -473,6 +473,447 @@ renderCharacterPicker();document.getElementById("hero").innerHTML=heroGraphic();
 db.auth.onAuthStateChange((event,session)=>{
  if(event==="SIGNED_OUT"){user=null;profile=null;isMaster=false;clearInterval(timer);clearInterval(usageHeartbeat);document.getElementById("modal").style.display="none";showScreen("authScreen")}
 });
+ /* =========================================================
+   MISI PAHLAWAN ALPHA — SISTEM 1,600 MISI
+   40 MINGGU × 5 HARI × 8 MISI = 1,600
+   Masukkan sebelum </script> terakhir dalam HTML asal.
+   ========================================================= */
+
+const MPA_TOTAL_WEEKS = 40;
+const MPA_DAYS_PER_WEEK = 5;
+const MPA_MISSIONS_PER_DAY = 8;
+const MPA_TOTAL_MISSIONS = 1600;
+
+/* 40 tema mingguan */
+const MPA_WEEK_THEMES = [
+ "Kasih Sayang","Kejujuran","Amanah","Disiplin","Kerjasama",
+ "Hormat-Menghormati","Kesabaran","Keberanian","Kebersihan","Kesyukuran",
+ "Tanggungjawab","Kepimpinan","Tolong-Menolong","Kesederhanaan","Keadilan",
+ "Adab Berkomunikasi","Pengurusan Masa","Cinta Ilmu","Keluarga","Persahabatan",
+ "Keselamatan","Alam Sekitar","Kesihatan","Perpaduan","Patriotisme",
+ "Kebijaksanaan","Daya Tahan","Empati","Pemikiran Kritis","Kreativiti",
+ "Adab Digital","Pengurusan Emosi","Keprihatinan","Kecemerlangan","Budi Bahasa",
+ "Masyarakat","Warisan Borneo","Kewarganegaraan","Membuat Keputusan","Jati Diri"
+];
+
+const MPA_DAY_CONTEXTS = [
+ "di Kampung Damai",
+ "di Hutan Rimba",
+ "di Air Terjun",
+ "di Rumah Panjang",
+ "di Gua Misteri"
+];
+
+const MPA_SCENARIOS = [
+ {
+  q:"Seorang rakan memerlukan bantuan. Apakah tindakan paling baik?",
+  correct:"Membantu dengan ikhlas",
+  wrong:["Membiarkannya sahaja","Mengejek kesusahannya"]
+ },
+ {
+  q:"Kamu menemui barang milik orang lain. Apakah tindakan yang betul?",
+  correct:"Menyerahkan barang itu kepada pemiliknya",
+  wrong:["Menyimpan barang itu","Memberikan barang itu kepada orang lain"]
+ },
+ {
+  q:"Kamu melakukan kesilapan ketika menjalankan tugas. Apakah tindakan terbaik?",
+  correct:"Mengakui kesilapan dan memperbaikinya",
+  wrong:["Menyalahkan orang lain","Menyembunyikan kesilapan"]
+ },
+ {
+  q:"Kumpulan kamu menghadapi masalah ketika menyelesaikan tugasan. Apakah tindakan terbaik?",
+  correct:"Berbincang dan bekerjasama",
+  wrong:["Bertengkar sesama sendiri","Meninggalkan kumpulan"]
+ },
+ {
+  q:"Kamu menerima arahan yang baik daripada guru. Apakah tindakan yang sesuai?",
+  correct:"Mendengar dan melaksanakan arahan",
+  wrong:["Mengabaikan arahan","Mengganggu rakan"]
+ },
+ {
+  q:"Seorang rakan berasa sedih. Apakah tindakan yang menunjukkan keprihatinan?",
+  correct:"Mendengar dan memberikan sokongan",
+  wrong:["Mentertawakannya","Mengabaikannya"]
+ },
+ {
+  q:"Kamu perlu membuat pilihan ketika menghadapi masalah. Apakah cara terbaik?",
+  correct:"Berfikir tentang akibat sebelum bertindak",
+  wrong:["Bertindak terburu-buru","Mengikut ajakan tanpa berfikir"]
+ },
+ {
+  q:"Kamu mempunyai masa lapang selepas tugasan selesai. Apakah tindakan yang bermanfaat?",
+  correct:"Menggunakan masa untuk belajar atau membantu",
+  wrong:["Membuang masa tanpa tujuan","Mengganggu orang lain"]
+ }
+];
+
+function mpaShuffle(array){
+ const a=array.slice();
+ for(let i=a.length-1;i>0;i--){
+  const j=Math.floor(Math.random()*(i+1));
+  [a[i],a[j]]=[a[j],a[i]];
+ }
+ return a;
+}
+
+/* Jana satu soalan */
+function mpaGenerateQuestion(week,day,index){
+ const theme=MPA_WEEK_THEMES[week-1];
+ const context=MPA_DAY_CONTEXTS[day-1];
+ const scenario=MPA_SCENARIOS[index-1];
+
+ const correct=scenario.correct;
+ const wrong=scenario.wrong.slice();
+
+ const choices=mpaShuffle([correct,...wrong]);
+ const correctIndex=choices.indexOf(correct);
+ const answer=["A","B","C"][correctIndex];
+
+ return {
+  week_number:week,
+  day_number:day,
+  pillar:theme,
+  title:`Misi ${String(index).padStart(2,"0")} — ${theme}`,
+  story:
+   `Wira berada ${context}. `+
+   `Cabaran hari ini berkaitan nilai ${theme.toLowerCase()}. `+
+   `Gunakan kebijaksanaan untuk membantu penduduk Borneo.`,
+  question:
+   `${scenario.q} `+
+   `Situasi ini berlaku ${context} dalam minggu bertema ${theme.toLowerCase()}.`,
+  options:{
+   A:choices[0],
+   B:choices[1],
+   C:choices[2]
+  },
+  correct_answer:answer,
+  explanation:
+   `Jawapan yang tepat ialah "${correct}". `+
+   `Nilai ${theme.toLowerCase()} membantu kita menjadi wira yang bertanggungjawab.`,
+  published:true
+ };
+}
+
+/* Jana kesemua 1,600 rekod */
+function mpaGenerateAllMissions(){
+ const rows=[];
+ for(let week=1;week<=MPA_TOTAL_WEEKS;week++){
+  for(let day=1;day<=MPA_DAYS_PER_WEEK;day++){
+   for(let mission=1;mission<=MPA_MISSIONS_PER_DAY;mission++){
+    rows.push(mpaGenerateQuestion(week,day,mission));
+   }
+  }
+ }
+ return rows;
+}
+
+/* Penjanaan ke Supabase dalam kumpulan 100 */
+async function mpaGenerateDatabase(){
+ if(!isMaster){
+  toast("Akses Master sahaja.");
+  return;
+ }
+
+ const confirmGenerate=confirm(
+  "PENJANA MISI 1,600\n\n"+
+  "40 minggu × 5 hari × 8 misi.\n"+
+  "Misi lama dalam jadual missions akan digantikan.\n\n"+
+  "Teruskan?"
+ );
+
+ if(!confirmGenerate)return;
+
+ const box=document.getElementById("masterContent");
+ box.innerHTML=
+  "<h3>⏳ Menjana 1,600 misi...</h3>"+
+  "<p id='mpaGenerationProgress'>Bersedia...</p>";
+
+ try{
+  /* Ambil ID misi lama */
+  const {data:oldRows,error:readError}=await db
+   .from("missions")
+   .select("id");
+
+  if(readError)throw readError;
+
+  /* Padam rekod lama secara berkumpulan */
+  const oldIds=(oldRows||[]).map(x=>x.id);
+
+  for(let i=0;i<oldIds.length;i+=100){
+   const batch=oldIds.slice(i,i+100);
+
+   const {error:deleteError}=await db
+    .from("missions")
+    .delete()
+    .in("id",batch);
+
+   if(deleteError)throw deleteError;
+  }
+
+  const allRows=mpaGenerateAllMissions();
+
+  if(allRows.length!==MPA_TOTAL_MISSIONS){
+   throw new Error("Jumlah misi tidak tepat.");
+  }
+
+  for(let i=0;i<allRows.length;i+=100){
+   const batch=allRows.slice(i,i+100);
+
+   const {error:insertError}=await db
+    .from("missions")
+    .insert(batch);
+
+   if(insertError)throw insertError;
+
+   const progress=document.getElementById("mpaGenerationProgress");
+   if(progress){
+    progress.textContent=
+     `Berjaya menyimpan ${Math.min(i+100,allRows.length)} / 1600 misi`;
+   }
+  }
+
+  await loadMissions();
+
+  box.innerHTML=
+   "<h2>✅ PENJANAAN SELESAI</h2>"+
+   "<p>1,600 misi berjaya disimpan.</p>"+
+   "<p>40 minggu · 200 hari · 8 misi sehari.</p>"+
+   "<button style='width:100%' onclick=\"masterTab('missions')\">LIHAT MISI</button>";
+
+  toast("1,600 misi berjaya dijana.");
+
+ }catch(e){
+  box.innerHTML=
+   "<h3>❌ Penjanaan gagal</h3>"+
+   "<p>"+escapeHTML(e.message||String(e))+"</p>"+
+   "<p>Semak kebenaran Supabase dan jadual missions.</p>";
+
+  console.error("MPA generation error:",e);
+ }
+}
+
+/* Tentukan hari semasa berdasarkan misi yang telah dijawab */
+function mpaGetCurrentSchedule(){
+ const totalDone=attemptedCount();
+
+ const completedDays=Math.floor(
+  totalDone/MPA_MISSIONS_PER_DAY
+ );
+
+ const cappedDay=Math.min(
+  completedDays,
+  MPA_TOTAL_WEEKS*MPA_DAYS_PER_WEEK-1
+ );
+
+ const week=Math.floor(
+  cappedDay/MPA_DAYS_PER_WEEK
+ )+1;
+
+ const day=(cappedDay%MPA_DAYS_PER_WEEK)+1;
+
+ return {
+  week,
+  day,
+  completed:totalDone,
+  totalDays:MPA_TOTAL_WEEKS*MPA_DAYS_PER_WEEK
+ };
+}
+
+/* Override fungsi loadMissions */
+loadMissions=async function(){
+ const {data,error}=await db
+  .from("missions")
+  .select("id,week_number,day_number,pillar,title,story,question,options,correct_answer,explanation,published")
+  .eq("published",true)
+  .order("week_number")
+  .order("day_number")
+  .order("id");
+
+ if(error){
+  throw new Error("Gagal memuatkan misi: "+error.message);
+ }
+
+ missions=(data||[])
+  .map(normalizeMission)
+  .filter(m=>m.id!==null&&m.a&&m.b&&m.c&&m.answer);
+
+ if(!missions.length){
+  throw new Error("Belum ada misi diterbitkan.");
+ }
+
+ const schedule=mpaGetCurrentSchedule();
+
+ currentWeek=schedule.week;
+ currentDay=schedule.day;
+};
+
+/* Hanya misi bagi hari aktif dibuka */
+availableMissions=function(){
+ const schedule=mpaGetCurrentSchedule();
+
+ return missions.filter(m=>
+  m.week===schedule.week &&
+  m.day===schedule.day &&
+  (isMaster||!attempted(m.id))
+ );
+};
+
+/* Buku misi menunjukkan 8 misi bagi hari semasa */
+showMissionBook=function(){
+ const schedule=mpaGetCurrentSchedule();
+
+ const daily=missions.filter(m=>
+  m.week===schedule.week &&
+  m.day===schedule.day
+ );
+
+ const cards=daily.map((m,i)=>{
+  const done=attempted(m.id);
+
+  return `
+   <div class="missionCard">
+    <h3>${i+1}. ${escapeHTML(m.title)}</h3>
+    <p>${escapeHTML(m.question)}</p>
+    <div class="missionMeta">
+     <span>${escapeHTML(m.pillar)}</span>
+     <span>Minggu ${m.week}</span>
+     <span>Hari ${m.day}</span>
+    </div>
+    <p>${done?"✅ Sudah dijawab":"🟢 Misi tersedia"}</p>
+    <button
+     ${done&&!isMaster?"disabled":""}
+     onclick="launchBookMission('${m.id}')">
+     ${done?"SUDAH SELESAI":"MULA MISI"}
+    </button>
+   </div>
+  `;
+ }).join("");
+
+ showModal(`
+  <h2>📖 BUKU MISI PAHLAWAN</h2>
+  <p><b>Minggu ${schedule.week} · Hari ${schedule.day}</b></p>
+  <p>${daily.filter(m=>attempted(m.id)).length} / 8 misi selesai</p>
+  <p>Jumlah kemajuan: ${schedule.completed} / 1600</p>
+  ${cards}
+ `);
+};
+
+/* Buka misi yang dipilih */
+launchBookMission=function(id){
+ const m=missions.find(x=>String(x.id)===String(id));
+ if(!m)return;
+
+ const schedule=mpaGetCurrentSchedule();
+
+ if(m.week!==schedule.week||m.day!==schedule.day){
+  toast("Misi ini bukan misi hari semasa.");
+  return;
+ }
+
+ if(attempted(id)&&!isMaster){
+  toast("Misi ini telah dijawab.");
+  return;
+ }
+
+ openMission(m);
+};
+
+/* Panel Master — paparkan penjana dan statistik */
+masterTab=async function(tab){
+ if(!isMaster)return;
+
+ const box=document.getElementById("masterContent");
+ box.innerHTML="Memuatkan...";
+
+ if(tab==="missions"){
+  const schedule=mpaGetCurrentSchedule();
+
+  box.innerHTML=`
+   <h3>📚 Pengurusan Misi</h3>
+   <div class="adminList">
+    <b>Bank misi: ${missions.length} / 1600</b>
+    <p>40 minggu · 5 hari setiap minggu · 8 misi setiap hari</p>
+    <p>Hari aktif: Minggu ${schedule.week}, Hari ${schedule.day}</p>
+    <p>Jumlah selesai: ${schedule.completed} misi</p>
+   </div>
+
+   <button style="width:100%;margin-top:12px"
+    onclick="mpaGenerateDatabase()">
+    ⚙️ JANA / GANTIKAN 1,600 MISI
+   </button>
+
+   <button class="secondary" style="width:100%;margin-top:12px"
+    onclick="showMissionBook()">
+    📖 LIHAT MISI HARI INI
+   </button>
+
+   <h3 style="margin-top:20px">Senarai Misi</h3>
+   ${missions.slice(0,40).map((m,i)=>`
+    <div class="adminList">
+     <b>${i+1}. ${escapeHTML(m.title)}</b><br>
+     <small>Minggu ${m.week} · Hari ${m.day} · ${escapeHTML(m.pillar)}</small>
+    </div>
+   `).join("")}
+
+   <p class="small">Paparan senarai dihadkan kepada 40 misi pertama.</p>
+  `;
+
+ }else if(tab==="register"){
+  box.innerHTML=`
+   <h3>➕ Daftar Akaun Murid</h3>
+   <label>Nama penuh murid</label>
+   <input id="newStudentName" placeholder="Nama penuh">
+   <label>Emel murid</label>
+   <input id="newStudentEmail" type="email" placeholder="Emel">
+   <label>Kata laluan sementara</label>
+   <input id="newStudentPassword" type="password" minlength="6">
+   <button style="width:100%" onclick="masterCreateStudent()">DAFTAR MURID</button>
+   <p id="registerResult" class="small"></p>
+  `;
+
+ }else if(tab==="players"){
+  const {data,error}=await db
+   .from("profiles")
+   .select("id,username,display_name,role")
+   .eq("role","student")
+   .limit(200);
+
+  if(error){
+   box.innerHTML=escapeHTML(error.message);
+   return;
+  }
+
+  const ids=(data||[]).map(p=>p.id);
+  let access={};
+
+  if(ids.length){
+   const r=await db
+    .from("student_access")
+    .select("user_id,active")
+    .in("user_id",ids);
+
+   if(!r.error){
+    (r.data||[]).forEach(a=>access[a.user_id]=a.active);
+   }
+  }
+
+  box.innerHTML="<h3>👥 Pengurusan Murid</h3>"+
+   (data||[]).map(p=>`
+    <div class="adminList">
+     <b>${escapeHTML(p.display_name||p.username||"Murid")}</b><br>
+     <small>${escapeHTML(p.username||p.id)}</small><br>
+     <span>${access[p.id]?"🟢 Aktif":"🔴 Tidak aktif"}</span>
+     <button style="width:100%;margin-top:8px"
+      onclick="toggleStudentAccess('${p.id}',${!!access[p.id]})">
+      ${access[p.id]?"NYAH-AKTIF AKAUN":"AKTIFKAN AKAUN"}
+     </button>
+    </div>
+   `).join("")||"<p>Belum ada murid.</p>";
+
+ }else{
+  await loadLeaderboard(box);
+ };
+};
 </script> 
  <footer>© 2026 IdmI@'AbdunFaqeer. Hak cipta terpelihara.</footer>
 </body>
