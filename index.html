@@ -275,7 +275,6 @@ function normalizeMission(r){
  return {id:r.id,title:r.title||"Misi",pillar:r.pillar||"Penyayang",story:r.story||"",question:r.question||"",a:opts[0]||"",b:opts[1]||"",c:opts[2]||"",answer,explanation:r.explanation||"",week:Number(r.week_number)||1,day:Number(r.day_number)||1,area:Math.min(4,Math.max(0,(Number(r.day_number)||1)-1))};
 }
 
-/* Hanya bank MPA1600 dibaca sebagai silibus baharu. */
 async function loadMissions(){
  const {data,error}=await db.from("missions")
   .select("id,week_number,day_number,pillar,title,story,question,options,correct_answer,explanation,published")
@@ -300,7 +299,6 @@ async function loadProgress(){
  updateStats();
 }
 
-/* Jadual berdasarkan rekod misi baharu sahaja, bukan rekod lama. */
 function mpaGetCurrentSchedule(){
  const ordered=missions.slice().sort((a,b)=>a.week-b.week||a.day-b.day||Number(a.id)-Number(b.id));
  const done=ordered.filter(m=>attempted(m.id)).length;
@@ -461,79 +459,180 @@ const MPA_WEEK_THEMES=[
 "Masyarakat","Warisan Borneo","Kewarganegaraan","Membuat Keputusan","Jati Diri"
 ];
 const MPA_DAY_CONTEXTS=["Kampung Damai","Hutan Rimba","Air Terjun","Rumah Panjang","Gua Misteri"];
-const MPA_SCENARIOS=[
-{q:"Seorang rakan memerlukan bantuan. Apakah tindakan paling baik?",c:"Membantu dengan ikhlas",w:["Membiarkannya sahaja","Mengejek kesusahannya"],p:"Penyayang"},
-{q:"Kamu menemui barang milik orang lain. Apakah tindakan yang betul?",c:"Menyerahkan barang itu kepada pemiliknya",w:["Menyimpan barang itu","Memberikannya kepada orang lain"],p:"Amanah"},
-{q:"Kamu melakukan kesilapan ketika menjalankan tugas. Apakah tindakan terbaik?",c:"Mengakui kesilapan dan memperbaikinya",w:["Menyalahkan orang lain","Menyembunyikan kesilapan"],p:"Kejujuran"},
-{q:"Kumpulan kamu menghadapi masalah ketika menyelesaikan tugasan. Apakah tindakan terbaik?",c:"Berbincang dan bekerjasama",w:["Bertengkar sesama sendiri","Meninggalkan kumpulan"],p:"Kerjasama"},
-{q:"Kamu menerima arahan yang baik daripada guru. Apakah tindakan yang sesuai?",c:"Mendengar dan melaksanakan arahan",w:["Mengabaikan arahan","Mengganggu rakan"],p:"Disiplin"},
-{q:"Seorang rakan berasa sedih. Apakah tindakan yang menunjukkan keprihatinan?",c:"Mendengar dan memberikan sokongan",w:["Mentertawakannya","Mengabaikannya"],p:"Empati"},
-{q:"Kamu perlu membuat pilihan ketika menghadapi masalah. Apakah cara terbaik?",c:"Berfikir tentang akibat sebelum bertindak",w:["Bertindak terburu-buru","Mengikut ajakan tanpa berfikir"],p:"Kebijaksanaan"},
-{q:"Kamu mempunyai masa lapang selepas tugasan selesai. Apakah tindakan yang bermanfaat?",c:"Menggunakan masa untuk belajar atau membantu",w:["Membuang masa tanpa tujuan","Mengganggu orang lain"],p:"Pengurusan Masa"}
-];
-const MPA_VARIATIONS=[
-"Apakah pilihan yang paling wajar dalam keadaan ini?",
-"Apakah tindakan yang mencerminkan nilai murni?",
-"Bagaimanakah seorang wira patut bertindak?",
-"Apakah keputusan yang membawa kebaikan kepada semua?",
-"Apakah sikap yang patut diamalkan dalam situasi ini?"
-];
-function mpaShuffle(a){const x=a.slice();for(let i=x.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]]}return x}
+
+/* Penjana cabaran: 8 keluarga masalah, setiap keluarga mempunyai 200 variasi nombor dan situasi. */
+function mpaHash(n){let x=(n*2654435761)>>>0;x^=x>>>16;x=Math.imul(x,2246822519);x^=x>>>13;return x>>>0}
+function mpaChoice(correct,wrong1,wrong2,seed){
+ const a=[{v:String(correct),ok:true},{v:String(wrong1),ok:false},{v:String(wrong2),ok:false}];
+ for(let i=2;i>0;i--){const j=mpaHash(seed+i)%(i+1);[a[i],a[j]]=[a[j],a[i]]}
+ return {options:{A:a[0].v,B:a[1].v,C:a[2].v},answer:["A","B","C"][a.findIndex(x=>x.ok)]};
+}
 function mpaGenerateQuestion(week,day,index){
- const theme=MPA_WEEK_THEMES[week-1],place=MPA_DAY_CONTEXTS[day-1];
- const s=MPA_SCENARIOS[(index-1)%MPA_SCENARIOS.length];
- const variation=MPA_VARIATIONS[(week+day+index-2)%MPA_VARIATIONS.length];
- const choices=mpaShuffle([s.c,...s.w]);
- const answer=["A","B","C"][choices.indexOf(s.c)];
- const serial=`W${String(week).padStart(2,"0")}D${String(day).padStart(2,"0")}M${String(index).padStart(2,"0")}`;
+ const serial=((week-1)*40)+((day-1)*8)+index;
+ const variation=Math.floor((serial-1)/8);
+ const family=(serial-1)%8;
+ const theme=MPA_WEEK_THEMES[week-1];
+ const place=MPA_DAY_CONTEXTS[day-1];
+ const seed=serial*37+variation*13;
+ let story="",question="",correct="",wrong1="",wrong2="",pillar="";
+ const people=["Amin","Siti","Balan","Maya","Dani","Lina","Rafi","Nora","Johan","Ayu"];
+ const person=people[variation%people.length];
+ const item=["bekalan air","buku","pek makanan","lampu suluh","kit pertolongan cemas","beg sekolah","benih tanaman","alat kebersihan","jaket keselamatan","bekalan ubat"];
+ const thing=item[(variation*3+week)%item.length];
+ const a=2+(variation%17),b=3+((variation*7+week)%19),c=2+((variation*5+day)%13);
+ const names=["kumpulan merah","kumpulan biru","kumpulan hijau","kumpulan kuning"];
+ const group=names[variation%4];
+
+ if(family===0){
+  pillar="Pengagihan dan matematik";
+  const total=12+(variation*7%89),groups=2+(variation%8);
+  const each=Math.floor(total/groups),remainder=total%groups;
+  const actual=each;
+  story=`Di ${place}, ${person} menerima ${total} unit ${thing} untuk diagihkan sama rata kepada ${groups} kumpulan penduduk.`;
+  question=`Setiap kumpulan menerima sebanyak mungkin unit yang sama. Berapakah unit yang diterima oleh setiap kumpulan?`;
+  correct=actual+" unit";
+  wrong1=(actual+1)+" unit";
+  wrong2=Math.max(0,actual-1)+" unit";
+  if(remainder)story+=` Baki ${remainder} unit perlu disimpan untuk kegunaan kemudian.`;
+ }else if(family===1){
+  pillar="Belanjawan dan wang";
+  const price=5+(variation*11%46),paid=price+10+(variation*13%40);
+  const change=paid-price;
+  story=`Di ${place}, ${person} membeli ${thing} dengan harga RM${price}. Dia membayar menggunakan wang RM${paid}.`;
+  question="Berapakah baki wang yang perlu dipulangkan?";
+  correct="RM"+change;
+  wrong1="RM"+(change+5);
+  wrong2="RM"+Math.max(0,change-5);
+ }else if(family===2){
+  pillar="Masa dan jadual";
+  const start=7+(variation%10),duration=15+(variation*17%106);
+  const end=(start*60+duration),hh=Math.floor(end/60)%24,mm=end%60;
+  story=`Di ${place}, ${person} memulakan tugas pada pukul ${String(start).padStart(2,"0")}:00. Tugas itu mengambil masa ${duration} minit.`;
+  question="Pada pukul berapakah tugas itu selesai?";
+  correct=String(hh).padStart(2,"0")+":"+String(mm).padStart(2,"0");
+  wrong1=String((hh+1)%24).padStart(2,"0")+":"+String(mm).padStart(2,"0");
+  wrong2=String(hh).padStart(2,"0")+":"+String((mm+15)%60).padStart(2,"0");
+ }else if(family===3){
+  pillar="Pengasingan bahan dan kebersihan";
+  const materials=[
+   ["botol plastik","tong kitar semula plastik","tong sisa makanan","tong kaca"],
+   ["kulit pisang","bekas sisa organik","tong logam","tong kertas"],
+   ["tin minuman aluminium","tong kitar semula logam","tong sisa basah","tong tekstil"],
+   ["kertas terpakai","tong kitar semula kertas","tong sisa makanan","tong kaca"]
+  ];
+  const m=materials[variation%materials.length];
+  story=`Penduduk ${place} sedang membersihkan kawasan. ${person} menemui ${m[0]} yang perlu diasingkan dengan betul.`;
+  question="Di manakah bahan tersebut patut diletakkan?";
+  correct=m[1];wrong1=m[2];wrong2=m[3];
+ }else if(family===4){
+  pillar="Keselamatan dan pencegahan risiko";
+  const hazards=[
+   ["wayar elektrik terdedah berhampiran lopak air","menjauhkan orang ramai dan melaporkannya kepada orang dewasa yang bertanggungjawab","menyentuh wayar untuk mengalihkannya","menyimbah air supaya kawasan sejuk"],
+   ["asap tebal keluar dari sebuah bangunan","bergerak ke tempat selamat dan menghubungi bantuan kecemasan","masuk semula untuk mengambil barang","bersembunyi di dalam bangunan"],
+   ["jambatan kayu kelihatan reput dan longgar","menghalang laluan dan memaklumkan pihak bertanggungjawab","berlari melintasinya","mengajak rakan menguji kekuatannya"],
+   ["air sungai tiba-tiba naik dengan deras","berpindah ke kawasan tinggi dan selamat","bermain lebih dekat dengan sungai","menunggu di tebing rendah"]
+  ];
+  const h=hazards[variation%hazards.length];
+  story=`Di ${place}, ${person} ternampak ${h[0]}. Beberapa orang penduduk berada tidak jauh dari tempat itu.`;
+  question="Apakah tindakan paling selamat?";
+  correct=h[1];wrong1=h[2];wrong2=h[3];
+ }else if(family===5){
+  pillar="Turutan tindakan dan prosedur";
+  const procedures=[
+   ["membantu rakan yang mengalami luka kecil","basuh tangan, bersihkan luka, tutup dengan pembalut bersih","tutup luka dengan kain kotor, kemudian basuh tangan","biarkan luka tanpa dibersihkan"],
+   ["menghadapi amaran ribut ketika berkhemah","hentikan aktiviti, cari bangunan kukuh dan ikut arahan keselamatan","teruskan aktiviti, kemudian cari tempat berlindung","berteduh di bawah pokok terpencil"],
+   ["menemui dompet tercicir","serahkan kepada pihak bertanggungjawab supaya pemilik dapat dikenal pasti","ambil wangnya, kemudian buang dompet","serahkan kepada orang yang tidak dikenali"],
+   ["menyediakan kawasan gotong-royong","rancang tugas, sediakan peralatan selamat, kemudian bersihkan kawasan","mula bekerja tanpa arahan atau peralatan","tinggalkan sampah untuk orang lain"]
+  ];
+  const p=procedures[variation%procedures.length];
+  story=`Penduduk ${place} meminta ${person} membantu kerana mereka sedang ${p[0]}.`;
+  question="Apakah turutan tindakan yang paling wajar?";
+  correct=p[1];wrong1=p[2];wrong2=p[3];
+ }else if(family===6){
+  pillar="Pengurusan sumber dan air";
+  const liters=20+(variation*9%181),use=2+(variation%9),days=Math.floor(liters/use);
+  story=`Di ${place}, terdapat ${liters} liter ${thing}. Setiap hari, penduduk menggunakan ${use} liter untuk keperluan yang dirancang.`;
+  question="Berapa hari penuh bekalan itu dapat digunakan?";
+  correct=days+" hari penuh";
+  wrong1=(days+1)+" hari penuh";
+  wrong2=Math.max(0,days-1)+" hari penuh";
+ }else{
+  pillar="Penyelesaian masalah masyarakat";
+  const scenarios=[
+   ["bekalan makanan hanya cukup untuk sebahagian keluarga","menyemak keperluan setiap keluarga dan mengagihkan bekalan secara adil","memberikan semuanya kepada keluarga yang paling rapat","menyimpan semuanya untuk diri sendiri"],
+   ["dua kumpulan menggunakan ruang yang sama pada masa serentak","berbincang dan menyediakan jadual penggunaan yang adil","menghalau salah satu kumpulan tanpa berbincang","membiarkan pertengkaran berterusan"],
+   ["laluan ke sekolah dipenuhi sampah selepas hujan","mengatur gotong-royong dan menyediakan tempat sampah","menolak semua tanggungjawab kepada murid lain","membuang sampah ke dalam longkang"],
+   ["seorang warga tua sukar membawa barang","menawarkan bantuan dengan sopan dan memastikan beliau selamat","mengambil barang tanpa meminta izin","menertawakan kesukarannya"]
+  ];
+  const s=scenarios[variation%scenarios.length];
+  story=`Di ${place}, ${person} mendapati ${s[0]}. Penduduk meminta cadangan penyelesaian yang menjaga kepentingan bersama.`;
+  question="Apakah penyelesaian yang paling adil dan bermanfaat?";
+  correct=s[1];wrong1=s[2];wrong2=s[3];
+ }
+
+ const choices=mpaChoice(correct,wrong1,wrong2,seed);
+ const serialText="W"+String(week).padStart(2,"0")+"D"+String(day).padStart(2,"0")+"M"+String(index).padStart(2,"0");
  return {
-  week_number:week,day_number:day,pillar:theme,
-  title:`${MPA_PREFIX}${serial} — ${theme}`,
-  story:`Wira berada di ${place}. Penduduk memerlukan bantuan dalam satu keadaan yang menguji nilai ${theme.toLowerCase()}. ${variation} Gunakan kebijaksanaan dan pilih tindakan yang membawa manfaat.`,
-  question:`${s.q} Keadaan ini berlaku di ${place} dalam pengembaraan bertema ${theme.toLowerCase()}. ${variation}`,
-  options:{A:choices[0],B:choices[1],C:choices[2]},
-  correct_answer:answer,
-  explanation:`Pilihan yang tepat ialah "${s.c}". Nilai ${theme.toLowerCase()} dan sikap ${s.p.toLowerCase()} membantu membina masyarakat yang baik.`,
+  week_number:week,
+  day_number:day,
+  pillar:theme+" · "+pillar,
+  title:MPA_PREFIX+serialText+" — "+pillar,
+  story:story+" Cabaran ini menguji nilai "+theme.toLowerCase()+".",
+  question:question,
+  options:choices.options,
+  correct_answer:choices.answer,
+  explanation:"Jawapan yang tepat ialah: "+correct+". Keputusan yang baik perlu mengambil kira keselamatan, keadilan, tanggungjawab dan manfaat kepada masyarakat.",
   published:true
  };
 }
+
 function mpaGenerateAllMissions(){
  const rows=[];
- for(let w=1;w<=40;w++)for(let d=1;d<=5;d++)for(let n=1;n<=8;n++)rows.push(mpaGenerateQuestion(w,d,n));
+ for(let w=1;w<=40;w++){
+  for(let d=1;d<=5;d++){
+   for(let n=1;n<=8;n++)rows.push(mpaGenerateQuestion(w,d,n));
+  }
+ }
  return rows;
 }
 
-/* PENJANA SELAMAT: tambah bank baharu, jangan padam misi atau progress lama.
-   Jika proses terhenti, Master boleh jalankan semula untuk sambung rekod yang belum ada. */
+/* Jana atau baiki bank. Rekod lama dikemas kini menggunakan ID asal. */
 async function mpaGenerateDatabase(){
  if(!isMaster){toast("Akses Master sahaja.");return}
- const ok=confirm("JANA BANK MISI 1,600?\n\n40 minggu × 5 hari × 8 misi.\n\nMisi lama dan rekod jawapan murid TIDAK akan dipadam.\nMisi baharu akan ditambah sebagai bank berasingan.\n\nTeruskan?");
- if(!ok)return;
+ if(!confirm("JANA / BAIKI BANK 1,600 MISI?\n\n40 minggu × 5 hari × 8 misi.\n\nMisi sedia ada akan dikemas kini menggunakan ID asal.\nRekod kemajuan murid tidak dipadam.\nTeruskan?"))return;
+
  const box=document.getElementById("masterContent");
- box.innerHTML="<h3>⏳ Menyediakan bank 1,600 misi...</h3><p id='mpaGenerationProgress'>Menyemak rekod sedia ada...</p>";
+ box.innerHTML="<h3>⏳ Menyediakan 1,600 misi...</h3><p id='mpaGenerationProgress'>Menyemak bank sedia ada...</p>";
+
  try{
-  const {data:existing,error:readError}=await db.from("missions").select("title").like("title","MPA1600|%").range(0,1999);
+  const {data:existing,error:readError}=await db.from("missions")
+   .select("id,title")
+   .like("title","MPA1600|%")
+   .range(0,1999);
   if(readError)throw readError;
-  const existingTitles=new Set((existing||[]).map(x=>x.title));
+
   const all=mpaGenerateAllMissions();
-  const missing=all.filter(x=>!existingTitles.has(x.title));
-  if(!missing.length){
-   await loadMissions();
-   box.innerHTML="<h3>✅ BANK SUDAH LENGKAP</h3><p>1,600 misi telah tersedia. Tiada rekod baharu perlu dimasukkan.</p><button style='width:100%' onclick=\"masterTab('missions')\">KEMBALI</button>";
-   return;
-  }
-  for(let i=0;i<missing.length;i+=50){
-   const batch=missing.slice(i,i+50);
-   const {error}=await db.from("missions").insert(batch);
+  const existingByTitle=new Map((existing||[]).map(x=>[x.title,x.id]));
+  const rows=all.map(row=>{
+   const oldId=existingByTitle.get(row.title);
+   return oldId!==undefined?{...row,id:oldId}:row;
+  });
+
+  let saved=0;
+  for(let i=0;i<rows.length;i+=40){
+   const batch=rows.slice(i,i+40);
+   const {error}=await db.from("missions").upsert(batch,{onConflict:"id"});
    if(error)throw error;
+   saved+=batch.length;
    const p=document.getElementById("mpaGenerationProgress");
-   if(p)p.textContent=`Misi baharu disimpan: ${Math.min(i+50,missing.length)} / ${missing.length}. Jumlah sedia ada: ${existingTitles.size+Math.min(i+50,missing.length)} / 1600`;
+   if(p)p.textContent="Disimpan: "+saved+" / 1600 misi";
   }
+
   await loadMissions();
-  box.innerHTML="<h2>✅ PENJANAAN SELESAI</h2><p>Bank 1,600 misi berjaya disediakan.</p><p>40 minggu · 200 hari · 8 misi sehari.</p><p>Rekod lama dan kemajuan murid dikekalkan.</p><button style='width:100%' onclick=\"masterTab('missions')\">LIHAT BANK MISI</button>";
-  toast("Bank 1,600 misi berjaya disediakan.");
+  box.innerHTML="<h2>✅ BANK MISI SIAP</h2><p>1,600 misi telah dijana atau dikemas kini.</p><p>40 minggu · 200 hari · 8 misi sehari.</p><p>Rekod kemajuan murid tidak dipadam.</p><button style='width:100%' onclick=\"masterTab('missions')\">KEMBALI</button>";
+  toast("Bank misi berjaya disediakan.");
  }catch(e){
-  box.innerHTML="<h3>❌ Penjanaan belum selesai</h3><p>"+escapeHTML(e.message||String(e))+"</p><p>Rekod yang telah berjaya dimasukkan tidak dipadam. Jalankan semula penjana untuk menyambung.</p>";
+  box.innerHTML="<h3>❌ Penjanaan belum selesai</h3><p>"+escapeHTML(e.message||String(e))+"</p><p>Data yang telah berjaya disimpan tidak dipadam. Jalankan semula penjana untuk mencuba lagi.</p>";
   console.error(e);
  }
 }
@@ -551,7 +650,7 @@ async function masterTab(tab){
    <p>Jumlah selesai: ${s.completed} / 1600</p>
    <div class="progressTrack"><div class="progressFill" style="width:${percent}%"></div></div>
    <p>${percent}% kemajuan</p></div>
-   <button style="width:100%;margin-top:12px" onclick="mpaGenerateDatabase()">⚙️ JANA / SAMBUNG BANK 1,600 MISI</button>
+   <button style="width:100%;margin-top:12px" onclick="mpaGenerateDatabase()">⚙️ JANA / BAIKI BANK 1,600 MISI</button>
    <button class="secondary" style="width:100%;margin-top:12px" onclick="showMissionBook()">📖 LIHAT MISI HARI INI</button>
    <h3 style="margin-top:20px">Senarai Misi Hari Ini</h3>
    ${missions.filter(m=>m.week===s.week&&m.day===s.day).map((m,i)=>`<div class="adminList"><b>${i+1}. ${escapeHTML(m.title.replace(MPA_PREFIX,""))}</b><br><small>${escapeHTML(m.pillar)}</small></div>`).join("")}`;
